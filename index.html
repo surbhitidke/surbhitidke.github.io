@@ -184,32 +184,6 @@
             grid-template-columns: repeat(3, 1fr); 
             gap: 24px; 
         }
-        .projects-grid article:nth-child(4),
-        .projects-grid article:nth-child(5) {
-            grid-column: span 1;
-        }
-        .projects-grid::after {
-            content: '';
-            grid-column: span 1;
-        }
-        @media (min-width: 901px) {
-            .projects-grid {
-                display: grid;
-                grid-template-columns: repeat(6, 1fr);
-                gap: 24px;
-            }
-            .projects-grid article:nth-child(1),
-            .projects-grid article:nth-child(2),
-            .projects-grid article:nth-child(3) {
-                grid-column: span 2;
-            }
-            .projects-grid article:nth-child(4) {
-                grid-column: 2 / span 2;
-            }
-            .projects-grid article:nth-child(5) {
-                grid-column: 4 / span 2;
-            }
-        }
         .project-card {
             background: var(--white); border-radius: 12px; overflow: hidden;
             border: 1px solid var(--gray-200); transition: all 0.3s;
@@ -429,7 +403,7 @@
             <!-- Process Flow with Real Photos - 6 Steps: Complete Systems Engineer -->
             <div class="process-flow">
                 <div class="process-step">
-                    <img src="./klayout.jpg" alt="Device Design - KLayout Mask" class="process-img">
+                    <img src="./klayout_1.png" alt="Device Design - KLayout Mask + SEM" class="process-img">
                     <h4>Device Design</h4>
                     <p>AutoCAD, KLayout</p>
                 </div>
@@ -449,12 +423,12 @@
                     <p>SEM, XPS, AFM</p>
                 </div>
                 <div class="process-step">
-                    <img src="./altinum_1.jpg" alt="Hardware Design - Altium 3D PCB" class="process-img">
+                    <img src="./altinum_2.png" alt="Hardware Design - Altium 3D PCB" class="process-img">
                     <h4>Hardware Design</h4>
                     <p>Altium Designer, PCB</p>
                 </div>
                 <div class="process-step">
-                    <img src="./mems_sensor.jpg" alt="System Validation - Sensor + PCB Integration" class="process-img">
+                    <img src="./ansys_vna.jpg" alt="System Validation - ANSYS vs VNA" class="process-img">
                     <h4>System Validation</h4>
                     <p>VNA, EIS, Integration</p>
                 </div>
@@ -540,8 +514,8 @@
                 <article class="project-card">
                     <img src="./project_electrodes.png" alt="TEER Microelectrodes" class="project-image">
                     <div class="project-content">
-                        <h3>Multimodal TEER Sensing Chips</h3>
-                        <p>Embedded multimodal (TEER, EIS, Transparency) sensing chips for in vitro cellular models. Gold, platinum, and ITO electrodes on glass.</p>
+                        <h3>Multimodal Electrochemical Sensing Chips</h3>
+                        <p>Embedded multimodal (EIS, Transparency) sensing chips for in vitro cellular models. Gold, platinum, and ITO electrodes on glass substrates.</p>
                         <div class="project-tech">
                             <span class="tech-chip">DWL</span>
                             <span class="tech-chip">E-beam Ti/Au/Pt/ITO</span>
@@ -580,10 +554,10 @@
                 </article>
                 
                 <article class="project-card">
-                    <img src="./AFM_image.jpg" alt="Integrated Lab-on-Chip System" class="project-image">
+                    <img src="./mems_sensor.png" alt="Integrated Lab-on-Chip System" class="project-image">
                     <div class="project-content">
                         <h3>Integrated Lab-on-Chip Sensing System</h3>
-                        <p>Engineered MEMS biosensor on glass with Heidelberg DWL and E-beam evaporation. Optimized ITO thin-film via 27-run DOE, validated Ti/Pt adhesion layers using SEM and AFM.</p>
+                        <p>Engineered MEMS biosensor on glass with Heidelberg DWL and E-beam evaporation. Optimized ITO thin-film via 27-run DOE, validated Ti/Pt adhesion using SEM and AFM.</p>
                         <div class="project-tech">
                             <span class="tech-chip">MEMS</span>
                             <span class="tech-chip">DOE</span>
@@ -594,16 +568,30 @@
                 </article>
                 
                 <article class="project-card">
-                    <img src="./layout_and_benchtop_evidence.jpg" alt="Mixed-Signal PCB Design" class="project-image">
+                    <img src="./layout_and_benchtop_evidence_1.png" alt="Mixed-Signal PCB Design" class="project-image">
                     <div class="project-content">
-                        <h3>Mixed-Signal PCB for Bio-Instrumentation</h3>
-                        <p>Designed multi-layer PCB in Altium with high-precision analog front-end and active filtering. 3D EM modeling in ANSYS HFSS achieved 99% correlation between simulation and VNA measurements.</p>
+                        <h3>Mixed-Signal PCB Design & Layout</h3>
+                        <p>Designed multi-layer PCB in Altium Designer featuring isolated analog signal paths, guard rings, and ground plane partitioning for EMI shielding. IPC-compliant footprints with DFM analysis.</p>
                         <div class="project-tech">
                             <span class="tech-chip">Altium Designer</span>
-                            <span class="tech-chip">ANSYS HFSS</span>
-                            <span class="tech-chip">VNA</span>
+                            <span class="tech-chip">Multi-layer PCB</span>
+                            <span class="tech-chip">DFM/DRC</span>
                         </div>
                         <p class="project-outcome">✓ First-pass fabrication · Zero defects</p>
+                    </div>
+                </article>
+                
+                <article class="project-card">
+                    <img src="./layout_and_benchtop_evidence_2.png" alt="Hardware Validation" class="project-image">
+                    <div class="project-content">
+                        <h3>Hardware Validation & Signal Integrity</h3>
+                        <p>Conducted comprehensive hardware validation using Keysight oscilloscopes and Vector Network Analyzer. Achieved 99% correlation between ANSYS HFSS simulation and measured frequency response.</p>
+                        <div class="project-tech">
+                            <span class="tech-chip">Oscilloscope</span>
+                            <span class="tech-chip">VNA</span>
+                            <span class="tech-chip">ANSYS HFSS</span>
+                        </div>
+                        <p class="project-outcome">✓ 99% sim-to-measured correlation</p>
                     </div>
                 </article>
             </div>
@@ -687,8 +675,8 @@
                     <div class="gallery-label">Altium 2D PCB Layout</div>
                 </div>
                 <div class="gallery-item">
-                    <img src="./ansys_vna.jpg" alt="ANSYS HFSS vs VNA">
-                    <div class="gallery-label">Simulation vs Measurement</div>
+                    <img src="./AFM_image.jpg" alt="AFM Surface Analysis">
+                    <div class="gallery-label">AFM Characterization</div>
                 </div>
                 <div class="gallery-item">
                     <img src="./OPAM_schematic.jpg" alt="Op-Amp Schematic">
