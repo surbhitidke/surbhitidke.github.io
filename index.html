@@ -179,7 +179,37 @@
         .skill-tag { background: var(--gray-100); padding: 6px 12px; border-radius: 5px; font-size: 0.85rem; color: var(--gray-800); font-weight: 400; }
         
         /* PROJECTS */
-        .projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        .projects-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 24px; 
+        }
+        .projects-grid article:nth-child(4),
+        .projects-grid article:nth-child(5) {
+            grid-column: span 1;
+        }
+        .projects-grid::after {
+            content: '';
+            grid-column: span 1;
+        }
+        @media (min-width: 901px) {
+            .projects-grid {
+                display: grid;
+                grid-template-columns: repeat(6, 1fr);
+                gap: 24px;
+            }
+            .projects-grid article:nth-child(1),
+            .projects-grid article:nth-child(2),
+            .projects-grid article:nth-child(3) {
+                grid-column: span 2;
+            }
+            .projects-grid article:nth-child(4) {
+                grid-column: 2 / span 2;
+            }
+            .projects-grid article:nth-child(5) {
+                grid-column: 4 / span 2;
+            }
+        }
         .project-card {
             background: var(--white); border-radius: 12px; overflow: hidden;
             border: 1px solid var(--gray-200); transition: all 0.3s;
@@ -544,6 +574,35 @@
                         <p class="project-outcome">✓ IEEE SENSORS 2025 (co-author)</p>
                     </div>
                 </article>
+                
+                <article class="project-card">
+                    <img src="./AFM_image.jpg" alt="ITO Thin Film Optimization" class="project-image">
+                    <div class="project-content">
+                        <h3>ITO Thin-Film Process Optimization</h3>
+                        <p>Designed 27-run full-factorial DOE to optimize Indium Tin Oxide deposition. Achieved sub-100 Ω/sq sheet resistance with 85% optical transmittance, validated by XRD and AFM.</p>
+                        <div class="project-tech">
+                            <span class="tech-chip">DOE</span>
+                            <span class="tech-chip">E-beam ITO</span>
+                            <span class="tech-chip">AFM/XRD</span>
+                            <span class="tech-chip">SPC</span>
+                        </div>
+                        <p class="project-outcome">✓ Yield: 40% → 95% · Cpk: 1.33</p>
+                    </div>
+                </article>
+                
+                <article class="project-card">
+                    <img src="./layout_and_benchtop_evidence.jpg" alt="Mixed-Signal PCB Design" class="project-image">
+                    <div class="project-content">
+                        <h3>Mixed-Signal PCB for Bio-Instrumentation</h3>
+                        <p>Engineered multi-layer PCB with high-precision analog front-end, op-amp stages, and active filtering for TEER/EIS acquisition. Sub-microvolt noise floor with 99% sim-to-measured correlation.</p>
+                        <div class="project-tech">
+                            <span class="tech-chip">Altium Designer</span>
+                            <span class="tech-chip">Op-Amp/Active Filter</span>
+                            <span class="tech-chip">DFM</span>
+                        </div>
+                        <p class="project-outcome">✓ First-pass success · Zero defects</p>
+                    </div>
+                </article>
             </div>
         </div>
     </section>
@@ -611,8 +670,8 @@
     <section class="gallery bg-alt" id="gallery">
         <div class="container">
             <div class="section-header">
-                <p class="section-label">In the Cleanroom</p>
-                <h2 class="section-title">Lab Gallery</h2>
+                <p class="section-label">In the Lab</p>
+                <h2 class="section-title">Work Gallery</h2>
             </div>
             
             <div class="gallery-grid">
@@ -623,6 +682,22 @@
                 <div class="gallery-item">
                     <img src="./cleanroom_dwl.jpg" alt="Heidelberg DWL">
                     <div class="gallery-label">Heidelberg DWL</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="./AFM_image.jpg" alt="AFM Surface Analysis">
+                    <div class="gallery-label">AFM Characterization</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="./altinum.jpg" alt="Altium Designer PCB Layout">
+                    <div class="gallery-label">Altium PCB Design</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="./analog_acquisitions.jpg" alt="PCB Assembly">
+                    <div class="gallery-label">PCB Assembly</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="./OPAM_schematic.jpg" alt="Op-Amp Schematic">
+                    <div class="gallery-label">Op-Amp Circuit Design</div>
                 </div>
                 <div class="gallery-item">
                     <img src="./cleanroom_microscope.jpg" alt="Microscope Open/Short Check">
@@ -657,9 +732,9 @@
                     </p>
                     
                     <div class="contact-links">
-                        <a href="mailto:surbhitidke@gmail.com" class="contact-link">
+                        <a href="/cdn-cgi/l/email-protection#52212720303a3b263b36393712353f333b3e7c313d3f" class="contact-link">
                             <span>✉️</span>
-                            <span>surbhitidke@gmail.com</span>
+                            <span><span class="__cf_email__" data-cfemail="2d5e585f4f454459444946486d4a404c4441034e4240">[email&#160;protected]</span></span>
                         </a>
                         <a href="https://www.linkedin.com/in/surbhitidke/" target="_blank" class="contact-link">
                             <span>💼</span>
@@ -690,17 +765,9 @@
 
     <footer>
         <div class="container">
-            <p>© 2026 Surbhi Tidke · PhD Candidate, UCF · Open to Process/MEMS/Hardware roles · surbhitidke@gmail.com</p>
+            <p>© 2026 Surbhi Tidke · PhD Candidate, UCF · Open to Process/MEMS/Hardware roles · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3f4c4a4d5d57564b565b545a7f58525e5653115c5052">[email&#160;protected]</a></p>
         </div>
     </footer>
 
-    <script>
-        window.addEventListener('scroll', () => {
-            document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
-        });
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => document.getElementById('navLinks').classList.remove('active'));
-        });
-    </script>
-</body>
-</html>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        w
