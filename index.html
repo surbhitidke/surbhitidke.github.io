@@ -160,17 +160,17 @@
         .stat-label { font-size: 0.9rem; color: var(--gray-600); margin-top: 4px; font-weight: 500; }
         
         /* SKILLS */
-        .process-flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; margin-bottom: 50px; }
+        .process-flow { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 50px; }
         .process-step { text-align: center; position: relative; }
-        .process-step::after { content: '→'; position: absolute; right: -14px; top: 50px; color: var(--gray-400); font-size: 1.1rem; }
+        .process-step::after { content: '→'; position: absolute; right: -12px; top: 50px; color: var(--gray-400); font-size: 1rem; }
         .process-step:last-child::after { display: none; }
         .process-img {
             width: 100%; height: 100px; object-fit: cover;
             border-radius: 10px; margin-bottom: 12px;
             border: 2px solid var(--gray-200);
         }
-        .process-step h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; color: var(--navy-dark); }
-        .process-step p { font-size: 0.85rem; color: var(--gray-600); font-weight: 400; }
+        .process-step h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; color: var(--navy-dark); }
+        .process-step p { font-size: 0.75rem; color: var(--gray-600); font-weight: 400; }
         
         .skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .skill-category { background: var(--white); padding: 24px; border-radius: 12px; border: 1px solid var(--gray-200); }
@@ -239,8 +239,8 @@
         .pub-venue { font-style: italic; }
         
         /* GALLERY */
-        .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-        .gallery-item { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 1; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .gallery-item { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 4/3; }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
         .gallery-item:hover img { transform: scale(1.05); }
         .gallery-label {
@@ -285,7 +285,7 @@
             .skill-chips, .cta-group { justify-content: center; }
             .visa-badge { justify-content: center; text-align: center; }
             .process-flow { grid-template-columns: repeat(3, 1fr); }
-            .process-step:nth-child(3)::after { display: none; }
+            .process-step:nth-child(3)::after, .process-step:nth-child(6)::after { display: none; }
             .projects-grid, .skills-grid { grid-template-columns: 1fr; }
             .about-grid, .contact-grid { grid-template-columns: 1fr; }
             .about-text p { text-align: left; }
@@ -295,7 +295,7 @@
         @media (max-width: 600px) {
             .hero-content h1 { font-size: 1.9rem; }
             .process-flow { grid-template-columns: repeat(2, 1fr); }
-            .process-step::after { display: none; }
+            .process-step:nth-child(2)::after, .process-step:nth-child(4)::after, .process-step:nth-child(6)::after { display: none; }
             .cta-group { flex-direction: column; }
             .btn { width: 100%; justify-content: center; }
             section { padding: 60px 0; }
@@ -426,32 +426,37 @@
                 <h2 class="section-title">What I Do</h2>
             </div>
             
-            <!-- Process Flow with Real Photos -->
+            <!-- Process Flow with Real Photos - 6 Steps: Complete Systems Engineer -->
             <div class="process-flow">
                 <div class="process-step">
-                    <img src="./hiltonhead_laser_dwl.jpg" alt="Design & Litho - Laser AUTO66" class="process-img">
-                    <h4>Design &amp; Litho</h4>
-                    <p>AutoCAD, Heidelberg DWL</p>
+                    <img src="./klayout.jpg" alt="Device Design - KLayout Mask" class="process-img">
+                    <h4>Device Design</h4>
+                    <p>AutoCAD, KLayout</p>
                 </div>
                 <div class="process-step">
-                    <img src="./cleanroom_spincoat.jpeg" alt="Spin Coating" class="process-img">
-                    <h4>Spin Coating</h4>
-                    <p>Photoresist, Silane layers</p>
+                    <img src="./cleanroom_spincoat.jpeg" alt="Microfabrication - Spin Coating" class="process-img">
+                    <h4>Microfabrication</h4>
+                    <p>Spin Coating, Lithography</p>
                 </div>
                 <div class="process-step">
-                    <img src="./cleanroom_wetbench.jpg" alt="Wet Processing" class="process-img">
-                    <h4>Wet Processing</h4>
-                    <p>Develop, Etch, Lift-off</p>
+                    <img src="./cleanroom_wetbench.jpg" alt="Process Control - Wet Bench" class="process-img">
+                    <h4>Process Control</h4>
+                    <p>Wet Processing, Etching</p>
                 </div>
                 <div class="process-step">
-                    <img src="./hiltonhead_microscope_check.jpg" alt="Characterization - Microscope Check" class="process-img">
-                    <h4>Characterization</h4>
-                    <p>SEM, XPS, AFM, Optical</p>
+                    <img src="./cleanroom_microscope.jpg" alt="Metrology - Characterization" class="process-img">
+                    <h4>Metrology</h4>
+                    <p>SEM, XPS, AFM</p>
                 </div>
                 <div class="process-step">
-                    <img src="./hiltonhead_sem_analysis.jpg" alt="Testing - SEM Analysis" class="process-img">
-                    <h4>Testing</h4>
-                    <p>EIS, CV, 4-Probe</p>
+                    <img src="./altinum_1.jpg" alt="Hardware Design - Altium 3D PCB" class="process-img">
+                    <h4>Hardware Design</h4>
+                    <p>Altium Designer, PCB</p>
+                </div>
+                <div class="process-step">
+                    <img src="./mems_sensor.jpg" alt="System Validation - Sensor + PCB Integration" class="process-img">
+                    <h4>System Validation</h4>
+                    <p>VNA, EIS, Integration</p>
                 </div>
             </div>
             
@@ -575,7 +580,7 @@
                 </article>
                 
                 <article class="project-card">
-                    <img src="./mems_sensor.jpg" alt="Integrated Lab-on-Chip System" class="project-image">
+                    <img src="./AFM_image.jpg" alt="Integrated Lab-on-Chip System" class="project-image">
                     <div class="project-content">
                         <h3>Integrated Lab-on-Chip Sensing System</h3>
                         <p>Engineered MEMS biosensor on glass with Heidelberg DWL and E-beam evaporation. Optimized ITO thin-film via 27-run DOE, validated Ti/Pt adhesion layers using SEM and AFM.</p>
@@ -589,7 +594,7 @@
                 </article>
                 
                 <article class="project-card">
-                    <img src="./altinum_1.jpg" alt="Mixed-Signal PCB Design" class="project-image">
+                    <img src="./layout_and_benchtop_evidence.jpg" alt="Mixed-Signal PCB Design" class="project-image">
                     <div class="project-content">
                         <h3>Mixed-Signal PCB for Bio-Instrumentation</h3>
                         <p>Designed multi-layer PCB in Altium with high-precision analog front-end and active filtering. 3D EM modeling in ANSYS HFSS achieved 99% correlation between simulation and VNA measurements.</p>
@@ -674,28 +679,12 @@
             
             <div class="gallery-grid">
                 <div class="gallery-item">
-                    <img src="./cleanroom_spincoat.jpeg" alt="Spin Coating">
-                    <div class="gallery-label">Spin Coating</div>
-                </div>
-                <div class="gallery-item">
                     <img src="./cleanroom_dwl.jpg" alt="Heidelberg DWL">
                     <div class="gallery-label">Heidelberg DWL</div>
                 </div>
                 <div class="gallery-item">
-                    <img src="./AFM_image.jpg" alt="AFM Surface Analysis">
-                    <div class="gallery-label">AFM Characterization</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="./klayout.jpg" alt="KLayout Mask Design">
-                    <div class="gallery-label">KLayout Mask Design</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="./altinum.jpg" alt="Altium Designer PCB Layout">
-                    <div class="gallery-label">Altium PCB Design</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="./layout_and_benchtop_evidence.jpg" alt="Hardware Validation">
-                    <div class="gallery-label">Hardware Validation</div>
+                    <img src="./altinum.jpg" alt="Altium Designer 2D Layout">
+                    <div class="gallery-label">Altium 2D PCB Layout</div>
                 </div>
                 <div class="gallery-item">
                     <img src="./ansys_vna.jpg" alt="ANSYS HFSS vs VNA">
@@ -704,6 +693,14 @@
                 <div class="gallery-item">
                     <img src="./OPAM_schematic.jpg" alt="Op-Amp Schematic">
                     <div class="gallery-label">Op-Amp Circuit Design</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="./analog_acquisitions.jpg" alt="PCB Assembly">
+                    <div class="gallery-label">PCB Assembly</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="./project_electrodes.png" alt="Fabricated Electrodes">
+                    <div class="gallery-label">Fabricated Electrodes</div>
                 </div>
             </div>
             
