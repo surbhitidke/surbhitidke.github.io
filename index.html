@@ -215,7 +215,7 @@
             border: 1px solid var(--gray-200); transition: all 0.3s;
         }
         .project-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.1); }
-        .project-image { width: 100%; height: 160px; object-fit: cover; background: var(--navy); }
+        .project-image { width: 100%; height: 200px; object-fit: cover; background: var(--navy); }
         .project-content { padding: 20px; }
         .project-content h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; color: var(--navy-dark); }
         .project-content p { font-size: 0.9rem; color: var(--gray-700); margin-bottom: 14px; line-height: 1.6; font-weight: 400; }
@@ -357,8 +357,7 @@
                     </div>
                     
                     <div class="cta-group">
-                        <a href="Surbhi_Tidke_Resume.pdf" class="btn btn-primary" download>📄 Download Resume</a>
-                        <a href="#contact" class="btn btn-secondary">✉️ Contact Me</a>
+                        <a href="#contact" class="btn btn-primary">✉️ Contact Me</a>
                     </div>
                     
                     <div class="visa-badge">
@@ -557,7 +556,7 @@
                             <span class="tech-chip">E-beam SiO₂</span>
                             <span class="tech-chip">AFM/XPS</span>
                         </div>
-                        <p class="project-outcome">✓ 85% transmittance · Manuscript submitted</p>
+                        <p class="project-outcome">✓ 85% transmittance · Hilton Head 2024</p>
                     </div>
                 </article>
                 
@@ -576,31 +575,30 @@
                 </article>
                 
                 <article class="project-card">
-                    <img src="./AFM_image.jpg" alt="ITO Thin Film Optimization" class="project-image">
+                    <img src="./mems_sensor.jpg" alt="Integrated Lab-on-Chip System" class="project-image">
                     <div class="project-content">
-                        <h3>ITO Thin-Film Process Optimization</h3>
-                        <p>Designed 27-run full-factorial DOE to optimize Indium Tin Oxide deposition. Achieved sub-100 Ω/sq sheet resistance with 85% optical transmittance, validated by XRD and AFM.</p>
+                        <h3>Integrated Lab-on-Chip Sensing System</h3>
+                        <p>Engineered MEMS biosensor on glass with Heidelberg DWL and E-beam evaporation. Optimized ITO thin-film via 27-run DOE, validated Ti/Pt adhesion layers using SEM and AFM.</p>
                         <div class="project-tech">
+                            <span class="tech-chip">MEMS</span>
                             <span class="tech-chip">DOE</span>
-                            <span class="tech-chip">E-beam ITO</span>
-                            <span class="tech-chip">AFM/XRD</span>
-                            <span class="tech-chip">SPC</span>
+                            <span class="tech-chip">SEM/AFM</span>
                         </div>
-                        <p class="project-outcome">✓ Yield: 40% → 95% · Cpk: 1.33</p>
+                        <p class="project-outcome">✓ Yield: 40% → 95% · 85% Transparency</p>
                     </div>
                 </article>
                 
                 <article class="project-card">
-                    <img src="./layout_and_benchtop_evidence.jpg" alt="Mixed-Signal PCB Design" class="project-image">
+                    <img src="./altinum_1.jpg" alt="Mixed-Signal PCB Design" class="project-image">
                     <div class="project-content">
                         <h3>Mixed-Signal PCB for Bio-Instrumentation</h3>
-                        <p>Engineered multi-layer PCB with high-precision analog front-end, op-amp stages, and active filtering for TEER/EIS acquisition. Sub-microvolt noise floor with 99% sim-to-measured correlation.</p>
+                        <p>Designed multi-layer PCB in Altium with high-precision analog front-end and active filtering. 3D EM modeling in ANSYS HFSS achieved 99% correlation between simulation and VNA measurements.</p>
                         <div class="project-tech">
                             <span class="tech-chip">Altium Designer</span>
-                            <span class="tech-chip">Op-Amp/Active Filter</span>
-                            <span class="tech-chip">DFM</span>
+                            <span class="tech-chip">ANSYS HFSS</span>
+                            <span class="tech-chip">VNA</span>
                         </div>
-                        <p class="project-outcome">✓ First-pass success · Zero defects</p>
+                        <p class="project-outcome">✓ First-pass fabrication · Zero defects</p>
                     </div>
                 </article>
             </div>
@@ -633,11 +631,11 @@
                     </div>
                 </div>
                 <div class="pub-item">
-                    <span class="pub-year">2025</span>
+                    <span class="pub-year">2024</span>
                     <div class="pub-content">
                         <h4>Tailoring Enhancement of Silicon Dioxide Adhesion to Polycarbonate Substrates for 3D Microelectrode Arrays and Other Biosensors</h4>
                         <p>S Tidke, OS Cepeda-Torres, P Morales-Cruz, BE Butkus, A Childs, ...</p>
-                        <p class="pub-venue">Materials Letters (submitted)</p>
+                        <p class="pub-venue">Hilton Head Workshop 2024</p>
                     </div>
                 </div>
                 <div class="pub-item">
@@ -688,24 +686,24 @@
                     <div class="gallery-label">AFM Characterization</div>
                 </div>
                 <div class="gallery-item">
+                    <img src="./klayout.jpg" alt="KLayout Mask Design">
+                    <div class="gallery-label">KLayout Mask Design</div>
+                </div>
+                <div class="gallery-item">
                     <img src="./altinum.jpg" alt="Altium Designer PCB Layout">
                     <div class="gallery-label">Altium PCB Design</div>
                 </div>
                 <div class="gallery-item">
-                    <img src="./analog_acquisitions.jpg" alt="PCB Assembly">
-                    <div class="gallery-label">PCB Assembly</div>
+                    <img src="./layout_and_benchtop_evidence.jpg" alt="Hardware Validation">
+                    <div class="gallery-label">Hardware Validation</div>
+                </div>
+                <div class="gallery-item">
+                    <img src="./ansys_vna.jpg" alt="ANSYS HFSS vs VNA">
+                    <div class="gallery-label">Simulation vs Measurement</div>
                 </div>
                 <div class="gallery-item">
                     <img src="./OPAM_schematic.jpg" alt="Op-Amp Schematic">
                     <div class="gallery-label">Op-Amp Circuit Design</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="./cleanroom_microscope.jpg" alt="Microscope Open/Short Check">
-                    <div class="gallery-label">Open/Short Check</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="./cleanroom_wetbench.jpg" alt="Wet Bench">
-                    <div class="gallery-label">Wet Processing</div>
                 </div>
             </div>
             
@@ -732,9 +730,9 @@
                     </p>
                     
                     <div class="contact-links">
-                        <a href="/cdn-cgi/l/email-protection#52212720303a3b263b36393712353f333b3e7c313d3f" class="contact-link">
+                        <a href="mailto:surbhi.tidke@ucf.edu" class="contact-link">
                             <span>✉️</span>
-                            <span><span class="__cf_email__" data-cfemail="2d5e585f4f454459444946486d4a404c4441034e4240">[email&#160;protected]</span></span>
+                            <span>surbhi.tidke@ucf.edu</span>
                         </a>
                         <a href="https://www.linkedin.com/in/surbhitidke/" target="_blank" class="contact-link">
                             <span>💼</span>
@@ -743,10 +741,6 @@
                         <a href="https://scholar.google.com/citations?user=HEZfkqsAAAAJ&hl=en&oi=ao" target="_blank" class="contact-link">
                             <span>📚</span>
                             <span>Google Scholar</span>
-                        </a>
-                        <a href="Surbhi_Tidke_Resume.pdf" class="contact-link" download>
-                            <span>📄</span>
-                            <span>Download Resume (PDF)</span>
                         </a>
                     </div>
                 </div>
