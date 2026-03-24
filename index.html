@@ -7,6 +7,204 @@
     <meta name="description" content="Semiconductor process engineer specializing in MEMS microfabrication, thin film deposition (PVD, CVD, ALD, E-beam), photolithography, cleanroom operations, and PCB design. PhD candidate with 5 publications. F-1 STEM OPT eligible.">
     <meta name="keywords" content="semiconductor process engineer, thin film engineer, MEMS engineer, microfabrication, photolithography, e-beam evaporation, PVD, CVD, ALD, cleanroom, electrochemical biosensor, impedimetric sensor, materials characterization, SEM, XPS, AFM, Altium Designer, PCB design, design of experiments, DOE, statistical process control, yield optimization, hardware engineer, R&D scientist, STEM OPT, H-1B">
     
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8YEDEKWFHW"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-8YEDEKWFHW');
+        
+        // ========== VISITOR TRACKING ==========
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Get referrer safely (fix for empty referrer)
+            let referrerDomain = 'direct';
+            try {
+                if (document.referrer && document.referrer.length > 0) {
+                    referrerDomain = new URL(document.referrer).hostname;
+                }
+            } catch(e) {
+                referrerDomain = 'direct';
+            }
+            
+            // Track initial visit
+            gtag('event', 'portfolio_visit', {
+                'referrer': referrerDomain,
+                'event_category': 'visitor'
+            });
+            
+            // ========== NAVIGATION CLICK TRACKING ==========
+            document.querySelectorAll('nav a, .nav-link').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    var href = this.getAttribute('href');
+                    var sectionName = href ? href.replace('#', '') : this.textContent.trim();
+                    gtag('event', 'nav_click', {
+                        'section_clicked': sectionName,
+                        'event_category': 'navigation'
+                    });
+                });
+            });
+            
+            // Sections to track
+            var sectionsToTrack = ['about', 'skills', 'projects', 'publications', 'gallery', 'contact'];
+            var publicationItems = document.querySelectorAll('.pub-item');
+            
+            // Track when sections come into view
+            var sectionObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        gtag('event', 'section_view', {
+                            'section_name': entry.target.id,
+                            'event_category': 'engagement'
+                        });
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            sectionsToTrack.forEach(function(sectionId) {
+                var section = document.getElementById(sectionId);
+                if (section) sectionObserver.observe(section);
+            });
+            
+            // Track publication views with time spent
+            var pubStartTimes = {};
+            var pubObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    var pubIndex = entry.target.dataset.pubIndex;
+                    var pubTitle = entry.target.dataset.pubTitle;
+                    
+                    if (entry.isIntersecting) {
+                        pubStartTimes[pubIndex] = Date.now();
+                        gtag('event', 'publication_view', {
+                            'publication_index': pubIndex,
+                            'publication_title': pubTitle,
+                            'event_category': 'publications'
+                        });
+                    } else if (pubStartTimes[pubIndex]) {
+                        var timeSpent = Math.round((Date.now() - pubStartTimes[pubIndex]) / 1000);
+                        if (timeSpent > 2) {
+                            gtag('event', 'publication_read_time', {
+                                'publication_index': pubIndex,
+                                'publication_title': pubTitle,
+                                'time_seconds': timeSpent,
+                                'event_category': 'publications'
+                            });
+                        }
+                        delete pubStartTimes[pubIndex];
+                    }
+                });
+            }, { threshold: 0.6 });
+            
+            publicationItems.forEach(function(item, index) {
+                var titleEl = item.querySelector('h4');
+                var title = titleEl ? titleEl.textContent.substring(0, 50) : 'Publication ' + (index + 1);
+                item.dataset.pubIndex = index + 1;
+                item.dataset.pubTitle = title;
+                pubObserver.observe(item);
+            });
+            
+            // Track "Contact Me" button clicks
+            document.querySelectorAll('a[href="#contact"], .btn-primary').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    gtag('event', 'contact_click', {
+                        'button_text': this.textContent.trim(),
+                        'event_category': 'conversions'
+                    });
+                });
+            });
+            
+            // Track LinkedIn clicks
+            document.querySelectorAll('a[href*="linkedin.com"]').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    var section = this.closest('section');
+                    gtag('event', 'linkedin_click', {
+                        'link_location': section ? section.id : 'unknown',
+                        'event_category': 'outbound'
+                    });
+                });
+            });
+            
+            // Track Google Scholar clicks
+            document.querySelectorAll('a[href*="scholar.google.com"]').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    gtag('event', 'google_scholar_click', {
+                        'event_category': 'outbound'
+                    });
+                });
+            });
+            
+            // Track Email clicks (CONVERSION)
+            document.querySelectorAll('a[href^="mailto:"]').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    gtag('event', 'email_click', {
+                        'event_category': 'conversions'
+                    });
+                });
+            });
+            
+            // Track project card interactions
+            document.querySelectorAll('.project-card').forEach(function(card, index) {
+                var titleEl = card.querySelector('h3');
+                var title = titleEl ? titleEl.textContent : 'Project ' + (index + 1);
+                
+                card.addEventListener('mouseenter', function() {
+                    gtag('event', 'project_hover', {
+                        'project_name': title,
+                        'project_index': index + 1,
+                        'event_category': 'engagement'
+                    });
+                });
+            });
+            
+            // Track scroll depth
+            var scrollMilestones = [25, 50, 75, 100];
+            var trackedMilestones = {};
+            
+            window.addEventListener('scroll', function() {
+                var scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+                
+                scrollMilestones.forEach(function(milestone) {
+                    if (scrollPercent >= milestone && !trackedMilestones[milestone]) {
+                        trackedMilestones[milestone] = true;
+                        gtag('event', 'scroll_depth', {
+                            'percent': milestone,
+                            'event_category': 'engagement'
+                        });
+                    }
+                });
+            });
+            
+            // ========== SESSION JOURNEY TRACKING ==========
+            var journey = [];
+            var journeyObserver = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting && journey.indexOf(entry.target.id) === -1) {
+                        journey.push(entry.target.id);
+                    }
+                });
+            }, { threshold: 0.3 });
+            
+            sectionsToTrack.forEach(function(sectionId) {
+                var section = document.getElementById(sectionId);
+                if (section) journeyObserver.observe(section);
+            });
+            
+            // Track session on page exit
+            var pageLoadTime = Date.now();
+            window.addEventListener('beforeunload', function() {
+                var timeOnPage = Math.round((Date.now() - pageLoadTime) / 1000);
+                gtag('event', 'session_complete', {
+                    'time_on_page_seconds': timeOnPage,
+                    'journey_path': journey.join(' > '),
+                    'sections_viewed': journey.length,
+                    'event_category': 'engagement'
+                });
+            });
+        });
+    </script>
+    
     <!-- Open Graph -->
     <meta property="og:title" content="Surbhi Tidke | Semiconductor Process & MEMS Engineer">
     <meta property="og:description" content="PhD candidate specializing in semiconductor microfabrication, thin film deposition, and mixed-signal PCB design. Seeking process/hardware engineering roles.">
