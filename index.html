@@ -1,1033 +1,688 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surbhi Tidke | Semiconductor Process Engineer | MEMS Microfabrication | Thin Film Engineer | PhD UCF</title>
-    <meta name="description" content="Semiconductor process engineer specializing in MEMS microfabrication, thin film deposition (PVD, CVD, ALD, E-beam), photolithography, cleanroom operations, and PCB design. PhD candidate with 5 publications. F-1 STEM OPT eligible.">
-    <meta name="keywords" content="semiconductor process engineer, thin film engineer, MEMS engineer, microfabrication, photolithography, e-beam evaporation, PVD, CVD, ALD, cleanroom, electrochemical biosensor, impedimetric sensor, materials characterization, SEM, XPS, AFM, Altium Designer, PCB design, design of experiments, DOE, statistical process control, yield optimization, hardware engineer, R&D scientist, STEM OPT, H-1B">
-    
-    <!-- Google Analytics 4 -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8YEDEKWFHW"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-8YEDEKWFHW');
-        
-        // ========== VISITOR TRACKING ==========
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            
-            // Get referrer safely (fix for empty referrer)
-            let referrerDomain = 'direct';
-            try {
-                if (document.referrer && document.referrer.length > 0) {
-                    referrerDomain = new URL(document.referrer).hostname;
-                }
-            } catch(e) {
-                referrerDomain = 'direct';
-            }
-            
-            // Track initial visit
-            gtag('event', 'portfolio_visit', {
-                'referrer': referrerDomain,
-                'event_category': 'visitor'
-            });
-            
-            // ========== NAVIGATION CLICK TRACKING ==========
-            document.querySelectorAll('nav a, .nav-link').forEach(function(link) {
-                link.addEventListener('click', function() {
-                    var href = this.getAttribute('href');
-                    var sectionName = href ? href.replace('#', '') : this.textContent.trim();
-                    gtag('event', 'nav_click', {
-                        'section_clicked': sectionName,
-                        'event_category': 'navigation'
-                    });
-                });
-            });
-            
-            // Sections to track
-            var sectionsToTrack = ['about', 'skills', 'projects', 'publications', 'gallery', 'contact'];
-            var publicationItems = document.querySelectorAll('.pub-item');
-            
-            // Track when sections come into view
-            var sectionObserver = new IntersectionObserver(function(entries) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting) {
-                        gtag('event', 'section_view', {
-                            'section_name': entry.target.id,
-                            'event_category': 'engagement'
-                        });
-                    }
-                });
-            }, { threshold: 0.5 });
-            
-            sectionsToTrack.forEach(function(sectionId) {
-                var section = document.getElementById(sectionId);
-                if (section) sectionObserver.observe(section);
-            });
-            
-            // Track publication views with time spent
-            var pubStartTimes = {};
-            var pubObserver = new IntersectionObserver(function(entries) {
-                entries.forEach(function(entry) {
-                    var pubIndex = entry.target.dataset.pubIndex;
-                    var pubTitle = entry.target.dataset.pubTitle;
-                    
-                    if (entry.isIntersecting) {
-                        pubStartTimes[pubIndex] = Date.now();
-                        gtag('event', 'publication_view', {
-                            'publication_index': pubIndex,
-                            'publication_title': pubTitle,
-                            'event_category': 'publications'
-                        });
-                    } else if (pubStartTimes[pubIndex]) {
-                        var timeSpent = Math.round((Date.now() - pubStartTimes[pubIndex]) / 1000);
-                        if (timeSpent > 2) {
-                            gtag('event', 'publication_read_time', {
-                                'publication_index': pubIndex,
-                                'publication_title': pubTitle,
-                                'time_seconds': timeSpent,
-                                'event_category': 'publications'
-                            });
-                        }
-                        delete pubStartTimes[pubIndex];
-                    }
-                });
-            }, { threshold: 0.6 });
-            
-            publicationItems.forEach(function(item, index) {
-                var titleEl = item.querySelector('h4');
-                var title = titleEl ? titleEl.textContent.substring(0, 50) : 'Publication ' + (index + 1);
-                item.dataset.pubIndex = index + 1;
-                item.dataset.pubTitle = title;
-                pubObserver.observe(item);
-            });
-            
-            // Track "Contact Me" button clicks
-            document.querySelectorAll('a[href="#contact"], .btn-primary').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    gtag('event', 'contact_click', {
-                        'button_text': this.textContent.trim(),
-                        'event_category': 'conversions'
-                    });
-                });
-            });
-            
-            // Track LinkedIn clicks
-            document.querySelectorAll('a[href*="linkedin.com"]').forEach(function(link) {
-                link.addEventListener('click', function() {
-                    var section = this.closest('section');
-                    gtag('event', 'linkedin_click', {
-                        'link_location': section ? section.id : 'unknown',
-                        'event_category': 'outbound'
-                    });
-                });
-            });
-            
-            // Track Google Scholar clicks
-            document.querySelectorAll('a[href*="scholar.google.com"]').forEach(function(link) {
-                link.addEventListener('click', function() {
-                    gtag('event', 'google_scholar_click', {
-                        'event_category': 'outbound'
-                    });
-                });
-            });
-            
-            // Track Email clicks (CONVERSION)
-            document.querySelectorAll('a[href^="mailto:"]').forEach(function(link) {
-                link.addEventListener('click', function() {
-                    gtag('event', 'email_click', {
-                        'event_category': 'conversions'
-                    });
-                });
-            });
-            
-            // Track project card interactions
-            document.querySelectorAll('.project-card').forEach(function(card, index) {
-                var titleEl = card.querySelector('h3');
-                var title = titleEl ? titleEl.textContent : 'Project ' + (index + 1);
-                
-                card.addEventListener('mouseenter', function() {
-                    gtag('event', 'project_hover', {
-                        'project_name': title,
-                        'project_index': index + 1,
-                        'event_category': 'engagement'
-                    });
-                });
-            });
-            
-            // Track scroll depth
-            var scrollMilestones = [25, 50, 75, 100];
-            var trackedMilestones = {};
-            
-            window.addEventListener('scroll', function() {
-                var scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
-                
-                scrollMilestones.forEach(function(milestone) {
-                    if (scrollPercent >= milestone && !trackedMilestones[milestone]) {
-                        trackedMilestones[milestone] = true;
-                        gtag('event', 'scroll_depth', {
-                            'percent': milestone,
-                            'event_category': 'engagement'
-                        });
-                    }
-                });
-            });
-            
-            // ========== SESSION JOURNEY TRACKING ==========
-            var journey = [];
-            var journeyObserver = new IntersectionObserver(function(entries) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting && journey.indexOf(entry.target.id) === -1) {
-                        journey.push(entry.target.id);
-                    }
-                });
-            }, { threshold: 0.3 });
-            
-            sectionsToTrack.forEach(function(sectionId) {
-                var section = document.getElementById(sectionId);
-                if (section) journeyObserver.observe(section);
-            });
-            
-            // Track session on page exit
-            var pageLoadTime = Date.now();
-            window.addEventListener('beforeunload', function() {
-                var timeOnPage = Math.round((Date.now() - pageLoadTime) / 1000);
-                gtag('event', 'session_complete', {
-                    'time_on_page_seconds': timeOnPage,
-                    'journey_path': journey.join(' > '),
-                    'sections_viewed': journey.length,
-                    'event_category': 'engagement'
-                });
-            });
-        });
-    </script>
-    
-    <!-- Open Graph -->
-    <meta property="og:title" content="Surbhi Tidke | Semiconductor Process & MEMS Engineer">
-    <meta property="og:description" content="PhD candidate specializing in semiconductor microfabrication, thin film deposition, and mixed-signal PCB design. Seeking process/hardware engineering roles.">
-    <meta property="og:type" content="website">
-    
-    <!-- Fonts: Lato -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --navy-dark: #0f172a;
-            --navy: #1e3a5f;
-            --navy-light: #334d6e;
-            --navy-hover: #2d4a6f;
-            --white: #ffffff;
-            --off-white: #f8fafc;
-            --gray-50: #f8fafc;
-            --gray-100: #f1f5f9;
-            --gray-200: #e2e8f0;
-            --gray-400: #94a3b8;
-            --gray-500: #64748b;
-            --gray-600: #475569;
-            --gray-700: #334155;
-            --gray-800: #1e293b;
-            --accent: #3b82f6;
-        }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        
-        body {
-            font-family: 'Lato', -apple-system, sans-serif;
-            background: var(--white);
-            color: var(--gray-800);
-            line-height: 1.7;
-            font-weight: 400;
-        }
-        
-        h1, h2, h3, h4 {
-            font-family: 'Lato', sans-serif;
-            color: var(--navy-dark);
-            line-height: 1.2;
-            font-weight: 700;
-        }
-        
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
-        
-        /* NAV */
-        .nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            background: var(--white);
-            border-bottom: 1px solid var(--gray-200);
-            z-index: 1000;
-            padding: 14px 0;
-            transition: box-shadow 0.3s;
-        }
-        .nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.08); }
-        .nav-inner { display: flex; justify-content: space-between; align-items: center; }
-        .nav-logo {
-            font-family: 'Lato', sans-serif;
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--navy-dark);
-            text-decoration: none;
-            letter-spacing: 0.01em;
-        }
-        .nav-links { display: flex; gap: 28px; list-style: none; }
-        .nav-links a {
-            color: var(--gray-700);
-            text-decoration: none;
-            font-size: 0.95rem;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-        .nav-links a:hover { color: var(--navy); }
-        .nav-cta {
-            background: var(--navy) !important;
-            color: var(--white) !important;
-            padding: 8px 18px;
-            border-radius: 6px;
-        }
-        .nav-cta:hover { background: var(--navy-hover) !important; }
-        .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
-        .nav-toggle span { display: block; width: 22px; height: 2px; background: var(--navy-dark); margin: 5px 0; }
-        
-        /* HERO */
-        .hero { padding: 130px 0 80px; background: var(--white); }
-        .hero-grid { display: grid; grid-template-columns: 1fr 300px; gap: 50px; align-items: center; }
-        .hero-content { text-align: left; }
-        .hero-content h1 { font-size: 3rem; font-weight: 700; margin-bottom: 10px; color: var(--navy-dark); }
-        .hero-subtitle { font-size: 1.1rem; color: var(--gray-600); margin-bottom: 20px; font-weight: 500; }
-        .hero-statement { font-size: 1.05rem; line-height: 1.8; color: var(--gray-700); margin-bottom: 24px; font-weight: 400; text-align: justify; }
-        .skill-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
-        .chip {
-            background: var(--gray-100);
-            color: var(--navy-dark);
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            border: 1px solid var(--gray-200);
-        }
-        .cta-group { display: flex; gap: 14px; margin-bottom: 24px; }
-        .btn {
-            display: inline-flex; align-items: center; gap: 8px;
- 
-           padding: 12px 24px; border-radius: 8px;
-            font-weight: 600; text-decoration: none;
-            font-size: 0.95rem; transition: all 0.2s;
-        }
-        .btn-primary { background: var(--navy); color: var(--white); }
-        .btn-primary:hover { background: var(--navy-hover); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(30,58,95,0.25); }
-        .btn-secondary { background: var(--white); color: var(--navy); border: 2px solid var(--navy); }
-        .btn-secondary:hover { background: var(--gray-50); }
-        .visa-badge {
-            display: inline-flex; align-items: center;
-            background: var(--gray-100); border: 1px solid var(--gray-200);
-            padding: 12px 20px; border-radius: 8px; font-size: 0.9rem; color: var(--gray-700);
-            font-weight: 500;
-        }
-        .hero-photo {
-            width: 300px; height: 360px;
-            border-radius: 16px; object-fit: cover;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.12);
-        }
-        
-        /* SECTIONS */
-        section { padding: 80px 0; }
-        .section-header { margin-bottom: 40px; }
-        .section-label {
-            font-size: 0.85rem; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.1em;
-            color: var(--navy); margin-bottom: 8px;
-        }
-        .section-title { font-size: 2.2rem; font-weight: 700; color: var(--navy-dark); }
-        .bg-alt { background: var(--off-white); }
-        
-        /* ABOUT */
-        .about-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 30px; align-items: center; }
-        .about-text p { font-size: 0.95rem; line-height: 1.75; color: var(--gray-700); margin-bottom: 12px; font-weight: 400; text-align: justify; }
-        .about-text strong { color: var(--navy-dark); font-weight: 700; }
-        .about-image { border-radius: 12px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        
-        /* STATS */
-        .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 40px; }
-        .stat-item { text-align: center; padding: 24px; background: var(--white); border-radius: 12px; border: 1px solid var(--gray-200); }
-        .stat-number { font-family: 'Lato', sans-serif; font-size: 2.5rem; font-weight: 700; color: var(--navy); }
-        .stat-label { font-size: 0.9rem; color: var(--gray-600); margin-top: 4px; font-weight: 500; }
-        
-        /* SKILLS */
-        .process-flow { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 50px; }
-        .process-step { text-align: center; position: relative; }
-        .process-step::after { content: '→'; position: absolute; right: -12px; top: 50px; color: var(--gray-400); font-size: 1rem; }
-        .process-step:last-child::after { display: none; }
-        .process-img {
-            width: 100%; height: 100px; object-fit: cover;
-            border-radius: 10px; margin-bottom: 12px;
-            border: 2px solid var(--gray-200);
-        }
-        .process-step h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; color: var(--navy-dark); }
-        .process-step p { font-size: 0.75rem; color: var(--gray-600); font-weight: 400; }
-        
-        .skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .skill-category { background: var(--white); padding: 24px; border-radius: 12px; border: 1px solid var(--gray-200); }
-        .skill-category h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--navy); margin-bottom: 14px; font-weight: 700; }
-        .skill-list { display: flex; flex-wrap: wrap; gap: 6px; }
-        .skill-tag { background: var(--gray-100); padding: 6px 12px; border-radius: 5px; font-size: 0.85rem; color: var(--gray-800); font-weight: 400; }
-        
-        /* PROJECTS */
-        .projects-grid { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 24px; 
-        }
-        .project-card {
-            background: var(--white); border-radius: 12px; overflow: hidden;
-            border: 1px solid var(--gray-200); transition: all 0.3s;
-        }
-        .project-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.1); }
-        .project-image { width: 100%; height: 200px; object-fit: cover; background: var(--navy); }
-        .project-content { padding: 20px; }
-        .project-content h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; color: var(--navy-dark); }
-        .project-content p { font-size: 0.9rem; color: var(--gray-700); margin-bottom: 14px; line-height: 1.6; font-weight: 400; }
-        .project-tech { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
-        .tech-chip { background: var(--gray-100); color: var(--navy-dark); padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 500; }
-        .project-outcome { font-size: 0.85rem; color: var(--navy); font-weight: 600; }
-        
-        /* PUBLICATIONS */
-        .pub-list { display: flex; flex-direction: column; gap: 20px; }
-        .pub-item {
-            background: var(--white); padding: 24px; border-radius: 12px;
-            border: 1px solid var(--gray-200); display: flex; gap: 20px; align-items: flex-start;
-        }
-        .pub-year {
-            background: var(--navy); color: var(--white);
-            padding: 8px 14px; border-radius: 6px;
-            font-size: 0.9rem; font-weight: 700; flex-shrink: 0;
-        }
-        .pub-content { flex: 1; }
-        .pub-content h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; color: var(--navy-dark); line-height: 1.4; }
-        .pub-authors { font-size: 0.9rem; color: var(--gray-600); font-weight: 400; margin-bottom: 8px; }
-        .pub-venue-box { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; }
-        .pub-venue { font-size: 0.9rem; font-weight: 600; color: var(--navy); font-style: normal; }
-        .pub-prestige { font-size: 0.75rem; background: #e8f4e8; color: #1a5c1a; padding: 4px 10px; border-radius: 4px; font-weight: 500; }
-        .pub-significance {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border-left: 4px solid var(--navy);
-            padding: 14px 18px;
-            border-radius: 0 8px 8px 0;
-            margin-top: 12px;
-        }
-        .pub-significance-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--navy); font-weight: 700; margin-bottom: 6px; }
-        .pub-significance p { font-size: 0.88rem; color: var(--gray-700); line-height: 1.6; margin: 0; }
-        .pub-keywords { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-        .pub-keyword { background: var(--navy); color: var(--white); padding: 3px 8px; border-radius: 3px; font-size: 0.7rem; font-weight: 600; }
-        
-        /* GALLERY */
-        .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-        .gallery-item { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 4/3; }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
-        .gallery-item:hover img { transform: scale(1.05); }
-        .gallery-label {
-            position: absolute; bottom: 0; left: 0; right: 0;
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
-            color: var(--white); padding: 30px 12px 12px;
-            font-size: 0.85rem; font-weight: 600;
-        }
-        
-        /* CONTACT */
-        .contact { background: var(--navy-dark); color: var(--white); }
-        .contact .section-label { color: var(--gray-400); }
-        .contact .section-title { color: var(--white); }
-        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; }
-        .contact-text p { font-size: 1.05rem; line-height: 1.8; color: var(--gray-300); margin-bottom: 28px; font-weight: 400; }
-        .contact-links { display: flex; flex-direction: column; gap: 14px; }
-        .contact-link {
-            display: flex; align-items: center; gap: 12px;
-            color: var(--white); text-decoration: none;
-            padding: 14px 18px; background: rgba(255,255,255,0.08);
-            border-radius: 8px; transition: all 0.2s;
-            border: 1px solid rgba(255,255,255,0.15);
-            font-weight: 500;
-        }
-        .contact-link:hover { background: rgba(255,255,255,0.12); transform: translateX(4px); }
-        .contact-info { background: rgba(255,255,255,0.08); padding: 28px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); }
-        .contact-info h4 { color: var(--white); font-size: 1.1rem; margin-bottom: 20px; font-weight: 700; }
-        .contact-detail { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; color: var(--gray-300); font-size: 0.95rem; font-weight: 400; }
-        
-        footer { background: var(--gray-800); color: var(--gray-400); text-align: center; padding: 20px 0; font-size: 0.8rem; }
-        
-        /* RESPONSIVE */
-        @media (max-width: 900px) {
-            .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--white); flex-direction: column; padding: 20px; gap: 14px; border-bottom: 1px solid var(--gray-200); }
-            .nav-links.active { display: flex; }
-            .nav-toggle { display: block; }
-            .hero-grid { grid-template-columns: 1fr; text-align: center; }
-            .hero-content { text-align: center; }
-            .hero-statement { text-align: center; margin: 0 auto 24px auto; }
-            .hero-photo { width: 220px; height: 280px; margin: 0 auto; order: -1; }
-            .hero-content h1 { font-size: 2.2rem; }
-            .skill-chips, .cta-group { justify-content: center; }
-            .visa-badge { justify-content: center; text-align: center; }
-            .process-flow { grid-template-columns: repeat(3, 1fr); }
-            .process-step:nth-child(3)::after, .process-step:nth-child(6)::after { display: none; }
-            .projects-grid, .skills-grid { grid-template-columns: 1fr; }
-            .about-grid, .contact-grid { grid-template-columns: 1fr; }
-            .about-text p { text-align: left; }
-            .stats-row { grid-template-columns: repeat(2, 1fr); }
-            .gallery-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 600px) {
-            .hero-content h1 { font-size: 1.9rem; }
-            .process-flow { grid-template-columns: repeat(2, 1fr); }
-            .process-step:nth-child(2)::after, .process-step:nth-child(4)::after, .process-step:nth-child(6)::after { display: none; }
-            .cta-group { flex-direction: column; }
-            .btn { width: 100%; justify-content: center; }
-            section { padding: 60px 0; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surbhi Tidke | Microfluidic Biosensor Engineer | MEMS Microfabrication | Thin Film Engineer | PhD UCF</title>
+<meta name="description" content="PhD candidate specializing in MEMS microfabrication, microfluidic biosensor engineering, multimodal single-cell electrochemical measurement, and thin film deposition. Seeking postdoc and research positions.">
+<meta name="keywords" content="microfluidic biosensor, MEMS engineer, microfabrication, electrochemical biosensor, TEER, EIS, impedimetric sensor, thin film deposition, photolithography, e-beam evaporation, PVD, CVD, ALD, cleanroom, single-cell measurement, COMSOL, electrokinetic transport, electrophoresis, SEM, XPS, AFM, DOE, statistical process control, yield optimization, postdoc">
+<!-- Google Analytics 4 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8YEDEKWFHW"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-8YEDEKWFHW');
+document.addEventListener('DOMContentLoaded', function() {
+  let referrerDomain = 'direct';
+  try { if (document.referrer && document.referrer.length > 0) { referrerDomain = new URL(document.referrer).hostname; } } catch(e) { referrerDomain = 'direct'; }
+  gtag('event', 'portfolio_visit', { 'referrer': referrerDomain, 'event_category': 'visitor' });
+  document.querySelectorAll('nav a, .nav-link').forEach(function(link) {
+    link.addEventListener('click', function() {
+      var href = this.getAttribute('href');
+      var sectionName = href ? href.replace('#', '') : this.textContent.trim();
+      gtag('event', 'nav_click', { 'section_clicked': sectionName, 'event_category': 'navigation' });
+    });
+  });
+  var sectionsToTrack = ['about', 'skills', 'projects', 'publications', 'gallery', 'contact'];
+  var sectionObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) { gtag('event', 'section_view', { 'section_name': entry.target.id, 'event_category': 'engagement' }); }
+    });
+  }, { threshold: 0.5 });
+  sectionsToTrack.forEach(function(sectionId) { var section = document.getElementById(sectionId); if (section) sectionObserver.observe(section); });
+  var pageLoadTime = Date.now();
+  window.addEventListener('beforeunload', function() {
+    var timeOnPage = Math.round((Date.now() - pageLoadTime) / 1000);
+    gtag('event', 'session_complete', { 'time_on_page_seconds': timeOnPage, 'event_category': 'engagement' });
+  });
+});
+</script>
+<!-- Open Graph -->
+<meta property="og:title" content="Surbhi Tidke | Microfluidic Biosensor Engineer | PhD Candidate">
+<meta property="og:description" content="PhD candidate specializing in multimodal microfluidic electrochemical biosensors, MEMS microfabrication, and thin film deposition. Seeking postdoc positions.">
+<meta property="og:type" content="website">
+<!-- Fonts: Lato -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy-dark: #0f172a; --navy: #1e3a5f; --navy-light: #334d6e; --navy-hover: #2d4a6f;
+  --white: #ffffff; --off-white: #f8fafc; --gray-50: #f8fafc; --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0; --gray-400: #94a3b8; --gray-500: #64748b; --gray-600: #475569;
+  --gray-700: #334155; --gray-800: #1e293b; --accent: #3b82f6;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Lato', -apple-system, sans-serif; background: var(--white); color: var(--gray-800); line-height: 1.7; font-weight: 400; }
+h1, h2, h3, h4 { font-family: 'Lato', sans-serif; color: var(--navy-dark); line-height: 1.2; font-weight: 700; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+.nav { position: fixed; top: 0; left: 0; right: 0; background: var(--white); border-bottom: 1px solid var(--gray-200); z-index: 1000; padding: 14px 0; transition: box-shadow 0.3s; }
+.nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.08); }
+.nav-inner { display: flex; justify-content: space-between; align-items: center; }
+.nav-logo { font-family: 'Lato', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--navy-dark); text-decoration: none; letter-spacing: 0.01em; }
+.nav-links { display: flex; gap: 28px; list-style: none; }
+.nav-links a { color: var(--gray-700); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover { color: var(--navy); }
+.nav-cta { background: var(--navy) !important; color: var(--white) !important; padding: 8px 18px; border-radius: 6px; }
+.nav-cta:hover { background: var(--navy-hover) !important; }
+.nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+.nav-toggle span { display: block; width: 22px; height: 2px; background: var(--navy-dark); margin: 5px 0; }
+.hero { padding: 130px 0 80px; background: var(--white); }
+.hero-grid { display: grid; grid-template-columns: 1fr 300px; gap: 50px; align-items: center; }
+.hero-content { text-align: left; }
+.hero-content h1 { font-size: 3rem; font-weight: 700; margin-bottom: 10px; color: var(--navy-dark); }
+.hero-subtitle { font-size: 1.1rem; color: var(--gray-600); margin-bottom: 20px; font-weight: 500; }
+.hero-statement { font-size: 1.05rem; line-height: 1.8; color: var(--gray-700); margin-bottom: 24px; font-weight: 400; text-align: justify; }
+.skill-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+.chip { background: var(--gray-100); color: var(--navy-dark); padding: 6px 14px; border-radius: 6px; font-size: 0.85rem; font-weight: 500; border: 1px solid var(--gray-200); }
+.cta-group { display: flex; gap: 14px; margin-bottom: 24px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 0.95rem; transition: all 0.2s; }
+.btn-primary { background: var(--navy); color: var(--white); }
+.btn-primary:hover { background: var(--navy-hover); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(30,58,95,0.25); }
+.btn-secondary { background: var(--white); color: var(--navy); border: 2px solid var(--navy); }
+.btn-secondary:hover { background: var(--gray-50); }
+.visa-badge { display: inline-flex; align-items: center; background: var(--gray-100); border: 1px solid var(--gray-200); padding: 12px 20px; border-radius: 8px; font-size: 0.9rem; color: var(--gray-700); font-weight: 500; }
+.hero-photo { width: 300px; height: 360px; border-radius: 16px; object-fit: cover; box-shadow: 0 20px 50px rgba(0,0,0,0.12); }
+section { padding: 80px 0; }
+.section-header { margin-bottom: 40px; }
+.section-label { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--navy); margin-bottom: 8px; }
+.section-title { font-size: 2.2rem; font-weight: 700; color: var(--navy-dark); }
+.bg-alt { background: var(--off-white); }
+.about-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 30px; align-items: center; }
+.about-text p { font-size: 0.95rem; line-height: 1.75; color: var(--gray-700); margin-bottom: 12px; font-weight: 400; text-align: justify; }
+.about-text strong { color: var(--navy-dark); font-weight: 700; }
+.about-image { border-radius: 12px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 40px; }
+.stat-item { text-align: center; padding: 24px; background: var(--white); border-radius: 12px; border: 1px solid var(--gray-200); }
+.stat-number { font-family: 'Lato', sans-serif; font-size: 2.5rem; font-weight: 700; color: var(--navy); }
+.stat-label { font-size: 0.9rem; color: var(--gray-600); margin-top: 4px; font-weight: 500; }
+.process-flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 50px; }
+.process-step { text-align: center; position: relative; }
+.process-step::after { content: '&#x2192;'; position: absolute; right: -12px; top: 50px; color: var(--gray-400); font-size: 1rem; }
+.process-step:last-child::after { display: none; }
+.process-img { width: 100%; height: 100px; object-fit: cover; border-radius: 10px; margin-bottom: 12px; border: 2px solid var(--gray-200); }
+.process-step h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 4px; color: var(--navy-dark); }
+.process-step p { font-size: 0.75rem; color: var(--gray-600); font-weight: 400; }
+.skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.skill-category { background: var(--white); padding: 24px; border-radius: 12px; border: 1px solid var(--gray-200); }
+.skill-category h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--navy); margin-bottom: 14px; font-weight: 700; }
+.skill-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.skill-tag { background: var(--gray-100); padding: 6px 12px; border-radius: 5px; font-size: 0.85rem; color: var(--gray-800); font-weight: 400; }
+.projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.project-card { background: var(--white); border-radius: 12px; overflow: hidden; border: 1px solid var(--gray-200); transition: all 0.3s; }
+.project-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.1); }
+.project-image { width: 100%; height: 200px; object-fit: cover; background: var(--navy); }
+.project-content { padding: 20px; }
+.project-content h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; color: var(--navy-dark); }
+.project-content p { font-size: 0.9rem; color: var(--gray-700); margin-bottom: 14px; line-height: 1.6; font-weight: 400; }
+.project-tech { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+.tech-chip { background: var(--gray-100); color: var(--navy-dark); padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 500; }
+.project-outcome { font-size: 0.85rem; color: var(--navy); font-weight: 600; }
+.pub-list { display: flex; flex-direction: column; gap: 20px; }
+.pub-item { background: var(--white); padding: 24px; border-radius: 12px; border: 1px solid var(--gray-200); display: flex; gap: 20px; align-items: flex-start; }
+.pub-year { background: var(--navy); color: var(--white); padding: 8px 14px; border-radius: 6px; font-size: 0.9rem; font-weight: 700; flex-shrink: 0; }
+.pub-content { flex: 1; }
+.pub-content h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; color: var(--navy-dark); line-height: 1.4; }
+.pub-authors { font-size: 0.9rem; color: var(--gray-600); font-weight: 400; margin-bottom: 8px; }
+.pub-venue-box { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; }
+.pub-venue { font-size: 0.9rem; font-weight: 600; color: var(--navy); font-style: normal; }
+.pub-prestige { font-size: 0.75rem; background: #e8f4e8; color: #1a5c1a; padding: 4px 10px; border-radius: 4px; font-weight: 500; }
+.pub-significance { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border-left: 4px solid var(--navy); padding: 14px 18px; border-radius: 0 8px 8px 0; margin-top: 12px; }
+.pub-significance-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--navy); font-weight: 700; margin-bottom: 6px; }
+.pub-significance p { font-size: 0.88rem; color: var(--gray-700); line-height: 1.6; margin: 0; }
+.pub-keywords { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.pub-keyword { background: var(--navy); color: var(--white); padding: 3px 8px; border-radius: 3px; font-size: 0.7rem; font-weight: 600; }
+.gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.gallery-item { position: relative; border-radius: 10px; overflow: hidden; aspect-ratio: 4/3; }
+.gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+.gallery-item:hover img { transform: scale(1.05); }
+.gallery-label { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: var(--white); padding: 30px 12px 12px; font-size: 0.85rem; font-weight: 600; }
+.contact { background: var(--navy-dark); color: var(--white); }
+.contact .section-label { color: var(--gray-400); }
+.contact .section-title { color: var(--white); }
+.contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; }
+.contact-text p { font-size: 1.05rem; line-height: 1.8; color: var(--gray-300); margin-bottom: 28px; font-weight: 400; }
+.contact-links { display: flex; flex-direction: column; gap: 14px; }
+.contact-link { display: flex; align-items: center; gap: 12px; color: var(--white); text-decoration: none; padding: 14px 18px; background: rgba(255,255,255,0.08); border-radius: 8px; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.15); font-weight: 500; }
+.contact-link:hover { background: rgba(255,255,255,0.12); transform: translateX(4px); }
+.contact-info { background: rgba(255,255,255,0.08); padding: 28px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); }
+.contact-info h4 { color: var(--white); font-size: 1.1rem; margin-bottom: 20px; font-weight: 700; }
+.contact-detail { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; color: var(--gray-300); font-size: 0.95rem; font-weight: 400; }
+footer { background: var(--gray-800); color: var(--gray-400); text-align: center; padding: 20px 0; font-size: 0.8rem; }
+@media (max-width: 900px) {
+  .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--white); flex-direction: column; padding: 20px; gap: 14px; border-bottom: 1px solid var(--gray-200); }
+  .nav-links.active { display: flex; }
+  .nav-toggle { display: block; }
+  .hero-grid { grid-template-columns: 1fr; text-align: center; }
+  .hero-content { text-align: center; }
+  .hero-statement { text-align: center; margin: 0 auto 24px auto; }
+  .hero-photo { width: 220px; height: 280px; margin: 0 auto; order: -1; }
+  .hero-content h1 { font-size: 2.2rem; }
+  .skill-chips, .cta-group { justify-content: center; }
+  .visa-badge { justify-content: center; text-align: center; }
+  .process-flow { grid-template-columns: repeat(3, 1fr); }
+  .process-step:nth-child(3)::after { display: none; }
+  .projects-grid, .skills-grid { grid-template-columns: 1fr; }
+  .about-grid, .contact-grid { grid-template-columns: 1fr; }
+  .about-text p { text-align: left; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .hero-content h1 { font-size: 1.9rem; }
+  .process-flow { grid-template-columns: repeat(2, 1fr); }
+  .process-step:nth-child(2)::after, .process-step:nth-child(4)::after { display: none; }
+  .cta-group { flex-direction: column; }
+  .btn { width: 100%; justify-content: center; }
+  section { padding: 60px 0; }
+}
+</style>
 </head>
 <body>
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#home" class="nav-logo">Surbhi Tidke</a>
+    <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('active')">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#publications">Publications</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#contact" class="nav-cta">Contact</a></li>
+    </ul>
+  </div>
+</nav>
 
-    <!-- NAV -->
-    <nav class="nav" id="nav">
-        <div class="container nav-inner">
-            <a href="#home" class="nav-logo">Surbhi Tidke</a>
-            <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('active')">
-                <span></span><span></span><span></span>
-            </button>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">About</a></li>
-                <li><a href="#skills">Skills</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#publications">Publications</a></li>
-                <li><a href="#gallery">Gallery</a></li>
-                <li><a href="#contact" class="nav-cta">Contact</a></li>
-            </ul>
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content">
+        <h1>Surbhi Tidke</h1>
+        <p class="hero-subtitle">PhD Candidate | Microfluidic Biosensor Engineer | Multimodal Single-Cell Electrochemical Measurement | UCF</p>
+        <div style="text-align: justify;">
+          <p class="hero-statement">
+            I'm a PhD researcher who builds functional devices from first principles. I own the full fabrication stack from mask design using AutoCAD/KLayout, through DWL lithography, thin-film deposition, and electrical validation. I have engineered multimodal sensing chips commercialized with an <a href="https://www.ucf.edu/news/ucf-faculty-graduate-student-develop-organ-on-a-chip-technology-for-industry/" target="_blank" rel="noopener noreferrer" style="font-weight: 500;">industry partner (WPI)</a>, optimized ITO films and stack of gold-titanium dioxide to 95% first-pass yield, and solved complex device failures through data-driven root cause analysis. I work efficiently, document rigorously, and ship products that perform.
+          </p>
+          <div style="background-color: #f4f6f8; border-left: 4px solid #0056b3; padding: 16px 20px; margin: 24px 0; border-radius: 4px; text-align: left;">
+            <h4 style="margin-top: 0; margin-bottom: 8px; font-size: 1.1em; color: #333;">&#x1F3AF; Targeted Roles</h4>
+            <p style="margin: 0; font-weight: 500; color: #24292e; font-size: 1.05em;">
+              Postdoc &middot; Semiconductor Processing &middot; Thin Film Engineering &middot; MEMS Engineering &middot; Biosensor Development
+            </p>
+            <p style="margin: 8px 0 0 0; font-size: 0.95em; color: #586069;">
+              <em>Actively seeking postdoc opportunities and research positions at universities, national laboratories, and research institutes in the USA.</em>
+            </p>
+          </div>
         </div>
-    </nav>
+        <div class="skill-chips">
+          <span class="chip">Photolithography (DWL)</span>
+          <span class="chip">Thin Film Deposition</span>
+          <span class="chip">E-beam / PVD / CVD / ALD</span>
+          <span class="chip">MEMS Microfabrication</span>
+          <span class="chip">SEM / XPS / AFM</span>
+          <span class="chip">COMSOL / EIS</span>
+          <span class="chip">DOE / SPC</span>
+        </div>
+        <div class="cta-group">
+          <a href="#contact" class="btn btn-primary">&#x2709;&#xFE0F; Contact Me</a>
+        </div>
+        <div class="visa-badge">
+          <span>F-1 STEM OPT &amp; CPT Eligible | Open to H-1B Sponsorship | Orlando, FL | Open to Relocation</span>
+        </div>
+        <p style="margin-top: 16px; font-size: 0.9rem; color: var(--gray-600);">
+          &#x1F52C; Research Interests: Microfluidic biosensors &middot; Single-cell measurement tools &middot; Electroanalytical chemistry &middot; Multimodal bioelectronic platforms
+        </p>
+      </div>
+      <img src="./headshot.jpg" alt="Surbhi Tidke" class="hero-photo">
+    </div>
+  </div>
+</section>
 
-    <!-- HERO -->
-    <section class="hero" id="home">
-        <div class="container">
-            <div class="hero-grid">
-                <div class="hero-content">
-                    <h1>Surbhi Tidke</h1>
-                    <p class="hero-subtitle">PhD Candidate | Semiconductor Process & MEMS Engineer | Thin Film Deposition | UCF</p>
-                    <p class="hero-statement">
-                       <div style="text-align: justify;">
-  <p>
-    I'm a PhD researcher who builds functional devices from first principles. I own the full hardware and fabrication stack from PCB schematic capture in Altium Designer and mask design using autocad/ K-layout, through DWL lithography, thin-film deposition, and electrical validation. I've engineered multimodal sensing chips commercialized with an <a href="https://www.ucf.edu/news/ucf-faculty-graduate-student-develop-organ-on-a-chip-technology-for-industry/" target="_blank" rel="noopener noreferrer" style="font-weight: 500;"> industry partner (WPI)</a>, optimized ITO films and stack of gold-titanium dioxide to 95% first-pass yield, and solved complex device failures through data-driven root cause analysis. I work efficiently, document rigorously, and ship products that perform.
-  </p>
+<!-- ABOUT -->
+<section class="about bg-alt" id="about">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-label">About Me</p>
+      <h2 class="section-title">Background &amp; Research</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          <strong>PhD Candidate in Electrical &amp; Computer Engineering</strong> at the University of Central Florida, conducting research in <a href="https://nanoscience.ucf.edu/rajaraman/" target="_blank" style="color: var(--navy); font-weight: 600;">Dr. Rajaraman's NanoBioSensors &amp; Systems Lab</a>.
+        </p>
+        <p>
+          My research spans <strong>semiconductor process development</strong> and <strong>MEMS microfabrication</strong> of electrochemical and impedimetric biosensor electrodes on glass and polymer substrates. I execute the full fabrication pipeline: photolithography (Heidelberg DWL, mask aligner), thin film deposition (PVD, CVD, ALD, E-beam evaporation), wet/dry etching, lift-off, and materials characterization (SEM, XPS, AFM, profilometry).
+        </p>
+        <p>
+          <strong>Core competencies:</strong> Cleanroom operations (Class 100), Design of Experiments (DOE), statistical process control, yield optimization (40% to 95%), and design for manufacturing (DFM).
+        </p>
+        <p>
+          <strong>Target roles:</strong> Postdoc, MEMS Engineer, Thin Film Engineer, or Biosensor Research Scientist at universities, national laboratories, medtech companies, or research institutes.
+        </p>
 
-  <div style="background-color: #f4f6f8; border-left: 4px solid #0056b3; padding: 16px 20px; margin: 24px 0; border-radius: 4px; text-align: left;">
-    <h4 style="margin-top: 0; margin-bottom: 8px; font-size: 1.1em; color: #333;">🎯 Targeted Roles</h4>
-    <p style="margin: 0; font-weight: 500; color: #24292e; font-size: 1.05em;">
-      Semiconductor Processing &middot; Thin Film Engineering &middot; MEMS Engineering &middot; Electrical Hardware R&D &middot; Biosensor Development
-    </p>
-    <p style="margin: 8px 0 0 0; font-size: 0.95em; color: #586069;">
-      <em>Actively seeking opportunities at semiconductor companies, medtech firms, and national laboratories in the USA.</em>
+        <div style="background: linear-gradient(135deg, #f0f4ff 0%, #e8eef8 100%); border-left: 4px solid var(--navy); padding: 20px 22px; border-radius: 0 10px 10px 0; margin-top: 20px;">
+          <h4 style="color: var(--navy-dark); margin-bottom: 10px; font-size: 1rem;">Expertise at the Intersection of MEMS and Bioanalytical Measurement</h4>
+          <p style="font-size: 0.93rem; color: var(--gray-700); line-height: 1.75; margin: 0;">
+            Beyond fabrication, my research bridges engineering and analytical chemistry. I design multimodal electrochemical measurement systems, specifically TEER/EIS transducers and impedimetric biosensors, that quantify cellular phenomena in real time. This work directly parallels advanced bioanalytical approaches used in single-cell proteomics: precision engineering of measurement interfaces, rigorous control of fluid dynamics and electric fields, and integration with high-specificity readout methods.
+          </p>
+        </div>
+      </div>
+      <img src="./surbhi_fabrication_workflow.png" alt="Surbhi Tidke Microfabrication Workflow" class="about-image">
+    </div>
+    <div class="stats-row">
+      <div class="stat-item">
+        <div class="stat-number">5</div>
+        <div class="stat-label">Publications</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">4</div>
+        <div class="stat-label">Citations</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">2</div>
+        <div class="stat-label">REU Students Mentored</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">3+</div>
+        <div class="stat-label">Conference Posters</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="skills" id="skills">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-label">Capabilities</p>
+      <h2 class="section-title">What I Do</h2>
+    </div>
+
+    <!-- Process Flow - 5 Steps (Hardware Design removed) -->
+    <div class="process-flow">
+      <div class="process-step">
+        <img src="./klayout_1.png" alt="Device Design - KLayout Mask" class="process-img">
+        <h4>Device Design</h4>
+        <p>AutoCAD, KLayout</p>
+      </div>
+      <div class="process-step">
+        <img src="./cleanroom_spincoat.jpeg" alt="Microfabrication - Spin Coating" class="process-img">
+        <h4>Microfabrication</h4>
+        <p>Spin Coating, Lithography</p>
+      </div>
+      <div class="process-step">
+        <img src="./cleanroom_wetbench.jpg" alt="Process Control - Wet Bench" class="process-img">
+        <h4>Process Control</h4>
+        <p>Wet Processing, Etching</p>
+      </div>
+      <div class="process-step">
+        <img src="./cleanroom_microscope.jpg" alt="Metrology - Characterization" class="process-img">
+        <h4>Metrology</h4>
+        <p>SEM, XPS, AFM</p>
+      </div>
+      <div class="process-step">
+        <img src="./ansys_vna.jpg" alt="System Validation - ANSYS vs VNA" class="process-img">
+        <h4>System Validation</h4>
+        <p>VNA, EIS, Integration</p>
+      </div>
+    </div>
+
+    <div class="skills-grid">
+      <div class="skill-category">
+        <h4>Fabrication</h4>
+        <div class="skill-list">
+          <span class="skill-tag">Photolithography (DWL, Mask Aligner)</span>
+          <span class="skill-tag">PVD (Physical Vapor Deposition)</span>
+          <span class="skill-tag">CVD (Chemical Vapor Deposition)</span>
+          <span class="skill-tag">ALD (Atomic Layer Deposition)</span>
+          <span class="skill-tag">E-beam Evaporation</span>
+          <span class="skill-tag">Sputtering</span>
+          <span class="skill-tag">Dry Etching</span>
+          <span class="skill-tag">Plasma RIE (Benchtop)</span>
+          <span class="skill-tag">Spin Coating</span>
+          <span class="skill-tag">Lift-off</span>
+          <span class="skill-tag">Wet Processing</span>
+          <span class="skill-tag">Recipe Optimization</span>
+          <span class="skill-tag">3D Printing (Asiga)</span>
+          <span class="skill-tag">Cleanroom Class 100</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h4>Characterization</h4>
+        <div class="skill-list">
+          <span class="skill-tag">SEM</span>
+          <span class="skill-tag">XPS</span>
+          <span class="skill-tag">FTIR</span>
+          <span class="skill-tag">AFM</span>
+          <span class="skill-tag">Dektak Profilometer</span>
+          <span class="skill-tag">Surface Roughness</span>
+          <span class="skill-tag">Film Thickness</span>
+          <span class="skill-tag">Stress Measurement</span>
+          <span class="skill-tag">Optical Microscopy</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h4>Electrical Testing</h4>
+        <div class="skill-list">
+          <span class="skill-tag">Impedance / EIS</span>
+          <span class="skill-tag">CV Characteristics</span>
+          <span class="skill-tag">4-Point Probe</span>
+          <span class="skill-tag">VNA</span>
+          <span class="skill-tag">On-chip Testing</span>
+        </div>
+      </div>
+      <div class="skill-category">
+        <h4>Design &amp; Software</h4>
+        <div class="skill-list">
+          <span class="skill-tag">COMSOL</span>
+          <span class="skill-tag">Electrokinetic Transport Modeling (COMSOL)</span>
+          <span class="skill-tag">Electrokinetic Phenomena &amp; Electrophoresis</span>
+          <span class="skill-tag">Microchannel Fluid Dynamics</span>
+          <span class="skill-tag">Bioanalytical System Integration</span>
+          <span class="skill-tag">LTSpice</span>
+          <span class="skill-tag">ANSYS HFSS</span>
+          <span class="skill-tag">Lumerical FDTD</span>
+          <span class="skill-tag">AutoCAD</span>
+          <span class="skill-tag">KLayout</span>
+          <span class="skill-tag">FPGA / Verilog</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">MATLAB</span>
+          <span class="skill-tag">C++</span>
+          <span class="skill-tag">Linear Algebra</span>
+          <span class="skill-tag">Calculus</span>
+          <span class="skill-tag">Computational Geometry</span>
+          <span class="skill-tag">Numerical Techniques</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="projects bg-alt" id="projects">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-label">Featured Work</p>
+      <h2 class="section-title">Projects</h2>
+    </div>
+    <div class="projects-grid">
+
+      <article class="project-card">
+        <img src="./project_electrodes.png" alt="Multimodal Microfluidic Electrochemical Platform" class="project-image">
+        <div class="project-content">
+          <h3>Multimodal Microfluidic Electrochemical Cytometry Platform</h3>
+          <p>Designed for quantitative, real-time measurement of cellular biomarkers (impedance, barrier function, and optical state) in single wells containing from tens to thousands of cells. Engineered microfabricated Au/Pt/ITO electrodes with precise electrode geometries optimized via finite-element modeling (COMSOL). Leverages electrochemical transduction principles similar to those used in microfluidic electrophoretic cytometry for protein measurement at single-cell resolution.</p>
+          <div class="project-tech">
+            <span class="tech-chip">DWL</span>
+            <span class="tech-chip">E-beam Ti/Au/Pt/ITO</span>
+            <span class="tech-chip">EIS</span>
+            <span class="tech-chip">COMSOL</span>
+          </div>
+          <p class="project-outcome">&#x2713; IEEE Sensors Letters 2025</p>
+        </div>
+      </article>
+
+      <article class="project-card">
+        <img src="./sem_abcd_sio2_polycarbonate.jpg" alt="SiO2 Adhesion SEM" class="project-image">
+        <div class="project-content">
+          <h3>Surface Engineering for Robust Bioanalytical Transducers</h3>
+          <p>Developed surface modification chemistry (APTMS vs GPTMS silane interlayers) to enable reliable adhesion of inorganic thin films (SiO2) on polymer substrates. This work addresses a fundamental challenge in integrating microelectrode arrays with flexible, biocompatible polymer microfluidic channels, essential for microscale bioanalytical assays.</p>
+          <div class="project-tech">
+            <span class="tech-chip">Wet Chemistry</span>
+            <span class="tech-chip">E-beam SiO2</span>
+            <span class="tech-chip">AFM/XPS</span>
+          </div>
+          <p class="project-outcome">&#x2713; 85% transmittance &middot; Hilton Head 2024</p>
+        </div>
+      </article>
+
+      <article class="project-card">
+        <img src="./research_concept.png" alt="Hermetic Glass Package Electrodes" class="project-image">
+        <div class="project-content">
+          <h3>Hermetic Glass Package Electrodes</h3>
+          <p>Cost-effective, hybrid microfabricated, all-glass hermetic package for wireless in vitro and wearable electrode array systems.</p>
+          <div class="project-tech">
+            <span class="tech-chip">Heidelberg DWL</span>
+            <span class="tech-chip">Ti/Pt Stack</span>
+            <span class="tech-chip">Lift-off</span>
+          </div>
+          <p class="project-outcome">&#x2713; IEEE SENSORS 2025 (co-author)</p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- PUBLICATIONS -->
+<section class="publications" id="publications">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-label">Research Output</p>
+      <h2 class="section-title">Publications &amp; Original Contributions</h2>
+    </div>
+    <div class="pub-list">
+
+      <div class="pub-item">
+        <span class="pub-year">2025</span>
+        <div class="pub-content">
+          <h4>Embedded, Multimodal (TEER, EIS, Transparency) Sensing Chips for In Vitro Cellular Models</h4>
+          <p class="pub-authors"><strong>S. Tidke (First Author)</strong>, M. Tregansin, J. Potter, C. Hatcher, A. Watson</p>
+          <div class="pub-venue-box">
+            <span class="pub-venue">IEEE Sensors Letters</span>
+            <span class="pub-prestige">&#x2713; Peer-Reviewed IEEE Journal &middot; Impact Factor: 2.8</span>
+          </div>
+          <div class="pub-significance">
+            <p class="pub-significance-label">Major Significance</p>
+            <p>This work addresses a critical bottleneck in the $15B U.S. pharmaceutical drug development pipeline: the inability to test drugs on living human tissue without animal testing. The sensing chip enables pharmaceutical companies to screen drug candidates on lab-grown human cells, potentially reducing drug development timelines by 2-3 years and saving billions in failed clinical trials. This technology was commercialized through a partnership with Worcester Polytechnic Institute (WPI), demonstrating immediate industry adoption.</p>
+            <div class="pub-keywords">
+              <span class="pub-keyword">MEMS</span>
+              <span class="pub-keyword">Thin Film Deposition</span>
+              <span class="pub-keyword">Electrochemical Sensing</span>
+              <span class="pub-keyword">Industry Commercialization</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-item">
+        <span class="pub-year">2025</span>
+        <div class="pub-content">
+          <h4>Development of a Cost-Effective, Hybrid Microfabricated, All-Glass Hermetic Package for Wireless Electrode Array Systems</h4>
+          <p class="pub-authors">F.B. Kashem, J.M. Castro, O.C. Torres, <strong>S. Tidke</strong>, C. McDorman, G. Davies, et al.</p>
+          <div class="pub-venue-box">
+            <span class="pub-venue">IEEE SENSORS Conference 2025</span>
+            <span class="pub-prestige">&#x2713; Premier IEEE Sensors Conference &middot; 2,500+ Attendees</span>
+          </div>
+          <div class="pub-significance">
+            <p class="pub-significance-label">Major Significance</p>
+            <p>Hermetic packaging is essential for implantable medical devices like pacemakers and neural interfaces. This research introduces a novel all-glass hermetic package that reduces manufacturing costs by 40% compared to traditional ceramic packages while maintaining the same reliability standards required by the FDA. My contribution focused on the microfabrication process development and thin-film metallization stack (Ti/Pt) optimization.</p>
+            <div class="pub-keywords">
+              <span class="pub-keyword">Hermetic Packaging</span>
+              <span class="pub-keyword">Cleanroom Processing</span>
+              <span class="pub-keyword">Cost Reduction</span>
+              <span class="pub-keyword">Medical Devices</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-item">
+        <span class="pub-year">2024</span>
+        <div class="pub-content">
+          <h4>Tailoring Enhancement of Silicon Dioxide Adhesion to Polycarbonate Substrates for 3D Microelectrode Arrays</h4>
+          <p class="pub-authors"><strong>S. Tidke (First Author)</strong>, O.S. Cepeda-Torres, P. Morales-Cruz, B.E. Butkus, A. Childs, et al.</p>
+          <div class="pub-venue-box">
+            <span class="pub-venue">Hilton Head Workshop 2024</span>
+            <span class="pub-prestige">&#x2713; Elite MEMS Conference &middot; &lt;30% Acceptance Rate</span>
+          </div>
+          <div class="pub-significance">
+            <p class="pub-significance-label">Major Significance</p>
+            <p>A fundamental challenge in semiconductor manufacturing is achieving reliable thin-film adhesion on polymer substrates. This research systematically solved this problem using silane coupling chemistry, improving first-pass yield from 40% to 95% while maintaining 85% optical transparency. The methodology is directly transferable to flexible electronics, wearable sensors, and next-generation display manufacturing.</p>
+            <div class="pub-keywords">
+              <span class="pub-keyword">Yield Optimization</span>
+              <span class="pub-keyword">Thin Film Adhesion</span>
+              <span class="pub-keyword">Process Development</span>
+              <span class="pub-keyword">Statistical Process Control</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-item">
+        <span class="pub-year">2019</span>
+        <div class="pub-content">
+          <h4>Guiding and Controlling Light at Nanoscale in Field Effect Transistor</h4>
+          <p class="pub-authors">L. Singh, <strong>S. Tidke</strong>, M. Kumar</p>
+          <div class="pub-venue-box">
+            <span class="pub-venue">Applied Physics B: Lasers and Optics</span>
+            <span class="pub-prestige">&#x2713; Springer Nature Journal &middot; 4 Citations</span>
+          </div>
+          <div class="pub-significance">
+            <p class="pub-significance-label">Major Significance</p>
+            <p>As transistors approach atomic scales, conventional electronics face fundamental physical limits. This research demonstrates a method to control light at the nanometer scale within transistor structures, a critical enabling technology for photonic integrated circuits and optical computing.</p>
+            <div class="pub-keywords">
+              <span class="pub-keyword">Nanophotonics</span>
+              <span class="pub-keyword">CMOS Integration</span>
+              <span class="pub-keyword">Optical Computing</span>
+              <span class="pub-keyword">Next-Gen Semiconductors</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-item">
+        <span class="pub-year">2018</span>
+        <div class="pub-content">
+          <h4>Metal-Assisted Slot Waveguide Biochemical Sensor</h4>
+          <p class="pub-authors">L. Singh, <strong>S. Tidke</strong>, M. Kumar</p>
+          <div class="pub-venue-box">
+            <span class="pub-venue">3rd International Conference on Microwave and Photonics (ICMAP)</span>
+            <span class="pub-prestige">&#x2713; IEEE Conference Proceedings</span>
+          </div>
+          <div class="pub-significance">
+            <p class="pub-significance-label">Major Significance</p>
+            <p>This research presents a novel biosensor architecture that achieves higher sensitivity than conventional designs by confining light in a nanoscale slot waveguide. The metal-assisted design enables detection of disease biomarkers at concentrations 10x lower than existing commercial sensors, with applications in point-of-care diagnostics and environmental monitoring.</p>
+            <div class="pub-keywords">
+              <span class="pub-keyword">Biosensor Design</span>
+              <span class="pub-keyword">Photonics</span>
+              <span class="pub-keyword">Point-of-Care Diagnostics</span>
+              <span class="pub-keyword">Sensitivity Enhancement</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <p style="margin-top: 28px; text-align: center;">
+      <a href="https://scholar.google.com/citations?user=HEZfkqsAAAAJ&hl=en&oi=ao" target="_blank" style="color: var(--navy); font-weight: 600; text-decoration: none;">
+        &#x1F4DA; View Full Google Scholar Profile &rarr;
+      </a>
     </p>
   </div>
-</div>
-                    <div class="skill-chips">
-                        <span class="chip">Photolithography (DWL)</span>
-                        <span class="chip">Thin Film Deposition</span>
-                        <span class="chip">E-beam / PVD / CVD / ALD</span>
-                        <span class="chip">MEMS Microfabrication</span>
-                        <span class="chip">SEM / XPS / AFM</span>
-                        <span class="chip">Altium Designer (PCB)</span>
-                        <span class="chip">DOE / SPC</span>
-                    </div>
-                    
-                    <div class="cta-group">
-                        <a href="#contact" class="btn btn-primary">✉️ Contact Me</a>
-                    </div>
-                    
-                    <div class="visa-badge">
-                        <span>F-1 STEM OPT & CPT Eligible | Open to H-1B Sponsorship | Orlando, FL | Open to Relocation</span>
-                    </div>
-                </div>
-                
-                <img src="./headshot.jpg" alt="Surbhi Tidke" class="hero-photo">
-            </div>
-        </div>
-    </section>
+</section>
 
-    <!-- ABOUT -->
-    <section class="about bg-alt" id="about">
-        <div class="container">
-            <div class="section-header">
-                <p class="section-label">About Me</p>
-                <h2 class="section-title">Background &amp; Research</h2>
-            </div>
-            
-            <div class="about-grid">
-                <div class="about-text">
-                    <p>
-                        <strong>PhD Candidate in Electrical &amp; Computer Engineering</strong> at the University of Central Florida, conducting research in <a href="https://nanoscience.ucf.edu/rajaraman/" target="_blank" style="color: var(--navy); font-weight: 600;">Dr. Rajaraman's NanoBioSensors &amp; Systems Lab</a>.
-                    </p>
-                    <p>
-                        My research spans <strong>semiconductor process development</strong> and <strong>MEMS microfabrication</strong> of electrochemical and impedimetric biosensor electrodes on glass and polymer substrates. I execute the full fabrication pipeline: photolithography (Heidelberg DWL, mask aligner), thin film deposition (PVD, CVD, ALD, E-beam evaporation), wet/dry etching, lift-off, and materials characterization (SEM, XPS, AFM, profilometry). I also design multi-layer mixed-signal PCBs in <strong>Altium Designer</strong> for sensor signal acquisition and hardware validation.
-                    </p>
-                    <p>
-                        <strong>Core competencies:</strong> Cleanroom operations (Class 100), Design of Experiments (DOE), statistical process control, yield optimization (40%→95%), and design for manufacturing (DFM).
-                    </p>
-                    <p>
-                        <strong>Target roles:</strong> Semiconductor Process Engineer, Thin Film Engineer, MEMS Engineer, Hardware R&amp;D Engineer, or Materials Scientist at semiconductor fabs, medtech companies, national laboratories, or aerospace firms.
-                    </p>
-                </div>
-                
-                <img src="./surbhi_fabrication_workflow.png" alt="Surbhi Tidke Microfabrication and Hardware Workflow" class="about-image">
-            </div>
-            
-            <div class="stats-row">
-                <div class="stat-item">
-                    <div class="stat-number">5</div>
-                    <div class="stat-label">Publications</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">4</div>
-                    <div class="stat-label">Citations</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">2</div>
-                    <div class="stat-label">REU Students Mentored</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">3+</div>
-                    <div class="stat-label">Conference Posters</div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- GALLERY -->
+<section class="gallery bg-alt" id="gallery">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-label">In the Lab</p>
+      <h2 class="section-title">Work Gallery</h2>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item">
+        <img src="./cleanroom_dwl.jpg" alt="Heidelberg DWL">
+        <div class="gallery-label">Heidelberg DWL</div>
+      </div>
+      <div class="gallery-item">
+        <img src="./AFM_image.jpg" alt="AFM Surface Analysis">
+        <div class="gallery-label">AFM Characterization</div>
+      </div>
+      <div class="gallery-item">
+        <img src="./project_electrodes.png" alt="Fabricated Electrodes">
+        <div class="gallery-label">Fabricated Electrodes</div>
+      </div>
+      <div class="gallery-item">
+        <img src="./hiltonhead_sem_analysis.jpg" alt="SEM Analysis">
+        <div class="gallery-label">SEM Analysis</div>
+      </div>
+      <div class="gallery-item">
+        <img src="./hiltonhead_microscope_check.jpg" alt="Microscope Inspection">
+        <div class="gallery-label">Microscope Inspection</div>
+      </div>
+      <div class="gallery-item">
+        <img src="./cleanroom_wetbench.jpg" alt="Wet Bench Processing">
+        <div class="gallery-label">Wet Bench Processing</div>
+      </div>
+    </div>
+    <p style="margin-top: 32px; text-align: center;">
+      <a href="https://www.ucf.edu/news/ucf-faculty-graduate-student-develop-organ-on-a-chip-technology-for-industry/" target="_blank" style="color: var(--navy); font-weight: 600; text-decoration: none;">
+        &#x1F4F0; Featured in UCF News: "Organ-on-a-Chip Technology" &rarr;
+      </a>
+    </p>
+  </div>
+</section>
 
-    <!-- SKILLS -->
-    <section class="skills" id="skills">
-        <div class="container">
-            <div class="section-header">
-                <p class="section-label">Capabilities</p>
-                <h2 class="section-title">What I Do</h2>
-            </div>
-            
-            <!-- Process Flow with Real Photos - 6 Steps: Complete Systems Engineer -->
-            <div class="process-flow">
-                <div class="process-step">
-                    <img src="./klayout_1.png" alt="Device Design - KLayout Mask + SEM" class="process-img">
-                    <h4>Device Design</h4>
-                    <p>AutoCAD, KLayout</p>
-                </div>
-                <div class="process-step">
-                    <img src="./cleanroom_spincoat.jpeg" alt="Microfabrication - Spin Coating" class="process-img">
-                    <h4>Microfabrication</h4>
-                    <p>Spin Coating, Lithography</p>
-                </div>
-                <div class="process-step">
-                    <img src="./cleanroom_wetbench.jpg" alt="Process Control - Wet Bench" class="process-img">
-                    <h4>Process Control</h4>
-                    <p>Wet Processing, Etching</p>
-                </div>
-                <div class="process-step">
-                    <img src="./cleanroom_microscope.jpg" alt="Metrology - Characterization" class="process-img">
-                    <h4>Metrology</h4>
-                    <p>SEM, XPS, AFM</p>
-                </div>
-                <div class="process-step">
-                    <img src="./altinum_2.png" alt="Hardware Design - Altium 3D PCB" class="process-img">
-                    <h4>Hardware Design</h4>
-                    <p>Altium Designer, PCB</p>
-                </div>
-                <div class="process-step">
-                    <img src="./ansys_vna.jpg" alt="System Validation - ANSYS vs VNA" class="process-img">
-                    <h4>System Validation</h4>
-                    <p>VNA, EIS, Integration</p>
-                </div>
-            </div>
-            
-            <div class="skills-grid">
-                <div class="skill-category">
-                    <h4>Fabrication</h4>
-                    <div class="skill-list">
-                        <span class="skill-tag">Photolithography (DWL, Mask Aligner)</span>
-                        <span class="skill-tag">PVD (Physical Vapor Deposition)</span>
-                        <span class="skill-tag">CVD (Chemical Vapor Deposition)</span>
-                        <span class="skill-tag">ALD (Atomic Layer Deposition)</span>
-                        <span class="skill-tag">E-beam Evaporation</span>
-                        <span class="skill-tag">Sputtering</span>
-                        <span class="skill-tag">Dry Etching</span>
-                        <span class="skill-tag">Plasma RIE (Benchtop)</span>
-                        <span class="skill-tag">Spin Coating</span>
-                        <span class="skill-tag">Lift-off</span>
-                        <span class="skill-tag">Wet Processing</span>
-                        <span class="skill-tag">Recipe Optimization</span>
-                        <span class="skill-tag">3D Printing (Asiga)</span>
-                        <span class="skill-tag">Cleanroom Class 100</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h4>Characterization</h4>
-                    <div class="skill-list">
-                        <span class="skill-tag">SEM</span>
-                        <span class="skill-tag">XPS</span>
-                        <span class="skill-tag">FTIR</span>
-                        <span class="skill-tag">AFM</span>
-                        <span class="skill-tag">Dektak Profilometer</span>
-                        <span class="skill-tag">Surface Roughness</span>
-                        <span class="skill-tag">Film Thickness</span>
-                        <span class="skill-tag">Stress Measurement</span>
-                        <span class="skill-tag">Optical Microscopy</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h4>Electrical Testing</h4>
-                    <div class="skill-list">
-                        <span class="skill-tag">Impedance / EIS</span>
-                        <span class="skill-tag">CV Characteristics</span>
-                        <span class="skill-tag">4-Point Probe</span>
-                        <span class="skill-tag">VNA</span>
-                        <span class="skill-tag">On-chip Testing</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h4>Design & Software</h4>
-                    <div class="skill-list">
-                        <span class="skill-tag">Altium Designer</span>
-                        <span class="skill-tag">LTSpice</span>
-                        <span class="skill-tag">ANSYS HFSS</span>
-                        <span class="skill-tag">Lumerical FDTD</span>
-                        <span class="skill-tag">COMSOL</span>
-                        <span class="skill-tag">AutoCAD</span>
-                        <span class="skill-tag">KLayout</span>
-                        <span class="skill-tag">FPGA / Verilog</span>
-                        <span class="skill-tag">Python</span>
-                        <span class="skill-tag">MATLAB</span>
-                        <span class="skill-tag">C++</span>
-                        <span class="skill-tag">Linear Algebra</span>
-                        <span class="skill-tag">Calculus</span>
-                        <span class="skill-tag">Computational Geometry</span>
-                        <span class="skill-tag">Numerical Techniques</span>
-                    </div>
-                </div>
-            </div>
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-label">Get In Touch</p>
+      <h2 class="section-title">Let's Connect</h2>
+    </div>
+    <div style="margin-bottom: 20px; color: var(--gray-300); font-size: 0.95rem;">
+      &#x1F52C; Research Interests: Microfluidic biosensors &middot; Single-cell measurement tools &middot; Electroanalytical chemistry &middot; Multimodal bioelectronic platforms
+    </div>
+    <div class="contact-grid">
+      <div class="contact-text">
+        <p>
+          Interested in discussing postdoc opportunities or research collaborations? I would love to hear from you. Whether it's a postdoc position, research role, or collaboration in microfluidic biosensors or MEMS, please reach out!
+        </p>
+        <div class="contact-links">
+          <a href="mailto:surbhi.tidke@ucf.edu" class="contact-link">
+            <span>&#x2709;&#xFE0F;</span>
+            <span>surbhi.tidke@ucf.edu</span>
+          </a>
+          <a href="https://www.linkedin.com/in/surbhitidke/" target="_blank" class="contact-link">
+            <span>&#x1F4BC;</span>
+            <span>linkedin.com/in/surbhitidke</span>
+          </a>
+          <a href="https://scholar.google.com/citations?user=HEZfkqsAAAAJ&hl=en&oi=ao" target="_blank" class="contact-link">
+            <span>&#x1F4DA;</span>
+            <span>Google Scholar</span>
+          </a>
         </div>
-    </section>
+      </div>
+      <div class="contact-info">
+        <h4>Location &amp; Availability</h4>
+        <div class="contact-detail"><span>&#x1F4CD;</span><span>Orlando, FL | Open to Relocation</span></div>
+        <div class="contact-detail"><span>&#x1F393;</span><span>F-1 STEM OPT &amp; CPT Eligible</span></div>
+        <div class="contact-detail"><span>&#x1F4BC;</span><span>Seeking H-1B Sponsorship</span></div>
+        <div class="contact-detail"><span>&#x1F4C5;</span><span>PhD: Fall 2023 - Fall 2026</span></div>
+        <div class="contact-detail"><span>&#x1F52C;</span><span>NanoBioSensors &amp; Systems Lab</span></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- PROJECTS -->
-    <section class="projects bg-alt" id="projects">
-        <div class="container">
-            <div class="section-header">
-                <p class="section-label">Featured Work</p>
-                <h2 class="section-title">Projects</h2>
-            </div>
-            
-            <div class="projects-grid">
-                <article class="project-card">
-                    <img src="./project_electrodes.png" alt="TEER Microelectrodes" class="project-image">
-                    <div class="project-content">
-                        <h3>Multimodal Electrochemical Sensing Chips</h3>
-                        <p>Embedded multimodal (EIS, Transparency) sensing chips for in vitro cellular models. Gold, platinum, and ITO electrodes on glass substrates.</p>
-                        <div class="project-tech">
-                            <span class="tech-chip">DWL</span>
-                            <span class="tech-chip">E-beam Ti/Au/Pt/ITO</span>
-                            <span class="tech-chip">EIS</span>
-                        </div>
-                        <p class="project-outcome">✓ IEEE Sensors Letters 2025</p>
-                    </div>
-                </article>
-                
-                <article class="project-card">
-                    <img src="./sem_abcd_sio2_polycarbonate.jpg" alt="SiO2 Adhesion SEM" class="project-image">
-                    <div class="project-content">
-                        <h3>SiO₂ Adhesion on Polycarbonate</h3>
-                        <p>Tailoring silicon dioxide adhesion to polycarbonate substrates using APTMS vs GPTMS silane interlayers for 3D microelectrode arrays.</p>
-                        <div class="project-tech">
-                            <span class="tech-chip">Wet Chemistry</span>
-                            <span class="tech-chip">E-beam SiO₂</span>
-                            <span class="tech-chip">AFM/XPS</span>
-                        </div>
-                        <p class="project-outcome">✓ 85% transmittance · Hilton Head 2024</p>
-                    </div>
-                </article>
-                
-                <article class="project-card">
-                    <img src="./research_concept.png" alt="Hermetic Glass Package Electrodes" class="project-image">
-                    <div class="project-content">
-                        <h3>Hermetic Glass Package Electrodes</h3>
-                        <p>Cost-effective, hybrid microfabricated, all-glass hermetic package for wireless in vitro and wearable electrode array systems.</p>
-                        <div class="project-tech">
-                            <span class="tech-chip">Heidelberg DWL</span>
-                            <span class="tech-chip">Ti/Pt Stack</span>
-                            <span class="tech-chip">Lift-off</span>
-                        </div>
-                        <p class="project-outcome">✓ IEEE SENSORS 2025 (co-author)</p>
-                    </div>
-                </article>
-                
-                <article class="project-card">
-                    <img src="./mems_sensor.png" alt="Integrated Lab-on-Chip System" class="project-image">
-                    <div class="project-content">
-                        <h3>Integrated Lab-on-Chip Sensing System</h3>
-                        <p>Engineered MEMS biosensor on glass with Heidelberg DWL and E-beam evaporation. Optimized ITO thin-film via 27-run DOE, validated Ti/Pt adhesion using SEM and AFM.</p>
-                        <div class="project-tech">
-                            <span class="tech-chip">MEMS</span>
-                            <span class="tech-chip">DOE</span>
-                            <span class="tech-chip">SEM/AFM</span>
-                        </div>
-                        <p class="project-outcome">✓ Yield: 40% → 95% · 85% Transparency</p>
-                    </div>
-                </article>
-                
-                <article class="project-card">
-                    <img src="./layout_and_benchtop_evidence_1.png" alt="Mixed-Signal PCB Design" class="project-image">
-                    <div class="project-content">
-                        <h3>Mixed-Signal PCB Design & Layout</h3>
-                        <p>Designed multi-layer PCB in Altium Designer featuring isolated analog signal paths, guard rings, and ground plane partitioning for EMI shielding. IPC-compliant footprints with DFM analysis.</p>
-                        <div class="project-tech">
-                            <span class="tech-chip">Altium Designer</span>
-                            <span class="tech-chip">Multi-layer PCB</span>
-                            <span class="tech-chip">DFM/DRC</span>
-                        </div>
-                        <p class="project-outcome">✓ First-pass fabrication · Zero defects</p>
-                    </div>
-                </article>
-                
-                <article class="project-card">
-                    <img src="./layout_and_benchtop_evidence_2.png" alt="Hardware Validation" class="project-image">
-                    <div class="project-content">
-                        <h3>Hardware Validation & Signal Integrity</h3>
-                        <p>Conducted comprehensive hardware validation using Keysight oscilloscopes and Vector Network Analyzer. Achieved 99% correlation between ANSYS HFSS simulation and measured frequency response.</p>
-                        <div class="project-tech">
-                            <span class="tech-chip">Oscilloscope</span>
-                            <span class="tech-chip">VNA</span>
-                            <span class="tech-chip">ANSYS HFSS</span>
-                        </div>
-                        <p class="project-outcome">✓ 99% sim-to-measured correlation</p>
-                    </div>
-                </article>
-            </div>
-        </div>
-    </section>
+<footer>
+  <div class="container">
+    <p>&#169; 2026 Surbhi Tidke &middot; PhD Candidate, UCF &middot; Seeking Postdoc &amp; Research Positions &middot; surbhi.tidke@ucf.edu</p>
+  </div>
+</footer>
 
-    <!-- PUBLICATIONS -->
-    <section class="publications" id="publications">
-        <div class="container">
-            <div class="section-header">
-                <p class="section-label">Research Output</p>
-                <h2 class="section-title">Publications &amp; Original Contributions</h2>
-            </div>
-            
-            <div class="pub-list">
-                <div class="pub-item">
-                    <span class="pub-year">2025</span>
-                    <div class="pub-content">
-                        <h4>Embedded, Multimodal (TEER, EIS, Transparency) Sensing Chips for In Vitro Cellular Models</h4>
-                        <p class="pub-authors"><strong>S. Tidke (First Author)</strong>, M. Tregansin, J. Potter, C. Hatcher, A. Watson</p>
-                        <div class="pub-venue-box">
-                            <span class="pub-venue">IEEE Sensors Letters</span>
-                            <span class="pub-prestige">✓ Peer-Reviewed IEEE Journal · Impact Factor: 2.8</span>
-                        </div>
-                        <div class="pub-significance">
-                            <p class="pub-significance-label">Major Significance</p>
-                            <p>This work addresses a critical bottleneck in the $15B U.S. pharmaceutical drug development pipeline: the inability to test drugs on living human tissue without animal testing. The sensing chip I engineered enables pharmaceutical companies to screen drug candidates on lab-grown human cells, potentially reducing drug development timelines by 2-3 years and saving billions in failed clinical trials. This technology was commercialized through a partnership with Worcester Polytechnic Institute (WPI), demonstrating immediate industry adoption.</p>
-                            <div class="pub-keywords">
-                                <span class="pub-keyword">MEMS</span>
-                                <span class="pub-keyword">Thin Film Deposition</span>
-                                <span class="pub-keyword">Electrochemical Sensing</span>
-                                <span class="pub-keyword">Industry Commercialization</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="pub-item">
-                    <span class="pub-year">2025</span>
-                    <div class="pub-content">
-                        <h4>Development of a Cost-Effective, Hybrid Microfabricated, All-Glass Hermetic Package for Wireless Electrode Array Systems</h4>
-                        <p class="pub-authors">F.B. Kashem, J.M. Castro, O.C. Torres, <strong>S. Tidke</strong>, C. McDorman, G. Davies, et al.</p>
-                        <div class="pub-venue-box">
-                            <span class="pub-venue">IEEE SENSORS Conference 2025</span>
-                            <span class="pub-prestige">✓ Premier IEEE Sensors Conference · 2,500+ Attendees</span>
-                        </div>
-                        <div class="pub-significance">
-                            <p class="pub-significance-label">Major Significance</p>
-                            <p>Hermetic packaging is essential for implantable medical devices like pacemakers and neural interfaces — a market projected to exceed $12B by 2028. This research introduces a novel all-glass hermetic package that reduces manufacturing costs by 40% compared to traditional ceramic packages while maintaining the same reliability standards required by the FDA. My contribution focused on the microfabrication process development and thin-film metallization stack (Ti/Pt) optimization.</p>
-                            <div class="pub-keywords">
-                                <span class="pub-keyword">Hermetic Packaging</span>
-                                <span class="pub-keyword">Cleanroom Processing</span>
-                                <span class="pub-keyword">Cost Reduction</span>
-                                <span class="pub-keyword">Medical Devices</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="pub-item">
-                    <span class="pub-year">2024</span>
-                    <div class="pub-content">
-                        <h4>Tailoring Enhancement of Silicon Dioxide Adhesion to Polycarbonate Substrates for 3D Microelectrode Arrays</h4>
-                        <p class="pub-authors"><strong>S. Tidke (First Author)</strong>, O.S. Cepeda-Torres, P. Morales-Cruz, B.E. Butkus, A. Childs, et al.</p>
-                        <div class="pub-venue-box">
-                            <span class="pub-venue">Hilton Head Workshop 2024</span>
-                            <span class="pub-prestige">✓ Elite MEMS Conference · &lt;30% Acceptance Rate</span>
-                        </div>
-                        <div class="pub-significance">
-                            <p class="pub-significance-label">Major Significance</p>
-                            <p>A fundamental challenge in semiconductor manufacturing is achieving reliable thin-film adhesion on polymer substrates — a problem that causes millions of dollars in yield loss annually. This research systematically solved this problem using silane coupling chemistry, improving first-pass yield from 40% to 95% while maintaining 85% optical transparency. The methodology I developed is directly transferable to flexible electronics, wearable sensors, and next-generation display manufacturing.</p>
-                            <div class="pub-keywords">
-                                <span class="pub-keyword">Yield Optimization</span>
-                                <span class="pub-keyword">Thin Film Adhesion</span>
-                                <span class="pub-keyword">Process Development</span>
-                                <span class="pub-keyword">Statistical Process Control</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="pub-item">
-                    <span class="pub-year">2019</span>
-                    <div class="pub-content">
-                        <h4>Guiding and Controlling Light at Nanoscale in Field Effect Transistor</h4>
-                        <p class="pub-authors">L. Singh, <strong>S. Tidke</strong>, M. Kumar</p>
-                        <div class="pub-venue-box">
-                            <span class="pub-venue">Applied Physics B: Lasers and Optics</span>
-                            <span class="pub-prestige">✓ Springer Nature Journal · 4 Citations</span>
-                        </div>
-                        <div class="pub-significance">
-                            <p class="pub-significance-label">Major Significance</p>
-                            <p>As transistors approach atomic scales, conventional electronics face fundamental physical limits. This research demonstrates a method to control light at the nanometer scale within transistor structures — a critical enabling technology for photonic integrated circuits and optical computing. These technologies are central to the U.S. semiconductor industry's roadmap for post-Moore's Law computing, with applications in data centers, AI chips, and 6G communications.</p>
-                            <div class="pub-keywords">
-                                <span class="pub-keyword">Nanophotonics</span>
-                                <span class="pub-keyword">CMOS Integration</span>
-                                <span class="pub-keyword">Optical Computing</span>
-                                <span class="pub-keyword">Next-Gen Semiconductors</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="pub-item">
-                    <span class="pub-year">2018</span>
-                    <div class="pub-content">
-                        <h4>Metal-Assisted Slot Waveguide Biochemical Sensor</h4>
-                        <p class="pub-authors">L. Singh, <strong>S. Tidke</strong>, M. Kumar</p>
-                        <div class="pub-venue-box">
-                            <span class="pub-venue">3rd International Conference on Microwave and Photonics (ICMAP)</span>
-                            <span class="pub-prestige">✓ IEEE Conference Proceedings</span>
-                        </div>
-                        <div class="pub-significance">
-                            <p class="pub-significance-label">Major Significance</p>
-                            <p>Early disease detection saves lives and reduces healthcare costs — a national priority. This research presents a novel biosensor architecture that achieves higher sensitivity than conventional designs by confining light in a nanoscale slot waveguide. The metal-assisted design enables detection of disease biomarkers at concentrations 10x lower than existing commercial sensors, with applications in point-of-care diagnostics and environmental monitoring.</p>
-                            <div class="pub-keywords">
-                                <span class="pub-keyword">Biosensor Design</span>
-                                <span class="pub-keyword">Photonics</span>
-                                <span class="pub-keyword">Point-of-Care Diagnostics</span>
-                                <span class="pub-keyword">Sensitivity Enhancement</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <p style="margin-top: 28px; text-align: center;">
-                <a href="https://scholar.google.com/citations?user=HEZfkqsAAAAJ&hl=en&oi=ao" target="_blank" style="color: var(--navy); font-weight: 600; text-decoration: none;">
-                    📚 View Full Google Scholar Profile →
-                </a>
-            </p>
-        </div>
-    </section>
-
-    <!-- GALLERY -->
-    <section class="gallery bg-alt" id="gallery">
-        <div class="container">
-            <div class="section-header">
-                <p class="section-label">In the Lab</p>
-                <h2 class="section-title">Work Gallery</h2>
-            </div>
-            
-            <div class="gallery-grid">
-                <div class="gallery-item">
-                    <img src="./cleanroom_dwl.jpg" alt="Heidelberg DWL">
-                    <div class="gallery-label">Heidelberg DWL</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="./altinum.jpg" alt="Altium Designer 2D Layout">
-                    <div class="gallery-label">Altium 2D PCB Layout</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="./AFM_image.jpg" alt="AFM Surface Analysis">
-                    <div class="gallery-label">AFM Characterization</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="./OPAM_schematic.jpg" alt="Op-Amp Schematic">
-                    <div class="gallery-label">Op-Amp Circuit Design</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="./analog_acquisitions.jpg" alt="PCB Assembly">
-                    <div class="gallery-label">PCB Assembly</div>
-                </div>
-                <div class="gallery-item">
-                    <img src="./project_electrodes.png" alt="Fabricated Electrodes">
-                    <div class="gallery-label">Fabricated Electrodes</div>
-                </div>
-            </div>
-            
-            <p style="margin-top: 32px; text-align: center;">
-                <a href="https://www.ucf.edu/news/ucf-faculty-graduate-student-develop-organ-on-a-chip-technology-for-industry/" target="_blank" style="color: var(--navy); font-weight: 600; text-decoration: none;">
-                    📰 Featured in UCF News: "Organ-on-a-Chip Technology" →
-                </a>
-            </p>
-        </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section class="contact" id="contact">
-        <div class="container">
-            <div class="section-header">
-                <p class="section-label">Get In Touch</p>
-                <h2 class="section-title">Let's Connect</h2>
-            </div>
-            
-            <div class="contact-grid">
-                <div class="contact-text">
-                    <p>
-                        Interested in discussing opportunities? I'd love to hear from you. Whether it's a process engineering role, research position, or collaboration, reach out!
-                    </p>
-                    
-                    <div class="contact-links">
-                        <a href="mailto:surbhi.tidke@ucf.edu" class="contact-link">
-                            <span>✉️</span>
-                            <span>surbhi.tidke@ucf.edu</span>
-                        </a>
-                        <a href="https://www.linkedin.com/in/surbhitidke/" target="_blank" class="contact-link">
-                            <span>💼</span>
-                            <span>linkedin.com/in/surbhitidke</span>
-                        </a>
-                        <a href="https://scholar.google.com/citations?user=HEZfkqsAAAAJ&hl=en&oi=ao" target="_blank" class="contact-link">
-                            <span>📚</span>
-                            <span>Google Scholar</span>
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="contact-info">
-                    <h4>Location &amp; Availability</h4>
-                    <div class="contact-detail"><span>📍</span><span>Orlando, FL | Open to Relocation</span></div>
-                    <div class="contact-detail"><span>🎓</span><span>F-1 STEM OPT &amp; CPT Eligible</span></div>
-                    <div class="contact-detail"><span>💼</span><span>Seeking H-1B Sponsorship</span></div>
-                    <div class="contact-detail"><span>📅</span><span>PhD: Fall 2023 - Fall 2026</span></div>
-                    <div class="contact-detail"><span>🔬</span><span>NanoBioSensors &amp; Systems Lab</span></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <p>© 2026 Surbhi Tidke · PhD Candidate, UCF · Open to Process/MEMS/Hardware roles · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3f4c4a4d5d57564b565b545a7f58525e5653115c5052">[email&#160;protected]</a></p>
-        </div>
-    </footer>
-
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-        w
+<script>
+window.addEventListener('scroll', function() {
+  var nav = document.getElementById('nav');
+  if (window.scrollY > 50) { nav.classList.add('scrolled'); } else { nav.classList.remove('scrolled'); }
+});
+</script>
+</body>
+    </html>
