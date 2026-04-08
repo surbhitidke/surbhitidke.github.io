@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
       gtag('event', 'nav_click', { 'section_clicked': sectionName, 'event_category': 'navigation' });
     });
   });
-  var sectionsToTrack = ['about', 'skills', 'projects', 'publications', 'gallery', 'contact'];
+  var sectionsToTrack = ['about', 'skills', 'projects', 'publications', 'mentoring', 'gallery', 'contact'];
   var sectionObserver = new IntersectionObserver(function(entries) {
     entries.forEach(function(entry) {
       if (entry.isIntersecting) { gtag('event', 'section_view', { 'section_name': entry.target.id, 'event_category': 'engagement' }); }
@@ -194,6 +194,7 @@ footer { background: var(--gray-800); color: var(--gray-400); text-align: center
       <li><a href="#skills">Skills</a></li>
       <li><a href="#projects">Projects</a></li>
       <li><a href="#publications">Publications</a></li>
+      <li><a href="#mentoring">Mentoring</a></li>
       <li><a href="#gallery">Gallery</a></li>
       <li><a href="#contact" class="nav-cta">Contact</a></li>
     </ul>
@@ -470,7 +471,78 @@ footer { background: var(--gray-800); color: var(--gray-400); text-align: center
     </div>
     <div class="pub-list">
 
+      
       <div class="pub-item">
+        <span class="pub-year">2026</span>
+        <div class="pub-content">
+          <h4>Multi-modal Potentiometric and Impedimetric Analysis of Bio-transient pH via Transparent IDE Architectures for Integrated Organ-on-Chip Diagnostics</h4>
+          <p class="pub-authors"><strong>S. Tidke (First Author)</strong>, E. Heiser, S. Rajaraman</p>
+          <div class="pub-venue-box">
+            <span class="pub-venue">Journal of Microelectromechanical Systems (JMEMS) &mdash; In Preparation</span>
+            <span class="pub-prestige">&#10022; Target: Premier IEEE/ASME MEMS Journal</span>
+          </div>
+          <div class="pub-significance">
+            <span class="pub-significance-label">Major Significance:</span>
+            Continuous, real-time pH monitoring inside organ-on-chip systems is a missing capability in drug-screening pipelines. This work introduces transparent ITO interdigitated electrode arrays that simultaneously measure pH via two independent electrochemical modes &mdash; potentiometry and impedance spectroscopy &mdash; without blocking optical imaging. The dual-readout architecture provides built-in cross-validation, reducing measurement uncertainty for pharmaceutical researchers screening drug toxicity on living human tissue models. Directly addresses FDA push for animal-free drug testing alternatives.
+          </div>
+          <div class="pub-keywords">
+            <span class="pub-keyword">MEMS</span>
+            <span class="pub-keyword">Transparent Electrodes</span>
+            <span class="pub-keyword">Electrochemical Sensing</span>
+            <span class="pub-keyword">Organ-on-Chip</span>
+            <span class="pub-keyword">Drug Screening</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-item">
+        <span class="pub-year">2026</span>
+        <div class="pub-content">
+          <h4>Microfabricated On-Chip pH Sensors for Continuous Potentiometric Measurements for Organs-on-a-Chip</h4>
+          <p class="pub-authors"><strong>S. Tidke (First Author)</strong>, J. Chang, E. Heiser, S. Rajaraman</p>
+          <div class="pub-venue-box">
+            <span class="pub-venue">Hilton Head Workshop: A Solid-State Sensors, Actuators and Microsystems Workshop, 2026 &mdash; Accepted</span>
+            <span class="pub-prestige">&#10022; Elite MEMS Conference &middot; &lt;30% Acceptance Rate</span>
+          </div>
+          <div class="pub-significance">
+            <span class="pub-significance-label">Major Significance:</span>
+            Organ-on-chip systems require continuous, non-disruptive chemical monitoring to faithfully replicate human tissue responses to drugs and disease. This work presents microfabricated on-chip pH sensors capable of sustained potentiometric measurement within live microfluidic cell culture environments. Accepted at Hilton Head &mdash; the premier U.S. solid-state sensors workshop &mdash; this validates the electrode platform's readiness for integration into commercial organ-on-chip diagnostic products, directly supporting the $15B pharmaceutical drug development pipeline.
+          </div>
+          <div class="pub-keywords">
+            <span class="pub-keyword">Microfabrication</span>
+            <span class="pub-keyword">Potentiometry</span>
+            <span class="pub-keyword">pH Sensing</span>
+            <span class="pub-keyword">Organ-on-Chip</span>
+            <span class="pub-keyword">Microfluidics</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pub-item">
+        <span class="pub-year">2026</span>
+        <div class="pub-content">
+          <h4>Silane-Interlayer Engineering for Electron-Beam Deposited SiO&#8322; Thin Films on Polycarbonate for In Vitro Bioelectronic Devices</h4>
+          <p class="pub-authors"><strong>S. Tidke (First Author)</strong>, J. Chang, S. Mittal, S. Rajaraman</p>
+          <div class="pub-venue-box">
+            <span class="pub-venue">Materials Letters, 2026 &mdash; In Preparation</span>
+            <span class="pub-prestige">&#10022; Elsevier Materials Journal</span>
+          </div>
+          <div class="pub-significance">
+            <span class="pub-significance-label">Major Significance:</span>
+            Integrating inorganic thin films onto polymer substrates is a persistent yield and reliability challenge in flexible electronics and wearable biosensor manufacturing. This study engineers silane coupling chemistry (GPTMS vs APTMS) as an adhesion interlayer between electron-beam deposited SiO&#8322; and polycarbonate &mdash; a polymer widely used in microfluidic and organ-on-chip devices. The optimized process achieves robust adhesion with maintained optical transparency, providing a transferable process methodology for manufacturers of flexible diagnostics, lab-on-chip systems, and next-generation bioelectronic implants.
+          </div>
+          <div class="pub-keywords">
+            <span class="pub-keyword">Thin Film Adhesion</span>
+            <span class="pub-keyword">E-beam Deposition</span>
+            <span class="pub-keyword">Silane Chemistry</span>
+            <span class="pub-keyword">Polycarbonate</span>
+            <span class="pub-keyword">Bioelectronics</span>
+            <span class="pub-keyword">Yield Optimization</span>
+          </div>
+        </div>
+      </div>
+
+<div class="pub-item">
         <span class="pub-year">2025</span>
         <div class="pub-content">
           <h4>Embedded, Multimodal (TEER, EIS, Transparency) Sensing Chips for In Vitro Cellular Models</h4>
@@ -588,6 +660,81 @@ footer { background: var(--gray-800); color: var(--gray-400); text-align: center
     </p>
   </div>
 </section>
+
+
+<!-- MENTORING -->
+<section class="mentoring bg-alt" id="mentoring" style="padding: 80px 0;">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-label">Training &amp; Impact</p>
+                <h2 class="section-title">Mentoring &amp; Technology Transfer</h2>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px;">
+                <!-- Card 1: Student Mentoring -->
+                <div style="background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.06);">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <span style="font-size: 1.6rem;">&#127891;</span>
+                        <div>
+                            <h4 style="font-size: 1.05rem; margin: 0; color: var(--navy-dark);">Student Mentoring</h4>
+                            <p style="font-size: 0.82rem; color: var(--gray-500); margin: 2px 0 0 0;">UCF NBSS Lab &middot; 2023&ndash;Present</p>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.93rem; color: var(--gray-700); line-height: 1.7; margin-bottom: 14px;">
+                        Trained <strong>Omar Cepeda</strong> (PhD, Biomedical Engineering) from scratch in DWL photolithography, e-beam evaporation (Ti/Pt/ITO), and RIE plasma processing &mdash; he now independently fabricates multi-layer MEA prototypes.
+                    </p>
+                    <p style="font-size: 0.93rem; color: var(--gray-700); line-height: 1.7; margin-bottom: 14px;">
+                        Supervised <strong>5 undergraduate researchers</strong>:
+                    </p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px;">
+                        <span style="background: var(--navy-light); color: var(--white); padding: 4px 11px; border-radius: 20px; font-size: 0.8rem; font-weight: 500;">NSF REU &middot; Sonali Mittal</span>
+                        <span style="background: var(--navy-light); color: var(--white); padding: 4px 11px; border-radius: 20px; font-size: 0.8rem; font-weight: 500;">NSF REU &middot; Lia Garibay</span>
+                        <span style="background: var(--gray-200); color: var(--gray-700); padding: 4px 11px; border-radius: 20px; font-size: 0.8rem; font-weight: 500;">Maria</span>
+                        <span style="background: var(--gray-200); color: var(--gray-700); padding: 4px 11px; border-radius: 20px; font-size: 0.8rem; font-weight: 500;">Joseph</span>
+                        <span style="background: var(--gray-200); color: var(--gray-700); padding: 4px 11px; border-radius: 20px; font-size: 0.8rem; font-weight: 500;">Elizabeth</span>
+                    </div>
+                    <p style="font-size: 0.93rem; color: var(--gray-700); line-height: 1.7; margin-bottom: 0;">
+                        Each student trained in cleanroom protocols, device testing, and experimental design for microphysiological systems.
+                    </p>
+                </div>
+
+                <!-- Card 2: Technology Transfer -->
+                <div style="background: var(--white); border: 1px solid var(--gray-200); border-radius: 12px; padding: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.06);">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                        <span style="font-size: 1.6rem;">&#128279;</span>
+                        <div>
+                            <h4 style="font-size: 1.05rem; margin: 0; color: var(--navy-dark);">Multi-Institutional Technology Transfer</h4>
+                            <p style="font-size: 0.82rem; color: var(--gray-500); margin: 2px 0 0 0;">Research Collaboration Lead</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 14px;">
+                        <div style="padding: 14px 16px; background: var(--gray-50); border-left: 4px solid var(--navy); border-radius: 0 8px 8px 0;">
+                            <h4 style="font-size: 1.05rem; margin: 0; color: var(--navy-dark);">WPI / SynVivo (Industry)</h4>
+                            <p style="font-size: 0.82rem; color: var(--gray-500); margin: 2px 0 0 0;">Transferred multi-layer MEA electrode fabrication protocols and design files for use in commercial organ-on-chip platforms.</p>
+                        </div>
+                        <div style="padding: 14px 16px; background: var(--gray-50); border-left: 4px solid var(--navy); border-radius: 0 8px 8px 0;">
+                            <h4 style="font-size: 1.05rem; margin: 0; color: var(--navy-dark);">UCF &#215; Syracuse University</h4>
+                            <p style="font-size: 0.82rem; color: var(--gray-500); margin: 2px 0 0 0;">Co-developed multimodal electrode platforms and validated material compatibility for single-cell to tissue-scale microphysiological systems.</p>
+                        </div>
+                        <div style="padding: 14px 16px; background: var(--gray-50); border-left: 4px solid var(--navy); border-radius: 0 8px 8px 0;">
+                            <h4 style="font-size: 1.05rem; margin: 0; color: var(--navy-dark);">UTMB &mdash; Embryo &amp; Pregnancy Diagnostics</h4>
+                            <p style="font-size: 0.82rem; color: var(--gray-500); margin: 2px 0 0 0;">Provided fabrication, oxygen-sensing, and device design expertise supporting clinical-translation organ-on-chip diagnostic pathway.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SOPs banner -->
+            <div style="background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); border-radius: 12px; padding: 22px 28px; display: flex; align-items: center; gap: 20px;">
+                <span style="font-size: 2rem; flex-shrink: 0;">&#128203;</span>
+                <div>
+                    <p style="font-weight: 700; color: var(--white); margin: 0 0 4px 0; font-size: 1.05rem;">Cleanroom SOP Standardization</p>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 0.88rem; margin: 0; line-height: 1.7;">Authored and standardized cleanroom SOPs covering DWL lithography, e-beam deposition, RIE etching, and lift-off &mdash; enabling reproducible device fabrication across team members and three collaborative institutions.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
 
 <!-- GALLERY -->
 <section class="gallery bg-alt" id="gallery">
