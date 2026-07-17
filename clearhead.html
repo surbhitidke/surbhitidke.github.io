@@ -3,63 +3,87 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0071E3">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="ch-icon-180.png">
+<link rel="icon" type="image/png" href="ch-icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Clear Head">
 <title>Clear Head</title>
 <style>
   :root{
-    --bg:#FFFFFF; --card:#FFFFFF; --ink:#1D1D1F; --muted:#86868B; --line:#E8E8ED;
+    --bg:#FFFFFF; --card:#FFFFFF; --ink:#1D1D1F; --muted:#86868B; --line:#ECECF0;
     --blue:#0071E3; --blue-dk:#0060C2;
     --q1:#C93A2F; --q1bg:#FDF0EE; --q2:#0B7A5C; --q2bg:#ECF6F1;
     --q3:#B07B10; --q3bg:#FBF4E4; --q4:#6E6E73; --q4bg:#F2F2F4;
     --job:#5E5CE6; --jobbg:#EFEFFD; --place:#C2417B; --placebg:#FBEEF4;
     --groc:#2E7D32; --grocbg:#EDF5EE; --slide:#B25E09; --slidebg:#FBF1E6;
-    --shadow:0 0 0 1px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.05);
+    --shadow:0 0 0 1px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03), 0 6px 18px rgba(0,0,0,0.04);
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.5;padding-bottom:110px}
-  .hdr{position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.88);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,0.05)}
-  .hdr-in{max-width:680px;margin:0 auto;padding:12px 18px 14px}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.45;padding-bottom:108px}
+  .hdr{position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.85);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,0.05)}
+  .hdr-in{max-width:680px;margin:0 auto;padding:12px 16px 13px}
   .hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px}
   .hdr h1{font-size:20px;font-weight:700;letter-spacing:-0.02em;white-space:nowrap}
   .listSel{flex:1;min-width:0;display:flex;align-items:center;gap:6px;justify-content:flex-end}
-  select{font:inherit;font-size:14px;font-weight:600;border:1px solid var(--line);border-radius:10px;padding:6px 8px;background:var(--card);max-width:170px;color:var(--ink)}
+  select{font:inherit;font-size:14px;font-weight:600;border:1px solid var(--line);border-radius:10px;padding:6px 8px;background:var(--card);max-width:160px;color:var(--ink)}
   .iconBtn{border:none;background:var(--q4bg);color:var(--ink);border-radius:10px;padding:6px 10px;font-size:15px;cursor:pointer}
   .dump{display:flex;gap:8px}
   .dump input{flex:1;min-width:0;padding:12px 15px;border:none;border-radius:13px;font:inherit;background:var(--card);box-shadow:var(--shadow);outline:none;color:var(--ink)}
   .dump input::placeholder{color:var(--muted)}
-  .btn{border:none;border-radius:999px;font:inherit;font-weight:600;cursor:pointer;transition:transform .12s ease,background .15s ease}
+  .btn{border:none;border-radius:999px;font:inherit;font-weight:600;cursor:pointer;transition:transform .12s ease}
   .btn:active{transform:scale(0.95)}
   .btn-blue{background:var(--blue);color:#fff;padding:11px 18px;font-size:15px}
-  .btn-blue:hover{background:var(--blue-dk)}
-  .wrap{max-width:680px;margin:0 auto;padding:14px 18px}
-  .card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:14px 15px;margin-bottom:10px}
-  .itxt{font-size:15.5px;word-break:break-word}
-  .imeta{font-size:12px;color:var(--muted);margin-top:2px}
-  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
-  .chip{border:none;border-radius:999px;padding:7px 13px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:transform .12s}
+  .wrap{max-width:680px;margin:0 auto;padding:14px 16px}
+  .qhead{display:flex;align-items:center;gap:8px;margin:20px 2px 8px;font-size:13.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+  .qdot{width:8px;height:8px;border-radius:50%}
+  .group{background:var(--card);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+  .rowitem{display:flex;align-items:center;gap:10px;padding:11px 13px;border-bottom:1px solid var(--line);cursor:pointer}
+  .group .rowitem:last-child{border-bottom:none}
+  .ck{width:23px;height:23px;min-width:23px;border-radius:50%;border:1.5px solid #D5D5DA;background:none;cursor:pointer;font-size:12px;color:#fff;display:flex;align-items:center;justify-content:center;transition:all .15s}
+  .ck.done{background:var(--q2);border-color:var(--q2)}
+  .rtext{flex:1;min-width:0;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rtext.done-txt{text-decoration:line-through;color:var(--muted)}
+  .rbadge{font-size:11.5px;font-weight:600;border-radius:7px;padding:2px 7px;white-space:nowrap}
+  .b-date{background:var(--q4bg);color:var(--q4)}
+  .b-over{background:var(--q1bg);color:var(--q1)}
+  .b-cal{color:var(--q2);font-size:13px}
+  .pencil{border:none;background:none;font-size:15px;cursor:pointer;color:var(--muted);padding:2px 4px}
+  .byTag{font-size:10.5px;color:var(--muted);background:var(--q4bg);border-radius:6px;padding:1px 6px;margin-left:6px;font-weight:600}
+  .editor{padding:4px 13px 14px 46px;border-bottom:1px solid var(--line);background:#FAFAFC}
+  .editor input[type=text]{width:100%;font:inherit;font-size:15px;padding:9px 12px;border:1.5px solid var(--line);border-radius:11px;outline:none;margin-bottom:9px;background:#fff}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{border:none;border-radius:999px;padding:6px 12px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;transition:transform .12s;opacity:.92}
   .chip:active{transform:scale(0.95)}
+  .chip.sel{outline:2px solid currentColor}
   .c1{background:var(--q1bg);color:var(--q1)} .c2{background:var(--q2bg);color:var(--q2)}
   .c3{background:var(--q3bg);color:var(--q3)} .c4{background:var(--q4bg);color:var(--q4)}
   .cJob{background:var(--jobbg);color:var(--job)} .cPlace{background:var(--placebg);color:var(--place)}
   .cGroc{background:var(--grocbg);color:var(--groc)} .cSlide{background:var(--slidebg);color:var(--slide)}
   .cGray{background:var(--q4bg);color:var(--q4)}
-  .qhead{display:flex;align-items:center;gap:8px;margin:18px 0 8px;font-size:14px;font-weight:700}
-  .qdot{width:9px;height:9px;border-radius:50%}
-  .row{display:flex;align-items:flex-start;gap:11px}
-  .ck{width:24px;height:24px;min-width:24px;border-radius:50%;border:1.5px solid var(--line);background:none;cursor:pointer;margin-top:2px;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center}
-  .ck.done{background:var(--q2);border-color:var(--q2)}
-  .done-txt{text-decoration:line-through;color:var(--muted)}
-  .x{margin-left:auto;border:none;background:none;color:var(--muted);font-size:17px;cursor:pointer;padding:2px 6px}
-  .empty{text-align:center;color:var(--muted);padding:44px 20px;font-size:14.5px}
+  .datebar{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;align-items:center}
+  .datebar input{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:5px 8px;color:var(--ink);background:#fff}
+  /* Eisenhower matrix */
+  .matrix{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 2px}
+  .mcell{border-radius:14px;padding:10px 12px;cursor:pointer}
+  .mcell .mn{font-size:22px;font-weight:800;line-height:1.1}
+  .mcell .ml{font-size:11.5px;font-weight:700;opacity:.85}
+  .maxis{font-size:10.5px;color:var(--muted);text-align:center;margin:2px 0 6px;font-weight:600;letter-spacing:.04em}
+  /* upcoming */
+  .up{background:linear-gradient(135deg,#EEF4FF,#F7F9FF);border-radius:16px;box-shadow:var(--shadow);padding:4px 0;overflow:hidden}
+  .empty{text-align:center;color:var(--muted);padding:40px 20px;font-size:14.5px}
   .tabbar{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,0.06);padding-bottom:env(safe-area-inset-bottom)}
   .tabbar-in{max-width:680px;margin:0 auto;display:flex}
-  .tab{flex:1;border:none;background:none;padding:9px 2px 10px;cursor:pointer;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px}
-  .tab .ic{font-size:20px;line-height:1}
-  .tab .lb{font-size:10.5px;font-weight:600}
+  .tab{flex:1;border:none;background:none;padding:8px 0 9px;cursor:pointer;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px}
+  .tab .ic{font-size:19px;line-height:1}
+  .tab .lb{font-size:10px;font-weight:600}
   .tab.on{color:var(--blue)}
-  .toast{position:fixed;bottom:86px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;font-size:13.5px;font-weight:500;opacity:0;pointer-events:none;transition:all .25s;z-index:50;max-width:88vw;text-align:center}
+  .toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;font-size:13.5px;font-weight:500;opacity:0;pointer-events:none;transition:all .25s;z-index:50;max-width:88vw;text-align:center}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   .screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:28px;z-index:60;text-align:center}
-  .screen .big{font-size:48px}
+  .screen .big{font-size:52px}
   .screen h2{font-size:22px;font-weight:700}
   .screen p{color:var(--muted);font-size:14.5px;max-width:320px}
   .modal{position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:70;display:none;align-items:flex-end;justify-content:center}
@@ -71,30 +95,27 @@
   .memRow .em{flex:1;word-break:break-all}
   .addRow{display:flex;gap:8px;margin-top:14px}
   .addRow input{flex:1;min-width:0;padding:11px 13px;border:1.5px solid var(--line);border-radius:12px;font:inherit;outline:none}
-  .byTag{font-size:11px;color:var(--muted);background:var(--q4bg);border-radius:6px;padding:1px 6px;margin-left:6px}
-  .datebar{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
-  .datebar input{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:5px 8px;color:var(--ink);background:var(--card)}
+  .x{border:none;background:none;color:var(--muted);font-size:16px;cursor:pointer;padding:2px 6px}
+  .stat{display:flex;gap:8px;margin-bottom:4px}
+  .statCard{flex:1;background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:12px;text-align:center}
+  .statCard .n{font-size:24px;font-weight:800}
+  .statCard .l{font-size:11.5px;color:var(--muted);font-weight:600}
 </style>
 </head>
 <body>
 
-<!-- ===== SETUP NOTICE (shows only if config not filled) ===== -->
 <div id="setupScreen" class="screen" style="display:none">
-  <div class="big">🧩</div>
-  <h2>Almost there!</h2>
-  <p>This file needs your Firebase config pasted in. Open the file, find <b>PASTE-CONFIG-HERE</b>, and replace it with the config block from your Firebase console — or send the config to Claude and ask it to insert it for you.</p>
+  <div class="big">🧩</div><h2>Almost there!</h2>
+  <p>This file needs your Firebase config. Find <b>PASTE-CONFIG-HERE</b> in the file and replace it, or ask Claude to insert it.</p>
 </div>
 
-<!-- ===== LOGIN SCREEN ===== -->
 <div id="loginScreen" class="screen" style="display:none">
-  <div class="big">🧠</div>
-  <h2>Clear Head</h2>
-  <p>Dump every thought. File it. Share lists with family. Your items are saved to your account and follow you on every device.</p>
+  <div class="big">🧠</div><h2>Clear Head</h2>
+  <p>Dump every thought — it files itself. Share lists with family. Everything follows you on every device.</p>
   <button class="btn btn-blue" style="padding:13px 26px" onclick="doLogin()">Continue with Google</button>
   <div id="loginErr" style="color:var(--q1);font-size:13px"></div>
 </div>
 
-<!-- ===== APP ===== -->
 <div id="app" style="display:none">
 <div class="hdr"><div class="hdr-in">
   <div class="hdr-top">
@@ -103,11 +124,10 @@
       <select id="listPicker" onchange="pickList(this.value)"></select>
       <button class="iconBtn" title="Members" onclick="openMembers()">👥</button>
       <button class="iconBtn" title="New shared list" onclick="newList()">＋</button>
-      <button class="iconBtn" title="Sign out" onclick="fb.auth().signOut()">⎋</button>
     </div>
   </div>
   <div class="dump">
-    <input id="dumpInput" placeholder="Dump anything — task, place, grocery…" onkeydown="if(event.key==='Enter')addItem()">
+    <input id="dumpInput" placeholder="Dump anything — it files itself ✨" onkeydown="if(event.key==='Enter')addItem()">
     <button class="btn btn-blue" onclick="addItem()">Add</button>
   </div>
 </div></div>
@@ -120,14 +140,14 @@
   <button class="tab" data-t="places" onclick="go('places')"><span class="ic">📍</span><span class="lb">Places</span></button>
   <button class="tab" data-t="grocery" onclick="go('grocery')"><span class="ic">🛒</span><span class="lb">Grocery</span></button>
   <button class="tab" data-t="slides" onclick="go('slides')"><span class="ic">📚</span><span class="lb">Read</span></button>
+  <button class="tab" data-t="done" onclick="go('done')"><span class="ic">🏆</span><span class="lb">Done</span></button>
 </div></div>
 </div>
 
-<!-- ===== MEMBERS SHEET ===== -->
 <div class="modal" id="memModal" onclick="if(event.target===this)closeMembers()">
   <div class="sheet">
     <h3 id="memTitle">Members</h3>
-    <div class="sub">Everyone below can see, add, and tick items on this list. Add as many people as you like — just type the <b>Gmail address they use to sign in</b>. The list appears for them automatically.</div>
+    <div class="sub" id="memSub"></div>
     <div id="memList"></div>
     <div class="addRow">
       <input id="memInput" type="email" placeholder="family-member@gmail.com">
@@ -135,22 +155,18 @@
     </div>
     <div style="margin-top:16px;text-align:center">
       <button class="chip cGray" onclick="closeMembers()">Done</button>
-      <button class="chip c1" id="delListBtn" onclick="deleteList()" style="margin-left:8px">Delete this list</button>
+      <button class="chip c3" onclick="fb.auth().signOut();closeMembers()" style="margin-left:8px">Sign out</button>
+      <button class="chip c1" id="delListBtn" onclick="deleteList()" style="margin-left:8px">Delete list</button>
     </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- ===== FIREBASE ===== -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-/* ================================================================
-   PASTE YOUR FIREBASE CONFIG BETWEEN THE TWO LINES BELOW.
-   It looks like: { apiKey:"AIza...", authDomain:"...", projectId:"...", ... }
-   ================================================================ */
 const firebaseConfig = {
   apiKey: "AIzaSyAT-RmJNGUC6HmlcQrOIJlSqKR_GYAftKQ",
   authDomain: "clear-head-15fde.firebaseapp.com",
@@ -159,29 +175,73 @@ const firebaseConfig = {
   messagingSenderId: "58064712960",
   appId: "1:58064712960:web:279964bafcc3bd91baefe5"
 };
-/* ================================================================ */
 
 const QNAME={1:'Do now',2:'Schedule it',3:'Batch it',4:'Later, maybe'};
 const QCOLOR={1:'var(--q1)',2:'var(--q2)',3:'var(--q3)',4:'var(--q4)'};
+const QBG={1:'var(--q1bg)',2:'var(--q2bg)',3:'var(--q3bg)',4:'var(--q4bg)'};
 let fb=null, db=null, me=null, myEmail='';
-let lists=[], curList=null, items=[], tab='tasks';
-let unsubLists=null, unsubItems=null;
+let lists=[], curList=null, items=[], tab='tasks', openId=null;
+let unsubLists=null, unsubItems=null, firstSnap=true;
 
-function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2800);}
+function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2600);}
 function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
+function escAttr(s){return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
 function firstUrl(s){const m=(s||'').match(/https?:\/\/[^\s]+/);return m?m[0]:null;}
+function pad(n){return n<10?'0'+n:''+n;}
+function ymd(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
 
-/* ---------- boot ---------- */
+/* ================= AUTO-FILING BRAIN ================= */
+function parseWhen(text){
+  const t=text.toLowerCase(); const now=new Date(); let date='', time='';
+  const day0=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  if(/\btoday\b|\btonight\b/.test(t)) date=ymd(day0);
+  else if(/\btomorrow\b|\btmrw\b/.test(t)) date=ymd(new Date(day0.getTime()+864e5));
+  const days=['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+  for(let i=0;i<7;i++){const re=new RegExp('\\b(next\\s+)?'+days[i]+'\\b');const m=t.match(re);
+    if(m&&!date){let diff=(i-now.getDay()+7)%7; if(diff===0)diff=7; if(m[1])diff+= (diff<=0?7:0); date=ymd(new Date(day0.getTime()+diff*864e5)); break;}}
+  const months={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+  let m=t.match(/\b(\d{1,2})(?:st|nd|rd|th)?\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\b/)||
+        t.match(/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s+(\d{1,2})(?:st|nd|rd|th)?\b/);
+  if(m&&!date){const d1=isNaN(m[1])?parseInt(m[2]):parseInt(m[1]);const mo=months[isNaN(m[1])?m[1]:m[2]];
+    let y=now.getFullYear();const cand=new Date(y,mo,d1);if(cand<day0)y++;date=ymd(new Date(y,mo,d1));}
+  m=t.match(/\b(\d{4})-(\d{2})-(\d{2})\b/); if(m&&!date)date=m[0];
+  m=t.match(/\b(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?\b/);
+  if(m&&!date){let y=m[3]?(m[3].length===2?2000+parseInt(m[3]):parseInt(m[3])):now.getFullYear();
+    const cand=new Date(y,parseInt(m[1])-1,parseInt(m[2]));if(!m[3]&&cand<day0)y++;date=ymd(new Date(y,parseInt(m[1])-1,parseInt(m[2])));}
+  m=t.match(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/)||t.match(/\bat\s+(\d{1,2})(?::(\d{2}))?\b/)||t.match(/\b(\d{1,2}):(\d{2})\b/);
+  if(m){let hh=parseInt(m[1]),mm=m[2]?parseInt(m[2]):0;const ap=m[3];
+    if(ap==='pm'&&hh<12)hh+=12; if(ap==='am'&&hh===12)hh=0;
+    if(hh>=0&&hh<=23&&mm>=0&&mm<=59)time=pad(hh)+':'+pad(mm);}
+  return {date,time};
+}
+function classify(text){
+  const t=text.toLowerCase();
+  const {date,time}=parseWhen(text);
+  let cat='task', q=2;
+  if(/linkedin|recruiter|hiring|\bjob\b|postdoc|interview|apply|application|resume|\bcv\b|position|opening|referral/.test(t))cat='job';
+  else if(/restaurant|cafe|coffee shop|\bbar\b|park|museum|beach|temple|hotel|airbnb|attraction|brunch|dinner at|visit\b|trip to/.test(t))cat='place';
+  else if(/\bbuy\b|milk|eggs|bread|rice|paneer|atta|dal|vegetable|fruit|grocery|groceries|detergent|shampoo|diaper|snack|yogurt|butter|cheese|onion|tomato/.test(t))cat='grocery';
+  else if(/\bpaper\b|article|\bread\b|arxiv|\bbook\b|podcast|watch\b|video|lecture|tutorial|course/.test(t))cat='slide';
+  if(cat==='task'){
+    if(/someday|maybe|eventually|one day|would be nice/.test(t))q=4;
+    else if(/renew|form|dmv|insurance|bill|invoice|reply|respond|email .*back|schedule appt|book appointment|errand/.test(t))q=3;
+    else if(/urgent|asap|deadline|due|submit|defen[cs]e|committee|advisor|prof\b|exam/.test(t))q=1;
+    if(date){const diff=(new Date(date)-new Date(ymd(new Date())))/864e5;
+      if(diff<=3)q=1; else if(q===4)q=2;}
+  }
+  return {cat,q:cat==='task'?q:0,date,time};
+}
+
+/* ================= BOOT ================= */
 if(typeof firebaseConfig==='string'){
   document.getElementById('setupScreen').style.display='flex';
 }else{
   fb=firebase; fb.initializeApp(firebaseConfig); db=fb.firestore();
-  fb.auth().onAuthStateChanged(async u=>{
+  fb.auth().onAuthStateChanged(u=>{
     if(u){ me=u; myEmail=(u.email||'').toLowerCase();
       document.getElementById('loginScreen').style.display='none';
       document.getElementById('app').style.display='block';
-      render();
-      watchLists();
+      render(); watchLists();
       if('Notification' in window && Notification.permission==='default') setTimeout(askNotify,2500);
     } else {
       me=null; if(unsubLists)unsubLists(); if(unsubItems)unsubItems();
@@ -194,15 +254,25 @@ function doLogin(){
   const p=new fb.auth.GoogleAuthProvider();
   fb.auth().signInWithPopup(p).catch(()=>fb.auth().signInWithRedirect(p));
 }
+function askNotify(){
+  if(!('Notification' in window))return;
+  Notification.requestPermission().then(p=>{if(p==='granted')toast('Notifications on 🔔');});
+}
+function notifyMe(title,body){
+  toast(title+' '+body);
+  if('Notification' in window && Notification.permission==='granted' && document.hidden){
+    try{new Notification(title,{body});}catch(e){}
+  }
+}
 
-/* ---------- lists ---------- */
+/* ================= LISTS ================= */
 function watchLists(){
   if(unsubLists)unsubLists();
   unsubLists=db.collection('lists').where('members','array-contains',myEmail)
     .onSnapshot(async snap=>{
       lists=snap.docs.map(d=>({id:d.id,...d.data()}));
       lists.sort((a,b)=>(a.personal?-1:1)-(b.personal?-1:1)||(a.name||'').localeCompare(b.name||''));
-      if(!lists.length){ // first login: create private list
+      if(!lists.length){
         await db.collection('lists').add({name:'My List',personal:true,owner:me.uid,ownerEmail:myEmail,members:[myEmail],created:Date.now()});
         return;
       }
@@ -215,33 +285,33 @@ function renderPicker(){
   const p=document.getElementById('listPicker');
   p.innerHTML=lists.map(l=>`<option value="${l.id}" ${curList&&l.id===curList.id?'selected':''}>${l.personal?'🔒 ':'👥 '}${esc(l.name)}</option>`).join('');
 }
-function pickList(id){curList=lists.find(l=>l.id===id);watchItems();}
+function pickList(id){curList=lists.find(l=>l.id===id);openId=null;watchItems();}
 async function newList(){
   const n=prompt('Name the shared list (e.g. "Trip to Miami", "Family")'); if(!n)return;
   const ref=await db.collection('lists').add({name:n.trim(),personal:false,owner:me.uid,ownerEmail:myEmail,members:[myEmail],created:Date.now()});
-  curList=null; toast('List created — now add members with 👥');
-  setTimeout(()=>{const l=lists.find(x=>x.id===ref.id);if(l){curList=l;renderPicker();watchItems();openMembers();}},600);
+  toast('List created — add members with 👥');
+  setTimeout(()=>{const l=lists.find(x=>x.id===ref.id);if(l){curList=l;renderPicker();watchItems();openMembers();}},700);
 }
 async function deleteList(){
   if(!curList)return;
   if(curList.personal){toast("Your private list can't be deleted");return;}
-  if(curList.owner!==me.uid){toast('Only the person who created the list can delete it');return;}
+  if(curList.owner!==me.uid){toast('Only the creator can delete this list');return;}
   if(!confirm('Delete "'+curList.name+'" for everyone?'))return;
   await db.collection('lists').doc(curList.id).delete(); closeMembers(); toast('List deleted');
 }
 
-/* ---------- members ---------- */
+/* ================= MEMBERS ================= */
 function openMembers(){
   if(!curList)return;
   document.getElementById('memTitle').textContent='Members · '+curList.name;
+  document.getElementById('memSub').innerHTML='You are signed in as <b>'+esc(myEmail)+'</b>.'+(curList.personal?' This list is private to you — create a shared list with ＋ to work with family.':' Everyone below can see, add, and tick items. Add any number of people by the Gmail they sign in with — the list appears for them automatically.');
   document.getElementById('delListBtn').style.display=(curList.personal||curList.owner!==me.uid)?'none':'inline-block';
   renderMembers();
   document.getElementById('memModal').classList.add('show');
 }
 function closeMembers(){document.getElementById('memModal').classList.remove('show');}
 function renderMembers(){
-  const box=document.getElementById('memList');
-  box.innerHTML=(curList.members||[]).map(em=>`
+  document.getElementById('memList').innerHTML=(curList.members||[]).map(em=>`
     <div class="memRow"><span>${em===myEmail?'🙋':'👤'}</span><span class="em">${esc(em)}${em===(curList.ownerEmail||'')?' <span class="byTag">owner</span>':''}</span>
     ${em!==myEmail&&curList.owner===me.uid?`<button class="x" onclick="removeMember('${em}')">✕</button>`:''}</div>`).join('');
 }
@@ -252,21 +322,14 @@ async function addMember(){
   if((curList.members||[]).includes(em)){toast('Already a member');return;}
   await db.collection('lists').doc(curList.id).update({members:fb.firestore.FieldValue.arrayUnion(em)});
   curList.members.push(em); renderMembers(); el.value='';
-  toast('Added! Tell them to open this same link and sign in with '+em);
+  toast('Added! They open the same link and sign in with '+em);
 }
 async function removeMember(em){
   await db.collection('lists').doc(curList.id).update({members:fb.firestore.FieldValue.arrayRemove(em)});
   curList.members=curList.members.filter(x=>x!==em); renderMembers();
 }
 
-/* ---------- items ---------- */
-let firstSnap=true;
-function notifyMe(title,body){
-  toast(title+' '+body);
-  if('Notification' in window && Notification.permission==='granted' && document.hidden){
-    try{new Notification(title,{body:body});}catch(e){}
-  }
-}
+/* ================= ITEMS ================= */
 function watchItems(){
   if(unsubItems)unsubItems();
   if(!curList){items=[];render();return;}
@@ -285,134 +348,147 @@ function watchItems(){
       items=snap.docs.map(d=>({id:d.id,...d.data()}));render();
     },e=>{document.getElementById('tabContent').innerHTML='<div class="empty">⚠️ Could not load items:<br>'+esc(e.message)+'<br><br>Check the Firestore Rules were published, then refresh.</div>';});
 }
-function askNotify(){
-  if(!('Notification' in window)){toast('Notifications not supported in this browser');return;}
-  Notification.requestPermission().then(p=>toast(p==='granted'?'Notifications on 🔔':'Notifications blocked — enable in browser settings'));
-}
 function addItem(){
   const el=document.getElementById('dumpInput'); const t=el.value.trim(); if(!t||!curList)return;
-  db.collection('lists').doc(curList.id).collection('items').add({text:t,cat:'inbox',q:0,date:'',time:'',done:false,by:myEmail.split('@')[0],created:Date.now()});
+  const c=classify(t);
+  db.collection('lists').doc(curList.id).collection('items').add({
+    text:t,cat:c.cat,q:c.q,date:c.date,time:c.time,done:false,calAdded:false,
+    by:myEmail.split('@')[0],created:Date.now()});
   el.value=''; el.focus();
+  const label=c.cat==='task'?QNAME[c.q]:({job:'Jobs',place:'Places',grocery:'Grocery',slide:'Read'})[c.cat];
+  toast('✨ Filed under '+label+(c.date?' · 📅 '+c.date:'')+' — tap ✏️ to change');
 }
 function upd(id,patch){db.collection('lists').doc(curList.id).collection('items').doc(id).update(patch);}
-function delItem(id){db.collection('lists').doc(curList.id).collection('items').doc(id).delete();}
-function setCat(id,cat){upd(id,{cat,q:0});if(cat!=='task')toast('Filed under '+cat);}
+function delItem(id){if(openId===id)openId=null;db.collection('lists').doc(curList.id).collection('items').doc(id).delete();}
+function setCat(id,cat){upd(id,{cat,q:0});}
 function setQ(id,q){upd(id,{cat:'task',q});}
-function toggleDone(id,cur){upd(id,{done:!cur,doneAt:!cur?Date.now():null,doneBy:!cur?myEmail.split('@')[0]:null});}
+function toggleDone(ev,id,cur){if(ev)ev.stopPropagation();
+  upd(id,{done:!cur,doneAt:!cur?Date.now():null,doneBy:!cur?myEmail.split('@')[0]:null});
+  if(!cur)toast('🏆 Nice! Moved to Done');}
 function setDate(id,v){upd(id,{date:v});}
 function setTime(id,v){upd(id,{time:v});}
+function setText(id,v){const t=v.trim();if(t)upd(id,{text:t});}
+function togglePencil(ev,id){if(ev)ev.stopPropagation();openId=(openId===id)?null:id;render();}
 
-/* ---------- keyword auto-file ---------- */
-function keywordSort(){
-  const inbox=items.filter(i=>i.cat==='inbox'); let n=0;
-  for(const it of inbox){
-    const t=it.text.toLowerCase(); let cat,q=0;
-    if(/linkedin|recruiter|hiring|job|postdoc|interview|apply|application|resume|position|opening/.test(t))cat='job';
-    else if(/restaurant|cafe|coffee|bar|park|museum|visit|beach|temple|hotel|attraction/.test(t))cat='place';
-    else if(/buy|milk|eggs|bread|rice|vegetable|fruit|grocery|detergent|shampoo|diaper|snack|paneer|atta|dal/.test(t))cat='grocery';
-    else if(/paper|article|read|conference|slide|talk|lecture|video|watch|book/.test(t))cat='slide';
-    else{cat='task';q=/urgent|asap|today|tomorrow|deadline|due|book |confirm/.test(t)?1:2;}
-    upd(it.id,{cat,q}); n++;
-  }
-  toast(n?('Filed '+n+' items — review with the chips'):'Inbox is empty');
-}
-
-/* ---------- calendar & maps ---------- */
-function pad(n){return n<10?'0'+n:''+n;}
+/* ================= CALENDAR & MAPS ================= */
 function toGCal(id){const t=items.find(x=>x.id===id);if(!t.date){toast('Pick a date first');return;}
   const[y,m,d]=t.date.split('-').map(Number);let g;
-  if(t.time){const[hh,mm]=t.time.split(':').map(Number);const s=new Date(y,m-1,d,hh,mm),e=new Date(s.getTime()+3600000);
+  if(t.time){const[hh,mm]=t.time.split(':').map(Number);const s=new Date(y,m-1,d,hh,mm),e=new Date(s.getTime()+36e5);
     const f=dt=>dt.getFullYear()+pad(dt.getMonth()+1)+pad(dt.getDate())+'T'+pad(dt.getHours())+pad(dt.getMinutes())+'00';g=f(s)+'/'+f(e);}
   else{const nx=new Date(y,m-1,d+1);const fd=dt=>dt.getFullYear()+pad(dt.getMonth()+1)+pad(dt.getDate());g=fd(new Date(y,m-1,d))+'/'+fd(nx);}
+  upd(id,{calAdded:true});
   window.open('https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(t.text)+'&dates='+g,'_blank');}
 function toOutlook(id){const t=items.find(x=>x.id===id);if(!t.date){toast('Pick a date first');return;}
   const nx=new Date(t.date);nx.setDate(nx.getDate()+1);
   let u='https://outlook.live.com/calendar/0/deeplink/compose?subject='+encodeURIComponent(t.text)+'&startdt='+t.date+'&enddt='+nx.toISOString().slice(0,10);
-  if(!t.time)u+='&allday=true';window.open(u,'_blank');}
+  if(!t.time)u+='&allday=true';
+  upd(id,{calAdded:true});
+  window.open(u,'_blank');}
 function openMaps(id){const t=items.find(x=>x.id===id);
   window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(t.text.replace(/https?:\/\/[^\s]+/g,'').trim()||t.text),'_blank');}
 
-/* ---------- render ---------- */
-function go(t){tab=t;render();window.scrollTo({top:0});}
-function itemCard(t,extra){ 
+/* ================= RENDER ================= */
+function go(t){tab=t;openId=null;render();window.scrollTo({top:0});}
+function dateBadge(t){
+  if(!t.date)return '';
+  const today=ymd(new Date());
+  const diff=Math.round((new Date(t.date)-new Date(today))/864e5);
+  let lbl=t.date.slice(5).replace('-','/');
+  if(diff===0)lbl='Today';else if(diff===1)lbl='Tmrw';else if(diff===-1)lbl='Yday';
+  if(t.time)lbl+=' '+t.time;
+  return `<span class="rbadge ${diff<0&&!t.done?'b-over':'b-date'}">${lbl}</span>`;
+}
+function rowHTML(t,opts){
+  opts=opts||{};
+  const shared=curList&&!curList.personal;
+  return `<div class="rowitem" onclick="togglePencil(null,'${t.id}')">
+    <button class="ck ${t.done?'done':''}" onclick="toggleDone(event,'${t.id}',${!!t.done})">${t.done?'✓':''}</button>
+    <span class="rtext ${t.done?'done-txt':''}">${esc(t.text)}${shared&&t.by?`<span class="byTag">${esc(t.by)}</span>`:''}</span>
+    ${t.calAdded&&t.date?'<span class="b-cal">🗓✓</span>':''}
+    ${dateBadge(t)}
+    <button class="pencil" onclick="togglePencil(event,'${t.id}')">✏️</button>
+  </div>${openId===t.id?editorHTML(t):''}`;
+}
+function editorHTML(t){
   const u=firstUrl(t.text);
-  return `<div class="card"><div class="row">
-    <button class="ck ${t.done?'done':''}" onclick="toggleDone('${t.id}',${t.done})">${t.done?'✓':''}</button>
-    <div style="flex:1;min-width:0">
-      <div class="itxt ${t.done?'done-txt':''}">${esc(t.text)}${curList&&!curList.personal&&t.by?`<span class="byTag">${esc(t.by)}</span>`:''}</div>
-      ${t.date?`<div class="imeta">📅 ${t.date}${t.time?' · '+t.time:''}</div>`:''}
-      ${extra||''}
-      ${u?`<div class="chips"><button class="chip cGray" onclick="window.open('${u}','_blank')">Open link ↗</button></div>`:''}
+  let cats='';
+  for(let q=1;q<=4;q++)cats+=`<button class="chip c${q} ${t.cat==='task'&&t.q===q?'sel':''}" onclick="event.stopPropagation();setQ('${t.id}',${q})">${QNAME[q]}</button>`;
+  cats+=`<button class="chip cJob ${t.cat==='job'?'sel':''}" onclick="event.stopPropagation();setCat('${t.id}','job')">Job</button>
+  <button class="chip cPlace ${t.cat==='place'?'sel':''}" onclick="event.stopPropagation();setCat('${t.id}','place')">Place</button>
+  <button class="chip cGroc ${t.cat==='grocery'?'sel':''}" onclick="event.stopPropagation();setCat('${t.id}','grocery')">Grocery</button>
+  <button class="chip cSlide ${t.cat==='slide'?'sel':''}" onclick="event.stopPropagation();setCat('${t.id}','slide')">Read</button>`;
+  return `<div class="editor" onclick="event.stopPropagation()">
+    <input type="text" value="${escAttr(t.text)}" onchange="setText('${t.id}',this.value)" placeholder="Edit text…">
+    <div class="chips">${cats}</div>
+    <div class="datebar">
+      <input type="date" value="${t.date||''}" onchange="setDate('${t.id}',this.value)">
+      <input type="time" value="${t.time||''}" onchange="setTime('${t.id}',this.value)">
+      <button class="chip cGray" onclick="toGCal('${t.id}')">＋ GCal</button>
+      <button class="chip cGray" onclick="toOutlook('${t.id}')">＋ Outlook</button>
+      ${t.cat==='place'?`<button class="chip cPlace" onclick="openMaps('${t.id}')">📍 Maps</button>`:''}
+      ${u?`<button class="chip cGray" onclick="window.open('${u}','_blank')">Open link ↗</button>`:''}
+      <button class="chip c1" onclick="delItem('${t.id}')">Delete</button>
     </div>
-    <button class="x" onclick="delItem('${t.id}')">✕</button>
-  </div></div>`;
-}
-function taskExtras(t){
-  let h='<div class="chips">';
-  for(let q=1;q<=4;q++){if(q!==t.q)h+=`<button class="chip c${q}" onclick="setQ('${t.id}',${q})">${QNAME[q]}</button>`;}
-  h+=`<button class="chip cPlace" onclick="setCat('${t.id}','place')">→ Places</button>
-      <button class="chip cGroc" onclick="setCat('${t.id}','grocery')">→ Grocery</button></div>
-      <div class="datebar">
-        <input type="date" value="${t.date||''}" onchange="setDate('${t.id}',this.value)">
-        <input type="time" value="${t.time||''}" onchange="setTime('${t.id}',this.value)">
-        <button class="chip cGray" onclick="toGCal('${t.id}')">＋ GCal</button>
-        <button class="chip cGray" onclick="toOutlook('${t.id}')">＋ Outlook</button>
-      </div>`;
-  return h;
-}
-function inboxExtras(t){
-  return `<div class="chips">
-    <button class="chip c1" onclick="setQ('${t.id}',1)">Do now</button>
-    <button class="chip c2" onclick="setQ('${t.id}',2)">Schedule</button>
-    <button class="chip c3" onclick="setQ('${t.id}',3)">Batch</button>
-    <button class="chip c4" onclick="setQ('${t.id}',4)">Later</button>
-    <button class="chip cJob" onclick="setCat('${t.id}','job')">Job</button>
-    <button class="chip cPlace" onclick="setCat('${t.id}','place')">Place</button>
-    <button class="chip cGroc" onclick="setCat('${t.id}','grocery')">Grocery</button>
-    <button class="chip cSlide" onclick="setCat('${t.id}','slide')">Read</button>
   </div>`;
 }
+function groupHTML(arr){return arr.length?`<div class="group">${arr.map(t=>rowHTML(t)).join('')}</div>`:'';}
 function render(){
   document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.t===tab));
   const w=document.getElementById('tabContent'); let h='';
-  const inbox=items.filter(i=>i.cat==='inbox');
+  const act=items.filter(i=>!i.done);
   if(tab==='tasks'){
-    if(inbox.length){
-      h+=`<div class="qhead"><span>📥 Inbox · ${inbox.length}</span>
-          <button class="chip cGray" style="margin-left:auto" onclick="keywordSort()">⚡ File it all</button></div>`;
-      inbox.forEach(t=>h+=itemCard(t,inboxExtras(t)));
+    // Next 2 days
+    const today=new Date(ymd(new Date()));
+    const soon=act.filter(i=>i.date).map(i=>({...i,_d:Math.round((new Date(i.date)-today)/864e5)}))
+      .filter(i=>i._d>=0&&i._d<=2).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'99').localeCompare(b.time||'99'));
+    if(soon.length){
+      h+=`<div class="qhead"><span>⏰ Next 2 days</span><span style="margin-left:auto;font-weight:500;text-transform:none;letter-spacing:0">mentally prepare 💪</span></div>`;
+      h+=`<div class="up">${soon.map(t=>rowHTML(t)).join('')}</div>`;
     }
+    // Eisenhower matrix
+    const cnt={};for(let q=1;q<=4;q++)cnt[q]=act.filter(i=>i.cat==='task'&&i.q===q).length;
+    h+=`<div class="qhead"><span>🧭 Where your head is</span></div>
+    <div class="maxis">← URGENT · · · NOT URGENT →</div>
+    <div class="matrix">
+      ${[1,2,3,4].map(q=>`<div class="mcell" style="background:${QBG[q]};color:${QCOLOR[q]}" onclick="document.getElementById('q${q}')?.scrollIntoView({behavior:'smooth',block:'start'})">
+        <div class="mn">${cnt[q]}</div><div class="ml">${QNAME[q]}</div></div>`).join('')}
+    </div>`;
+    // Inbox (legacy unfiled)
+    const inbox=act.filter(i=>i.cat==='inbox');
+    if(inbox.length){h+=`<div class="qhead">📥 Unfiled · ${inbox.length}</div>`+groupHTML(inbox);}
+    // Quadrants
     for(let q=1;q<=4;q++){
-      const g=items.filter(i=>i.cat==='task'&&i.q===q&&!i.done);
-      if(g.length){h+=`<div class="qhead"><span class="qdot" style="background:${QCOLOR[q]}"></span>${QNAME[q]} · ${g.length}</div>`;
-        g.forEach(t=>h+=itemCard(t,taskExtras(t)));}
+      const g=act.filter(i=>i.cat==='task'&&i.q===q);
+      if(g.length){h+=`<div class="qhead" id="q${q}"><span class="qdot" style="background:${QCOLOR[q]}"></span>${QNAME[q]} · ${g.length}</div>`+groupHTML(g);}
     }
-    if(!inbox.length&&!items.some(i=>i.cat==='task'&&!i.done))h+='<div class="empty">Head is clear ✨<br>Dump a thought above.</div>';
+    if(!act.some(i=>i.cat==='task'||i.cat==='inbox')&&!soon.length)h+='<div class="empty">Head is clear ✨<br>Dump a thought above — it files itself.</div>';
+  }
+  else if(tab==='done'){
     const doneItems=items.filter(i=>i.done).sort((a,b)=>(b.doneAt||0)-(a.doneAt||0));
-    if(doneItems.length){
-      h+=`<div class="qhead" style="margin-top:26px"><span>🏆 Completed · ${doneItems.length}</span>
-          <span style="margin-left:auto;font-size:12px;color:var(--muted);font-weight:500">your record — be proud</span></div>`;
-      doneItems.forEach(t=>{
+    const week=doneItems.filter(i=>i.doneAt&&Date.now()-i.doneAt<7*864e5).length;
+    h+=`<div class="stat">
+      <div class="statCard"><div class="n">🏆 ${doneItems.length}</div><div class="l">ALL-TIME DONE</div></div>
+      <div class="statCard"><div class="n">🔥 ${week}</div><div class="l">THIS WEEK</div></div>
+    </div>`;
+    if(!doneItems.length)h+='<div class="empty">Complete your first task and start the record! 🏁</div>';
+    else{
+      h+=`<div class="qhead">Your record — be proud</div><div class="group">`;
+      h+=doneItems.map(t=>{
         const when=t.doneAt?new Date(t.doneAt).toLocaleDateString(undefined,{month:'short',day:'numeric'}):'';
-        h+=`<div class="card" style="opacity:.75"><div class="row">
-          <button class="ck done" onclick="toggleDone('${t.id}',true)">✓</button>
-          <div style="flex:1;min-width:0"><div class="itxt done-txt">${esc(t.text)}</div>
-          <div class="imeta">✓ ${t.doneBy?esc(t.doneBy)+' · ':''}${when}</div></div>
-          <button class="x" onclick="delItem('${t.id}')">✕</button></div></div>`;
-      });
+        return `<div class="rowitem" style="opacity:.8">
+          <button class="ck done" onclick="toggleDone(event,'${t.id}',true)">✓</button>
+          <span class="rtext done-txt">${esc(t.text)}</span>
+          <span class="rbadge b-date">✓ ${t.doneBy?esc(t.doneBy)+' · ':''}${when}</span>
+          <button class="x" onclick="event.stopPropagation();delItem('${t.id}')">✕</button>
+        </div>`;}).join('');
+      h+='</div><div style="text-align:center;color:var(--muted);font-size:12px;margin-top:10px">Tap ✓ to bring one back to active</div>';
     }
-  } else {
+  }
+  else{
     const map={jobs:'job',places:'place',grocery:'grocery',slides:'slide'};
-    const all=items.filter(i=>i.cat===map[tab]);
-    const g=all.filter(i=>!i.done), gd=all.filter(i=>i.done);
-    if(!all.length)h='<div class="empty">Nothing here yet.</div>';
-    g.forEach(t=>{
-      let ex='';
-      if(tab==='places')ex=`<div class="chips"><button class="chip cPlace" onclick="openMaps('${t.id}')">📍 Maps</button><button class="chip cGray" onclick="setQ('${t.id}',2)">→ Make it a task</button></div>`;
-      else ex=`<div class="chips"><button class="chip cGray" onclick="setQ('${t.id}',2)">→ Make it a task</button></div>`;
-      h+=itemCard(t,ex);
-    });
-    if(gd.length){h+=`<div class="qhead" style="margin-top:22px">🏆 Completed · ${gd.length}</div>`;gd.forEach(t=>h+=itemCard(t,''));}
+    const g=act.filter(i=>i.cat===map[tab]);
+    if(!g.length)h='<div class="empty">Nothing here yet.</div>';
+    else h=groupHTML(g);
   }
   w.innerHTML=h;
 }
