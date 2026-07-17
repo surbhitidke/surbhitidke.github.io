@@ -31,6 +31,11 @@
   select{font:inherit;font-size:14px;font-weight:600;border:1px solid var(--line);border-radius:10px;padding:6px 8px;background:var(--card);max-width:160px;color:var(--ink)}
   .iconBtn{border:none;background:var(--q4bg);color:var(--ink);border-radius:10px;padding:6px 10px;font-size:15px;cursor:pointer}
   .dump{display:flex;gap:8px}
+  .composeRow{display:flex;gap:6px;overflow-x:auto;padding:9px 0 1px;-webkit-overflow-scrolling:touch;scrollbar-width:none;align-items:center}
+  .composeRow::-webkit-scrollbar{display:none}
+  .composeRow .chip{flex:0 0 auto}
+  .composeRow input{flex:0 0 auto;font:inherit;font-size:12.5px;border:1px solid var(--line);border-radius:9px;padding:5px 7px;background:var(--card);color:var(--ink)}
+  .cAuto{background:linear-gradient(135deg,#E8F1FF,#EFEAFE);color:var(--blue);font-weight:700}
   .dump input{flex:1;min-width:0;padding:12px 15px;border:none;border-radius:13px;font:inherit;background:var(--card);box-shadow:var(--shadow);outline:none;color:var(--ink)}
   .dump input::placeholder{color:var(--muted)}
   .btn{border:none;border-radius:999px;font:inherit;font-weight:600;cursor:pointer;transition:transform .12s ease}
@@ -165,9 +170,10 @@
     </div>
   </div>
   <div class="dump">
-    <input id="dumpInput" placeholder="Try: dentist tuesday 3pm — it files itself ✨" onkeydown="if(event.key==='Enter')addItem()">
+    <input id="dumpInput" placeholder="Try: dentist tuesday 3pm — it files itself ✨" oninput="renderCompose()" onkeydown="if(event.key==='Enter')addItem()">
     <button class="btn btn-blue" onclick="addItem()">Add</button>
   </div>
+  <div class="composeRow" id="composeRow"></div>
 </div></div>
 
 <div class="wrap" id="tabContent"></div>
@@ -233,6 +239,25 @@ const QBG={1:'var(--q1bg)',2:'var(--q2bg)',3:'var(--q3bg)',4:'var(--q4bg)'};
 let fb=null, db=null, me=null, myEmail='';
 let lists=[], curList=null, items=[], tab='tasks', openId=null;
 let qFilter=null;
+/* ===== Compose bar: choose while typing; Auto chip shows live guess ===== */
+let composeCat=null, composeDate='', composeTime='';
+const CATLBL={job:'Job 💼',place:'Place 📍',grocery:'Grocery 🛒',slide:'Read 📚'};
+function setComposeCat(k){composeCat=(composeCat===k)?null:k;renderCompose();
+  const d=document.getElementById('dumpInput');if(d&&d.focus)d.focus();}
+function renderCompose(){
+  const el=document.getElementById('composeRow'); if(!el)return;
+  const d=document.getElementById('dumpInput');
+  const txt=(d&&d.value)?d.value.trim():'';
+  let gLabel='';
+  if(txt&&composeCat===null){const g=classify(txt);gLabel=g.cat==='task'?QNAME[g.q]:CATLBL[g.cat];}
+  const chip=(key,label,cls)=>`<button class="chip ${cls} ${composeCat===key?'sel':''}" onclick="setComposeCat('${key}')">${label}</button>`;
+  el.innerHTML=
+    `<button class="chip cAuto ${composeCat===null?'sel':''}" onclick="setComposeCat(null)">✨ Auto${gLabel?' → '+gLabel:''}</button>`
+    +chip('q1',QNAME[1],'c1')+chip('q2',QNAME[2],'c2')+chip('q3',QNAME[3],'c3')+chip('q4',QNAME[4],'c4')
+    +chip('job','Job','cJob')+chip('place','Place','cPlace')+chip('grocery','Grocery','cGroc')+chip('slide','Read','cSlide')
+    +`<input type="date" value="${composeDate}" onchange="composeDate=this.value">`
+    +`<input type="time" value="${composeTime}" onchange="composeTime=this.value">`;
+}
 let unsubLists=null, unsubItems=null, firstSnap=true;
 
 function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2600);}
@@ -291,7 +316,13 @@ function classify(text){
   if(/linkedin|recruiter|hiring|\bjob\b|postdoc|interview|apply|application|resume|\bcv\b|position|opening|referral/.test(t))cat='job';
   else if(/restaurant|cafe|coffee shop|\bbar\b|park|museum|beach|temple|hotel|airbnb|attraction|brunch|dinner at|visit\b|trip to/.test(t))cat='place';
   else if(/\bbuy\b|milk|eggs|bread|rice|paneer|atta|dal|vegetable|fruit|grocery|groceries|detergent|shampoo|diaper|snack|yogurt|butter|cheese|onion|tomato/.test(t))cat='grocery';
-  else if(/\bpaper\b|article|\bread\b|arxiv|\bbook\b|podcast|watch\b|video|lecture|tutorial|course/.test(t))cat='slide';
+  else{
+    // "book a cab / book tickets / book appointment" = doing, not reading
+    const bookingVerb=/\bbook(?:ed|ing)?\s+(?:a|an|the|my|our|flights?|tickets?|cab|taxi|uber|ola|table|appointments?|appt|rooms?|slots?|doctor|dentist|salon|test|seats?)\b/.test(t);
+    const readSignal=/\bpapers?\b|\barticles?\b|\bread\b|\barxiv\b|\bnovels?\b|\bpodcasts?\b|\blectures?\b|\btutorials?\b|\bcourses?\b|\byoutube\b|\bdocumentary\b|watch\s+(?:a\s+|the\s+|this\s+)?(?:movie|video|film|series|show|documentary|lecture)\b/.test(t)
+      ||(!bookingVerb&&/\bbooks?\b/.test(t));
+    if(readSignal)cat='slide';
+  }
   if(cat==='task'){
     if(/someday|maybe|eventually|one day|would be nice/.test(t))q=4;
     else if(/renew|form|dmv|insurance|bill|invoice|reply|respond|email .*back|schedule appt|book appointment|errand/.test(t))q=3;
@@ -311,7 +342,7 @@ if(typeof firebaseConfig==='string'){
     if(u){ me=u; myEmail=(u.email||'').toLowerCase();
       document.getElementById('loginScreen').style.display='none';
       document.getElementById('app').style.display='block';
-      render(); watchLists();
+      render(); renderCompose(); watchLists();
       if('Notification' in window && Notification.permission==='default') setTimeout(askNotify,2500);
     } else {
       me=null; if(unsubLists)unsubLists(); if(unsubItems)unsubItems();
@@ -421,10 +452,17 @@ function watchItems(){
 function addItem(){
   const el=document.getElementById('dumpInput'); const t=el.value.trim(); if(!t||!curList)return;
   const c=classify(t);
+  if(composeCat){ // person chose while typing — their choice wins
+    if(composeCat.charAt(0)==='q'){c.cat='task';c.q=parseInt(composeCat.charAt(1));}
+    else{c.cat=composeCat;c.q=0;}
+  }
+  if(composeDate)c.date=composeDate;
+  if(composeTime)c.time=composeTime;
   db.collection('lists').doc(curList.id).collection('items').add({
     text:t,cat:c.cat,q:c.q,date:c.date,time:c.time,done:false,calAdded:false,
     by:myEmail.split('@')[0],created:Date.now()});
   el.value=''; el.focus();
+  composeCat=null; composeDate=''; composeTime=''; renderCompose();
   const label=c.cat==='task'?QNAME[c.q]:({job:'Jobs',place:'Places',grocery:'Grocery',slide:'Read'})[c.cat];
   toast('✨ Filed under '+label+(c.date?' · 📅 '+c.date:'')+(c.time?' '+c.time:'')+' — tap ✏️ to change');
 }
