@@ -33,9 +33,13 @@
   .dump{display:flex;gap:8px}
   .composeRow{display:flex;gap:6px;overflow-x:auto;padding:9px 0 1px;-webkit-overflow-scrolling:touch;scrollbar-width:none;align-items:center}
   .composeRow::-webkit-scrollbar{display:none}
+  @media(min-width:600px){.composeRow{flex-wrap:wrap;overflow:visible}}
   .composeRow .chip{flex:0 0 auto}
-  .composeRow input{flex:0 0 auto;font:inherit;font-size:12.5px;border:1px solid var(--line);border-radius:9px;padding:5px 7px;background:var(--card);color:var(--ink)}
+  .composeRow input{flex:0 0 auto;font:inherit;font-size:12.5px;font-weight:600;border:1px solid var(--line);border-radius:999px;padding:5px 10px;background:var(--card);color:var(--ink)}
   .cAuto{background:linear-gradient(135deg,#E8F1FF,#EFEAFE);color:var(--blue);font-weight:700}
+  .b-pend{background:var(--q3bg);color:var(--q3);border:none;cursor:pointer;font-family:inherit}
+  .b-pend:active{transform:scale(.95)}
+  .b-sub{background:var(--jobbg);color:var(--job)}
   .dump input{flex:1;min-width:0;padding:12px 15px;border:none;border-radius:13px;font:inherit;background:var(--card);box-shadow:var(--shadow);outline:none;color:var(--ink)}
   .dump input::placeholder{color:var(--muted)}
   .btn{border:none;border-radius:999px;font:inherit;font-weight:600;cursor:pointer;transition:transform .12s ease}
@@ -493,8 +497,14 @@ function flashItem(id){
 function setCat(id,cat){upd(id,{cat,q:0});armCollapse(id,2000);}
 function setQ(id,q){upd(id,{cat:'task',q});armCollapse(id,2000);}
 function toggleDone(ev,id,cur){if(ev)ev.stopPropagation();
-  upd(id,{done:!cur,doneAt:!cur?Date.now():null,doneBy:!cur?myEmail.split('@')[0]:null});
-  if(!cur)toast('🏆 Nice! Moved to Done');}
+  const t=items.find(x=>x.id===id);
+  const patch={done:!cur,doneAt:!cur?Date.now():null,doneBy:!cur?myEmail.split('@')[0]:null};
+  if(t&&t.cat==='job')patch.jobStatus=!cur?'submitted':null;
+  upd(id,patch);
+  if(!cur)toast(t&&t.cat==='job'?'📨 Marked submitted — moved to Done':'🏆 Nice! Moved to Done');}
+function markSubmitted(ev,id){if(ev)ev.stopPropagation();
+  upd(id,{done:true,doneAt:Date.now(),doneBy:myEmail.split('@')[0],jobStatus:'submitted'});
+  toast('📨 Submitted! Find it in Done → Applications');}
 function setDate(id,v){upd(id,{date:v});armCollapse(id,1800);}
 function setTime(id,v){upd(id,{time:v});armCollapse(id,1500);}
 function setText(id,v){const t=v.trim();if(t){upd(id,{text:t});armCollapse(id,1400);}}
@@ -610,6 +620,7 @@ function rowHTML(t,opts){
     ${slot}
     <span class="rtext ${t.done?'done-txt':''}">${esc(t.text)}${shared&&t.by?`<span class="byTag">${esc(t.by)}</span>`:''}</span>
     ${t.calAdded&&t.date?'<span class="b-cal">🗓✓</span>':''}
+    ${t.cat==='job'&&!t.done?`<button class="rbadge b-pend" onclick="markSubmitted(event,'${t.id}')" title="Tap when you've applied">⏳ Pending</button>`:''}
     ${opts.slot?'':dateBadge(t)}
     <button class="pencil" onclick="togglePencil(event,'${t.id}')">✏️</button>
   </div>${openId===t.id?editorHTML(t):''}`;
@@ -721,22 +732,33 @@ function render(){
   else if(tab==='done'){
     const doneItems=items.filter(i=>i.done).sort((a,b)=>(b.doneAt||0)-(a.doneAt||0));
     const week=doneItems.filter(i=>i.doneAt&&Date.now()-i.doneAt<7*864e5).length;
+    const subs=doneItems.filter(i=>i.jobStatus==='submitted');
+    const rest=doneItems.filter(i=>i.jobStatus!=='submitted');
     h+=`<div class="stat">
       <div class="statCard"><div class="n">🏆 ${doneItems.length}</div><div class="l">ALL-TIME DONE</div></div>
       <div class="statCard"><div class="n">🔥 ${week}</div><div class="l">THIS WEEK</div></div>
+      ${subs.length?`<div class="statCard"><div class="n">📨 ${subs.length}</div><div class="l">SUBMITTED</div></div>`:''}
     </div>`;
+    const doneRow=(t,sub)=>{
+      const when=t.doneAt?new Date(t.doneAt).toLocaleDateString(undefined,{month:'short',day:'numeric'}):'';
+      return `<div class="rowitem" style="opacity:.85">
+        <button class="ck done" onclick="toggleDone(event,'${t.id}',true)">✓</button>
+        <span class="rtext done-txt">${esc(t.text)}</span>
+        <span class="rbadge ${sub?'b-sub':'b-date'}">${sub?'📨 Submitted':'✓'} ${t.doneBy?esc(t.doneBy)+' · ':''}${when}</span>
+        <button class="x" onclick="event.stopPropagation();delItem('${t.id}')">✕</button>
+      </div>`;};
     if(!doneItems.length)h+='<div class="empty">Complete your first task and start the record! 🏁</div>';
     else{
-      h+=`<div class="qhead">Your record — be proud</div><div class="group">`;
-      h+=doneItems.map(t=>{
-        const when=t.doneAt?new Date(t.doneAt).toLocaleDateString(undefined,{month:'short',day:'numeric'}):'';
-        return `<div class="rowitem" style="opacity:.8">
-          <button class="ck done" onclick="toggleDone(event,'${t.id}',true)">✓</button>
-          <span class="rtext done-txt">${esc(t.text)}</span>
-          <span class="rbadge b-date">✓ ${t.doneBy?esc(t.doneBy)+' · ':''}${when}</span>
-          <button class="x" onclick="event.stopPropagation();delItem('${t.id}')">✕</button>
-        </div>`;}).join('');
-      h+='</div><div style="text-align:center;color:var(--muted);font-size:12px;margin-top:10px">Tap ✓ to bring one back to active</div>';
+      if(subs.length){
+        h+=`<div class="qhead"><span>📨 Applications submitted</span><span class="qcount" style="background:var(--jobbg);color:var(--job)">${subs.length}</span></div>`;
+        h+=`<div class="group">${subs.map(t=>doneRow(t,true)).join('')}</div>`;
+      }
+      if(rest.length){
+        h+=`<div class="qhead">Your record — be proud</div><div class="group">`;
+        h+=rest.map(t=>doneRow(t,false)).join('');
+        h+='</div>';
+      }
+      h+='<div style="text-align:center;color:var(--muted);font-size:12px;margin-top:10px">Tap ✓ to bring one back to active</div>';
     }
   }
   else if(tab==='slides'){
