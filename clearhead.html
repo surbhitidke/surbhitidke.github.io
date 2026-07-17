@@ -73,6 +73,23 @@
   .cGroc{background:var(--grocbg);color:var(--groc)} .cSlide{background:var(--slidebg);color:var(--slide)}
   .cGray{background:var(--q4bg);color:var(--q4)}
   .datebar{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;align-items:center}
+  .alarmScr{position:fixed;inset:0;z-index:95;background:linear-gradient(160deg,#0B1B3A,#123);color:#fff;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:28px;text-align:center}
+  .alarmScr.show{display:flex}
+  .alarmScr .at{font-size:22px;font-weight:800;max-width:340px}
+  .alarmScr .asub{font-size:13.5px;opacity:.75}
+  .abtn{border:none;border-radius:999px;font:inherit;font-weight:700;font-size:15.5px;padding:14px 24px;cursor:pointer;min-width:250px}
+  .ab-done{background:#2FBF71;color:#fff}
+  .ab-ack{background:rgba(255,255,255,.16);color:#fff}
+  .ab-snz{background:none;color:rgba(255,255,255,.7);font-size:13.5px;min-width:0;padding:8px}
+  .psearch{position:relative}
+  .psearch input{width:100%;font:inherit;font-size:14.5px;border:1.5px solid var(--line);border-radius:12px;padding:11px 13px;outline:none;background:#fff}
+  .pres{position:absolute;left:0;right:0;top:100%;margin-top:6px;background:#fff;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.05);z-index:20;overflow:hidden;max-height:280px;overflow-y:auto}
+  .presRow{padding:11px 13px;border-bottom:1px solid var(--line);cursor:pointer;font-size:14px}
+  .presRow:last-child{border-bottom:none}
+  .presRow .pn{font-weight:650}
+  .presRow .pa{font-size:12px;color:var(--muted);margin-top:1px}
+  .b-rep{background:var(--jobbg);color:var(--job)}
+  .b-alarm{font-size:13px}
   .datebar input{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:5px 8px;color:var(--ink);background:#fff}
   /* Eisenhower matrix */
   .matrix{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 2px}
@@ -220,6 +237,15 @@
     <input id="vCap" placeholder="Add a caption…" onchange="saveViewerCap(this.value)">
     <button class="del" onclick="deleteViewerPhoto()">🗑</button>
   </div>
+</div>
+
+<div class="alarmScr" id="alarmScr">
+  <div style="font-size:56px">⏰</div>
+  <div class="at" id="alarmText"></div>
+  <div class="asub" id="alarmSub"></div>
+  <button class="abtn ab-done" id="alarmDoneBtn" onclick="alarmDone()">✅ Did it — move to Done</button>
+  <button class="abtn ab-ack" onclick="alarmAck()">🙏 Got it — keep in my list</button>
+  <button class="abtn ab-snz" onclick="alarmSnooze()">😴 Snooze 10 minutes</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -510,6 +536,115 @@ function setTime(id,v){upd(id,{time:v});armCollapse(id,1500);}
 function setText(id,v){const t=v.trim();if(t){upd(id,{text:t});armCollapse(id,1400);}}
 function togglePencil(ev,id){if(ev)ev.stopPropagation();holdCollapse();openId=(openId===id)?null:id;render();}
 
+/* ================= ALARMS (in-app) ================= */
+function toggleAlarm(id,cur){
+  const t=items.find(x=>x.id===id);
+  if(!cur && !t.repeat && (!t.date||!t.time)){toast('Set a date and time first (or choose a repeat)');return;}
+  upd(id,{alarmOn:!cur});
+  if(!cur){toast('🔔 Alarm set — rings while the app is open');if('Notification' in window&&Notification.permission==='default')askNotify();}
+}
+function setRepeat(id,v){
+  const patch={repeat:v};
+  const t=items.find(x=>x.id===id);
+  if(v && !t.time){const n=new Date();patch.time=pad(n.getHours())+':'+pad(n.getMinutes());}
+  if(v)patch.alarmOn=true;
+  upd(id,patch); toast(v?('↻ Repeats '+v+' — stays in your list forever'):'Repeat off');
+}
+const AKEY='ch-alarm-state';
+function aState(){try{return JSON.parse(localStorage.getItem(AKEY)||'{}');}catch(e){return{};}}
+function aSave(st){try{localStorage.setItem(AKEY,JSON.stringify(st));}catch(e){}}
+function nextDue(t,last){
+  const now=Date.now();
+  if(!t.repeat){
+    if(!t.date||!t.time)return null;
+    const[hh,mm]=t.time.split(':').map(Number);
+    const d=new Date(t.date+'T00:00:00');d.setHours(hh,mm,0,0);
+    return (last&&last>=d.getTime())?null:d.getTime();
+  }
+  const[hh,mm]=(t.time||'09:00').split(':').map(Number);
+  let base=new Date(); base.setSeconds(0,0);
+  if(t.repeat==='hourly'){base.setMinutes(mm);if(base.getTime()<= (last||0)||base.getTime()<now-60000)base.setHours(base.getHours()+1);return base.getTime();}
+  base.setHours(hh,mm,0,0);
+  if(t.repeat==='daily'){while(base.getTime()<=(last||0)||base.getTime()<now-60000)base.setDate(base.getDate()+1);return base.getTime();}
+  if(t.repeat==='weekly'){const wd=t.date?new Date(t.date+'T00:00:00').getDay():base.getDay();
+    while(base.getDay()!==wd||base.getTime()<=(last||0)||base.getTime()<now-60000)base.setDate(base.getDate()+1);return base.getTime();}
+  if(t.repeat==='monthly'){const dom=t.date?parseInt(t.date.slice(8)):base.getDate();
+    base.setDate(dom); while(base.getTime()<=(last||0)||base.getTime()<now-60000){base.setMonth(base.getMonth()+1);base.setDate(dom);}return base.getTime();}
+  return null;
+}
+let ringing=null, audioCtx=null, ringTimer=null;
+function chime(){
+  try{
+    audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+    const beep=(delay,f)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+      o.connect(g);g.connect(audioCtx.destination);o.frequency.value=f;o.type='sine';
+      const t0=audioCtx.currentTime+delay;g.gain.setValueAtTime(0.0001,t0);
+      g.gain.exponentialRampToValueAtTime(0.5,t0+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t0+0.5);
+      o.start(t0);o.stop(t0+0.55);};
+    beep(0,880);beep(0.35,1108);beep(0.7,1318);
+  }catch(e){}
+  if(navigator.vibrate)navigator.vibrate([300,120,300]);
+}
+function fireAlarm(t){
+  ringing=t.id;
+  document.getElementById('alarmText').textContent=t.text;
+  document.getElementById('alarmSub').textContent=(t.repeat?'Repeats '+t.repeat+' · stays in your list':'One-time reminder')+(curList&&!curList.personal?' · '+curList.name:'');
+  document.getElementById('alarmDoneBtn').style.display=t.repeat?'none':'block';
+  document.getElementById('alarmScr').classList.add('show');
+  chime(); clearInterval(ringTimer); ringTimer=setInterval(chime,4000);
+  notifyMe('⏰ Reminder:',t.text);
+}
+function stopRing(){clearInterval(ringTimer);ringTimer=null;document.getElementById('alarmScr').classList.remove('show');}
+function markFired(id){const st=aState();st[id]=Date.now();aSave(st);}
+function alarmAck(){if(ringing)markFired(ringing);stopRing();toast('🙏 Kept in your list');ringing=null;}
+function alarmSnooze(){if(ringing){const st=aState();st[ringing]=Date.now()-3600000+600000;/*re-eligible in 10min for one-time*/
+  st['snz-'+ringing]=Date.now()+600000;aSave(st);}stopRing();toast('😴 Snoozed 10 min');ringing=null;}
+function alarmDone(){if(ringing){markFired(ringing);const id=ringing;
+  upd(id,{done:true,doneAt:Date.now(),doneBy:myEmail.split('@')[0]});toast('🏆 Nice! Moved to Done');}
+  stopRing();ringing=null;}
+setInterval(()=>{
+  if(ringing||!items.length)return;
+  const st=aState(); const now=Date.now();
+  for(const t of items){
+    if(!t.alarmOn||t.done)continue;
+    const snz=st['snz-'+t.id]; if(snz&&now<snz)continue;
+    if(snz&&now>=snz){delete st['snz-'+t.id];aSave(st);fireAlarm(t);return;}
+    const due=nextDue(t,st[t.id]);
+    if(due && now>=due && now-due<90000){fireAlarm(t);if(t.repeat){st[t.id]=due;aSave(st);}return;}
+  }
+},15000);
+
+/* ================= PLACE SEARCH (OpenStreetMap — free) ================= */
+let psTimer=null;
+function placeType(){
+  clearTimeout(psTimer);
+  const q=document.getElementById('placeQ').value.trim();
+  const box=document.getElementById('placeRes');
+  if(q.length<3){box.style.display='none';box.innerHTML='';return;}
+  psTimer=setTimeout(async()=>{
+    try{
+      const r=await fetch('https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=6&q='+encodeURIComponent(q),{headers:{'Accept-Language':'en'}});
+      const arr=await r.json();
+      if(!arr.length){box.innerHTML='<div class="presRow" style="color:var(--muted)">No matches — try adding the city</div>';box.style.display='block';return;}
+      box.innerHTML=arr.map((p,i)=>{
+        const parts=p.display_name.split(', ');
+        return `<div class="presRow" onclick="pickPlace(${i})"><div class="pn">📍 ${esc(parts[0])}</div><div class="pa">${esc(parts.slice(1,4).join(', '))}</div></div>`;
+      }).join('');
+      box.style.display='block'; window._pres=arr;
+    }catch(e){box.innerHTML='<div class="presRow" style="color:var(--muted)">Search unavailable — check internet</div>';box.style.display='block';}
+  },450);
+}
+function pickPlace(i){
+  const p=window._pres[i]; if(!p)return;
+  const name=p.display_name.split(', ').slice(0,3).join(', ');
+  db.collection('lists').doc(curList.id).collection('items').add({
+    text:name,cat:'place',q:0,date:'',time:'',done:false,calAdded:false,
+    lat:p.lat,lon:p.lon,by:myEmail.split('@')[0],created:Date.now()});
+  document.getElementById('placeQ').value='';
+  document.getElementById('placeRes').style.display='none';
+  toast('📍 Saved to Places');
+}
+
 /* ================= CALENDAR & MAPS ================= */
 function toGCal(id){const t=items.find(x=>x.id===id);if(!t.date){toast('Pick a date first');return;}
   const[y,m,d]=t.date.split('-').map(Number);let g;
@@ -525,6 +660,7 @@ function toOutlook(id){const t=items.find(x=>x.id===id);if(!t.date){toast('Pick 
   upd(id,{calAdded:true});
   window.open(u,'_blank');}
 function openMaps(id){const t=items.find(x=>x.id===id);
+  if(t.lat&&t.lon){window.open('https://www.google.com/maps/search/?api=1&query='+t.lat+','+t.lon,'_blank');return;}
   window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(t.text.replace(/https?:\/\/[^\s]+/g,'').trim()||t.text),'_blank');}
 
 /* ================= PHOTOS (Read tab) ================= */
@@ -619,6 +755,8 @@ function rowHTML(t,opts){
     <button class="ck ${t.done?'done':''}" onclick="toggleDone(event,'${t.id}',${!!t.done})">${t.done?'✓':''}</button>
     ${slot}
     <span class="rtext ${t.done?'done-txt':''}">${esc(t.text)}${shared&&t.by?`<span class="byTag">${esc(t.by)}</span>`:''}</span>
+    ${t.repeat?'<span class="rbadge b-rep">↻ '+t.repeat+'</span>':''}
+    ${t.alarmOn?'<span class="b-alarm">🔔</span>':''}
     ${t.calAdded&&t.date?'<span class="b-cal">🗓✓</span>':''}
     ${t.cat==='job'&&!t.done?`<button class="rbadge b-pend" onclick="markSubmitted(event,'${t.id}')" title="Tap when you've applied">⏳ Pending</button>`:''}
     ${opts.slot?'':dateBadge(t)}
@@ -646,6 +784,14 @@ function editorHTML(t){
     <div class="datebar">
       <input type="date" value="${t.date||''}" onchange="setDate('${t.id}',this.value)">
       <input type="time" value="${t.time||''}" onchange="setTime('${t.id}',this.value)">
+      <button class="chip ${t.alarmOn?'c2 sel':'cGray'}" onclick="toggleAlarm('${t.id}',${!!t.alarmOn})">🔔 ${t.alarmOn?'Alarm on':'Alarm'}</button>
+      <select onchange="setRepeat('${t.id}',this.value)" onclick="event.stopPropagation()" style="font:inherit;font-size:12.5px;border:1px solid var(--line);border-radius:9px;padding:5px 7px;background:#fff">
+        <option value="" ${!t.repeat?'selected':''}>No repeat</option>
+        <option value="hourly" ${t.repeat==='hourly'?'selected':''}>↻ Hourly</option>
+        <option value="daily" ${t.repeat==='daily'?'selected':''}>↻ Daily</option>
+        <option value="weekly" ${t.repeat==='weekly'?'selected':''}>↻ Weekly</option>
+        <option value="monthly" ${t.repeat==='monthly'?'selected':''}>↻ Monthly</option>
+      </select>
       <button class="chip cGray" onclick="toGCal('${t.id}')">＋ GCal</button>
       <button class="chip cGray" onclick="toOutlook('${t.id}')">＋ Outlook</button>
       ${t.cat==='place'?`<button class="chip cPlace" onclick="openMaps('${t.id}')">📍 Maps</button>`:''}
@@ -800,7 +946,14 @@ function render(){
   else{
     const map={jobs:'job',places:'place',grocery:'grocery'};
     const g=act.filter(i=>i.cat===map[tab]);
-    if(!g.length)h='<div class="empty">Nothing here yet.</div>';
+    if(tab==='places'){
+      h+=`<div class="psearch" style="margin-bottom:12px">
+        <input id="placeQ" placeholder="🔍 Search any place on Earth — tap to save" oninput="placeType()" autocomplete="off">
+        <div class="pres" id="placeRes" style="display:none"></div></div>`;
+      if(!g.length)h+='<div class="empty">Search a restaurant, cafe, or city above — or dump "try that thai place" and it lands here.</div>';
+      else h+=groupHTML(g);
+    }
+    else if(!g.length)h='<div class="empty">Nothing here yet.</div>';
     else h=groupHTML(g);
   }
   w.innerHTML=h;
