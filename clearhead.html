@@ -67,10 +67,15 @@
   .datebar input{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:5px 8px;color:var(--ink);background:#fff}
   /* Eisenhower matrix */
   .matrix{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 2px}
-  .mcell{border-radius:14px;padding:10px 12px;cursor:pointer}
+  .mcell{border-radius:14px;padding:10px 12px;cursor:pointer;transition:transform .12s ease}
+  .mcell:active{transform:scale(.97)}
+  .mcell.sel{outline:2.5px solid currentColor;outline-offset:-2.5px}
   .mcell .mn{font-size:22px;font-weight:800;line-height:1.1}
   .mcell .ml{font-size:11.5px;font-weight:700;opacity:.85}
   .maxis{font-size:10.5px;color:var(--muted);text-align:center;margin:2px 0 6px;font-weight:600;letter-spacing:.04em}
+  .rowitem.flash{animation:flashBg 1.6s ease}
+  @keyframes flashBg{0%,55%{background:#D9EBFF}100%{background:transparent}}
+  .clearFil{margin-left:auto;font-weight:700;text-transform:none;letter-spacing:0;font-size:12px;color:var(--blue);cursor:pointer;background:none;border:none;font-family:inherit}
   /* upcoming */
   .up{background:linear-gradient(135deg,#EEF4FF,#F7F9FF);border-radius:16px;box-shadow:var(--shadow);padding:4px 0;overflow:hidden}
   .empty{text-align:center;color:var(--muted);padding:40px 20px;font-size:14.5px}
@@ -227,6 +232,7 @@ const QCOLOR={1:'var(--q1)',2:'var(--q2)',3:'var(--q3)',4:'var(--q4)'};
 const QBG={1:'var(--q1bg)',2:'var(--q2bg)',3:'var(--q3bg)',4:'var(--q4bg)'};
 let fb=null, db=null, me=null, myEmail='';
 let lists=[], curList=null, items=[], tab='tasks', openId=null;
+let qFilter=null;
 let unsubLists=null, unsubItems=null, firstSnap=true;
 
 function toast(m){const el=document.getElementById('toast');el.textContent=m;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2600);}
@@ -331,7 +337,7 @@ function renderPicker(){
   const p=document.getElementById('listPicker');
   p.innerHTML=lists.map(l=>`<option value="${l.id}" ${curList&&l.id===curList.id?'selected':''}>${l.personal?'🔒 ':'👥 '}${esc(l.name)}</option>`).join('');
 }
-function pickList(id){curList=lists.find(l=>l.id===id);openId=null;watchItems();}
+function pickList(id){curList=lists.find(l=>l.id===id);openId=null;qFilter=null;watchItems();}
 async function newList(){
   const n=prompt('Name the shared list (e.g. "Trip to Miami", "Family")'); if(!n)return;
   const ref=await db.collection('lists').add({name:n.trim(),personal:false,owner:me.uid,ownerEmail:myEmail,members:[myEmail],created:Date.now()});
@@ -411,10 +417,25 @@ function delItem(id){if(openId===id)openId=null;db.collection('lists').doc(curLi
    never collapse mid-way — and you never have to tap ✏️ again to close. */
 let collapseTimer=null;
 function armCollapse(id,ms){clearTimeout(collapseTimer);
-  collapseTimer=setTimeout(()=>{if(openId===id){openId=null;render();}},ms||1500);}
+  collapseTimer=setTimeout(()=>{if(openId===id){openId=null;render();flashItem(id);}},ms||1500);}
 function holdCollapse(){clearTimeout(collapseTimer);}
-function setCat(id,cat){upd(id,{cat,q:0});armCollapse(id,1100);}
-function setQ(id,q){upd(id,{cat:'task',q});armCollapse(id,1100);}
+/* After the editor closes, show the task in its new home:
+   scroll to it and flash it — or toast which tab it moved to. */
+function flashItem(id){
+  setTimeout(()=>{
+    const el=document.querySelector?document.querySelector('.rowitem[data-id="'+id+'"]'):null;
+    if(el){
+      if(el.scrollIntoView)el.scrollIntoView({behavior:'smooth',block:'center'});
+      el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'),1700);
+    }else{
+      const t=items.find(x=>x.id===id); if(!t)return;
+      const loc=t.cat==='task'?QNAME[t.q]:({job:'Jobs tab 💼',place:'Places tab 📍',grocery:'Grocery tab 🛒',slide:'Read tab 📚',inbox:'Unfiled'})[t.cat];
+      toast('✓ Moved to '+loc);
+    }
+  },60);
+}
+function setCat(id,cat){upd(id,{cat,q:0});armCollapse(id,2000);}
+function setQ(id,q){upd(id,{cat:'task',q});armCollapse(id,2000);}
 function toggleDone(ev,id,cur){if(ev)ev.stopPropagation();
   upd(id,{done:!cur,doneAt:!cur?Date.now():null,doneBy:!cur?myEmail.split('@')[0]:null});
   if(!cur)toast('🏆 Nice! Moved to Done');}
@@ -509,7 +530,11 @@ setInterval(checkDayRollover,60000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDayRollover();});
 
 /* ================= RENDER ================= */
-function go(t){tab=t;openId=null;render();window.scrollTo({top:0});}
+function go(t){tab=t;openId=null;qFilter=null;render();window.scrollTo({top:0});}
+function setQFilter(q){
+  qFilter=(qFilter===q)?null:q; render();
+  if(qFilter)setTimeout(()=>{const el=document.getElementById('qflist');if(el&&el.scrollIntoView)el.scrollIntoView({behavior:'smooth',block:'center'});},60);
+}
 function dateBadge(t){
   if(!t.date)return '';
   const today=ymd(new Date());
@@ -524,7 +549,7 @@ function rowHTML(t,opts){
   opts=opts||{};
   const shared=curList&&!curList.personal;
   const slot=opts.slot?`<span class="slot ${t.time?'':'dim'}">${t.time?fmt12(t.time):'—'}</span>`:'';
-  return `<div class="rowitem" onclick="togglePencil(null,'${t.id}')">
+  return `<div class="rowitem" data-id="${t.id}" onclick="togglePencil(null,'${t.id}')">
     <button class="ck ${t.done?'done':''}" onclick="toggleDone(event,'${t.id}',${!!t.done})">${t.done?'✓':''}</button>
     ${slot}
     <span class="rtext ${t.done?'done-txt':''}">${esc(t.text)}${shared&&t.by?`<span class="byTag">${esc(t.by)}</span>`:''}</span>
@@ -589,21 +614,27 @@ function render(){
       const nextNice=new Date(nextD+'T12:00').toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
       h+=`<div class="planLink" onclick="go('plan')"><span>📅 Upcoming</span><span class="plsub">${upcoming.length} scheduled · next ${nextNice}</span><span class="chev">›</span></div>`;
     }
-    // Eisenhower matrix
+    // Eisenhower matrix — tap a box to see just that list
     const cnt={};for(let q=1;q<=4;q++)cnt[q]=act.filter(i=>i.cat==='task'&&i.q===q).length;
-    h+=`<div class="qhead"><span>🧭 Where your head is</span></div>
+    h+=`<div class="qhead"><span>🧭 Where your head is</span><span class="qcount" style="text-transform:none;letter-spacing:0">${qFilter?'filtered':'tap a box to filter'}</span></div>
     <div class="maxis">← URGENT · · · NOT URGENT →</div>
     <div class="matrix">
-      ${[1,2,3,4].map(q=>`<div class="mcell" style="background:${QBG[q]};color:${QCOLOR[q]}" onclick="document.getElementById('q${q}')?.scrollIntoView({behavior:'smooth',block:'start'})">
-        <div class="mn">${cnt[q]}</div><div class="ml">${QNAME[q]}</div></div>`).join('')}
+      ${[1,2,3,4].map(q=>`<div class="mcell ${qFilter===q?'sel':''}" style="background:${QBG[q]};color:${QCOLOR[q]}" onclick="setQFilter(${q})">
+        <div class="mn">${cnt[q]}</div><div class="ml">${QNAME[q]}${qFilter===q?' ✓':''}</div></div>`).join('')}
     </div>`;
     // Inbox (legacy unfiled)
     const inbox=act.filter(i=>i.cat==='inbox');
-    if(inbox.length){h+=`<div class="qhead">📥 Unfiled · ${inbox.length}</div>`+groupHTML(inbox);}
-    // Quadrants
-    for(let q=1;q<=4;q++){
-      const g=act.filter(i=>i.cat==='task'&&i.q===q);
-      if(g.length){h+=`<div class="qhead" id="q${q}"><span class="qdot" style="background:${QCOLOR[q]}"></span>${QNAME[q]} · ${g.length}</div>`+groupHTML(g);}
+    if(inbox.length&&!qFilter){h+=`<div class="qhead">📥 Unfiled · ${inbox.length}</div>`+groupHTML(inbox);}
+    // Quadrants — all four, or just the filtered one
+    if(qFilter){
+      const g=act.filter(i=>i.cat==='task'&&i.q===qFilter);
+      h+=`<div class="qhead" id="qflist"><span class="qdot" style="background:${QCOLOR[qFilter]}"></span>${QNAME[qFilter]} · ${g.length}<button class="clearFil" onclick="setQFilter(${qFilter})">Show all ✕</button></div>`;
+      h+=g.length?groupHTML(g):`<div class="group"><div class="dayEmpty">Nothing in “${QNAME[qFilter]}” right now 🎉</div></div>`;
+    }else{
+      for(let q=1;q<=4;q++){
+        const g=act.filter(i=>i.cat==='task'&&i.q===q);
+        if(g.length){h+=`<div class="qhead" id="q${q}"><span class="qdot" style="background:${QCOLOR[q]}"></span>${QNAME[q]} · ${g.length}</div>`+groupHTML(g);}
+      }
     }
     if(!act.some(i=>i.cat==='task'||i.cat==='inbox')&&!dated.length)h+='<div class="empty">Head is clear ✨<br>Dump a thought above — it files itself.</div>';
   }
