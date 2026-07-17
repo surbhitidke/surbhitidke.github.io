@@ -165,7 +165,7 @@
     </div>
   </div>
   <div class="dump">
-    <input id="dumpInput" placeholder="Dump anything — it files itself ✨" onkeydown="if(event.key==='Enter')addItem()">
+    <input id="dumpInput" placeholder="Try: dentist tuesday 3pm — it files itself ✨" onkeydown="if(event.key==='Enter')addItem()">
     <button class="btn btn-blue" onclick="addItem()">Add</button>
   </div>
 </div></div>
@@ -260,10 +260,28 @@ function parseWhen(text){
   m=t.match(/\b(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?\b/);
   if(m&&!date){let y=m[3]?(m[3].length===2?2000+parseInt(m[3]):parseInt(m[3])):now.getFullYear();
     const cand=new Date(y,parseInt(m[1])-1,parseInt(m[2]));if(!m[3]&&cand<day0)y++;date=ymd(new Date(y,parseInt(m[1])-1,parseInt(m[2])));}
-  m=t.match(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/)||t.match(/\bat\s+(\d{1,2})(?::(\d{2}))?\b/)||t.match(/\b(\d{1,2}):(\d{2})\b/);
+  // "on 19th" / bare "19th" → nearest upcoming that day-of-month
+  m=t.match(/\b(?:on\s+(?:the\s+)?)?(\d{1,2})(?:st|nd|rd|th)\b/);
+  if(m&&!date){const dnum=parseInt(m[1]);
+    if(dnum>=1&&dnum<=31){let mo=now.getMonth(),y=now.getFullYear();
+      if(dnum<now.getDate()){mo++;if(mo>11){mo=0;y++;}}
+      const cand=new Date(y,mo,dnum);
+      if(cand.getDate()===dnum)date=ymd(cand);}}
+  if(/\bnext week\b/.test(t)&&!date)date=ymd(new Date(day0.getTime()+7*864e5));
+  m=t.match(/\b(\d{1,2})\.(\d{2})\s*(am|pm)\b/)||t.match(/\b(\d{1,2})(?::(\d{2}))?\s*(am|pm)\b/)||t.match(/\bat\s+(\d{1,2})(?::(\d{2}))?\b/)||t.match(/\b(\d{1,2}):(\d{2})\b/);
   if(m){let hh=parseInt(m[1]),mm=m[2]?parseInt(m[2]):0;const ap=m[3];
     if(ap==='pm'&&hh<12)hh+=12; if(ap==='am'&&hh===12)hh=0;
+    if(!ap&&hh>=1&&hh<=7)hh+=12; // "at 4" almost always means 4 PM
     if(hh>=0&&hh<=23&&mm>=0&&mm<=59)time=pad(hh)+':'+pad(mm);}
+  if(!time){
+    if(/\bnoon\b/.test(t))time='12:00';
+    else if(/\bmidnight\b/.test(t))time='00:00';
+    else if(/\bmorning\b/.test(t))time='09:00';
+    else if(/\bafternoon\b/.test(t))time='14:00';
+    else if(/\bevening\b/.test(t))time='18:00';
+    else if(/\btonight\b|\bnight\b/.test(t))time='20:00';
+  }
+  if(time&&!date)date=ymd(day0); // a time with no date means today
   return {date,time};
 }
 function classify(text){
@@ -408,7 +426,7 @@ function addItem(){
     by:myEmail.split('@')[0],created:Date.now()});
   el.value=''; el.focus();
   const label=c.cat==='task'?QNAME[c.q]:({job:'Jobs',place:'Places',grocery:'Grocery',slide:'Read'})[c.cat];
-  toast('✨ Filed under '+label+(c.date?' · 📅 '+c.date:'')+' — tap ✏️ to change');
+  toast('✨ Filed under '+label+(c.date?' · 📅 '+c.date:'')+(c.time?' '+c.time:'')+' — tap ✏️ to change');
 }
 function upd(id,patch){db.collection('lists').doc(curList.id).collection('items').doc(id).update(patch);}
 function delItem(id){if(openId===id)openId=null;db.collection('lists').doc(curList.id).collection('items').doc(id).delete();}
