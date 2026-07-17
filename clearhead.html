@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0071E3">
+<meta name="theme-color" content="#007AFF">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="ch-icon-180.png">
 <link rel="icon" type="image/png" href="ch-icon-192.png">
@@ -13,8 +13,8 @@
 <title>Clear Head</title>
 <style>
   :root{
-    --bg:#FFFFFF; --card:#FFFFFF; --ink:#1D1D1F; --muted:#86868B; --line:#ECECF0;
-    --blue:#0071E3; --blue-dk:#0060C2;
+    --bg:#F2F2F7; --card:#FFFFFF; --ink:#1D1D1F; --muted:#8E8E93; --line:#E7E7EB;
+    --blue:#007AFF; --blue-dk:#0062CC;
     --q1:#C93A2F; --q1bg:#FDF0EE; --q2:#0B7A5C; --q2bg:#ECF6F1;
     --q3:#B07B10; --q3bg:#FBF4E4; --q4:#6E6E73; --q4bg:#F2F2F4;
     --job:#5E5CE6; --jobbg:#EFEFFD; --place:#C2417B; --placebg:#FBEEF4;
@@ -23,7 +23,7 @@
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.45;padding-bottom:108px}
-  .hdr{position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.85);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,0.05)}
+  .hdr{position:sticky;top:0;z-index:10;background:rgba(242,242,247,0.86);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,0.05)}
   .hdr-in{max-width:680px;margin:0 auto;padding:12px 16px 13px}
   .hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px}
   .hdr h1{font-size:20px;font-weight:700;letter-spacing:-0.02em;white-space:nowrap}
@@ -74,11 +74,11 @@
   /* upcoming */
   .up{background:linear-gradient(135deg,#EEF4FF,#F7F9FF);border-radius:16px;box-shadow:var(--shadow);padding:4px 0;overflow:hidden}
   .empty{text-align:center;color:var(--muted);padding:40px 20px;font-size:14.5px}
-  .tabbar{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,0.06);padding-bottom:env(safe-area-inset-bottom)}
+  .tabbar{position:fixed;bottom:0;left:0;right:0;background:rgba(249,249,251,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,0.06);padding-bottom:env(safe-area-inset-bottom)}
   .tabbar-in{max-width:680px;margin:0 auto;display:flex}
-  .tab{flex:1;border:none;background:none;padding:8px 0 9px;cursor:pointer;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px}
-  .tab .ic{font-size:19px;line-height:1}
-  .tab .lb{font-size:10px;font-weight:600}
+  .tab{flex:1;border:none;background:none;padding:7px 0 8px;cursor:pointer;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px}
+  .tab .ic{font-size:18px;line-height:1}
+  .tab .lb{font-size:9.5px;font-weight:600;letter-spacing:-0.01em}
   .tab.on{color:var(--blue)}
   .toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;font-size:13.5px;font-weight:500;opacity:0;pointer-events:none;transition:all .25s;z-index:50;max-width:88vw;text-align:center}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -104,6 +104,14 @@
   .dayEmpty{padding:13px 15px;color:var(--muted);font-size:13.5px}
   .qcount{margin-left:auto;font-weight:600;text-transform:none;letter-spacing:0;font-size:12px;background:var(--q4bg);border-radius:999px;padding:1px 8px}
   .up.today{background:linear-gradient(135deg,#EAF3FF,#F5F9FF)}
+  .slot{min-width:62px;font-size:12.5px;font-weight:700;color:var(--blue);font-variant-numeric:tabular-nums}
+  .slot.dim{color:#C7C7CC}
+  .anytimeLbl{padding:8px 15px 4px;font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--line);background:rgba(250,250,252,.7)}
+  .planLink{display:flex;align-items:center;gap:9px;background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:13px 15px;margin-top:12px;cursor:pointer;font-weight:600;font-size:15px}
+  .planLink:active{opacity:.7}
+  .planLink .plsub{margin-left:auto;color:var(--muted);font-weight:500;font-size:13.5px}
+  .planLink .chev{color:#C7C7CC;font-size:21px;line-height:1;font-weight:400}
+  .doneChip{font-size:11px;font-weight:700;background:var(--q2bg);color:var(--q2);border-radius:999px;padding:2px 8px;text-transform:none;letter-spacing:0}
   /* photo capture */
   .snapbar{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:11px 12px;margin:4px 0 4px}
   .snapbar input{width:100%;font:inherit;font-size:14.5px;padding:9px 12px;border:1.5px solid var(--line);border-radius:11px;outline:none;margin-bottom:8px;background:#fff}
@@ -160,7 +168,8 @@
 <div class="wrap" id="tabContent"></div>
 
 <div class="tabbar"><div class="tabbar-in">
-  <button class="tab" data-t="tasks" onclick="go('tasks')"><span class="ic">☑️</span><span class="lb">Tasks</span></button>
+  <button class="tab" data-t="tasks" onclick="go('tasks')"><span class="ic">☑️</span><span class="lb">Today</span></button>
+  <button class="tab" data-t="plan" onclick="go('plan')"><span class="ic">📅</span><span class="lb">Upcoming</span></button>
   <button class="tab" data-t="jobs" onclick="go('jobs')"><span class="ic">💼</span><span class="lb">Jobs</span></button>
   <button class="tab" data-t="places" onclick="go('places')"><span class="ic">📍</span><span class="lb">Places</span></button>
   <button class="tab" data-t="grocery" onclick="go('grocery')"><span class="ic">🛒</span><span class="lb">Grocery</span></button>
@@ -510,16 +519,26 @@ function dateBadge(t){
   if(t.time)lbl+=' '+t.time;
   return `<span class="rbadge ${diff<0&&!t.done?'b-over':'b-date'}">${lbl}</span>`;
 }
+function fmt12(t){let[h,m]=t.split(':').map(Number);const ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+pad(m)+'&nbsp;'+ap;}
 function rowHTML(t,opts){
   opts=opts||{};
   const shared=curList&&!curList.personal;
+  const slot=opts.slot?`<span class="slot ${t.time?'':'dim'}">${t.time?fmt12(t.time):'—'}</span>`:'';
   return `<div class="rowitem" onclick="togglePencil(null,'${t.id}')">
     <button class="ck ${t.done?'done':''}" onclick="toggleDone(event,'${t.id}',${!!t.done})">${t.done?'✓':''}</button>
+    ${slot}
     <span class="rtext ${t.done?'done-txt':''}">${esc(t.text)}${shared&&t.by?`<span class="byTag">${esc(t.by)}</span>`:''}</span>
     ${t.calAdded&&t.date?'<span class="b-cal">🗓✓</span>':''}
-    ${dateBadge(t)}
+    ${opts.slot?'':dateBadge(t)}
     <button class="pencil" onclick="togglePencil(event,'${t.id}')">✏️</button>
   </div>${openId===t.id?editorHTML(t):''}`;
+}
+function slotGroup(arr){
+  const timed=arr.filter(i=>i.time), untimed=arr.filter(i=>!i.time);
+  let inner=timed.map(t=>rowHTML(t,{slot:1})).join('');
+  if(timed.length&&untimed.length)inner+='<div class="anytimeLbl">Anytime</div>';
+  inner+=untimed.map(t=>rowHTML(t,{slot:1})).join('');
+  return inner;
 }
 function editorHTML(t){
   const u=firstUrl(t.text);
@@ -549,9 +568,7 @@ function render(){
   const w=document.getElementById('tabContent'); let h='';
   const act=items.filter(i=>!i.done&&i.type!=='photo');
   if(tab==='tasks'){
-    // One section per date — Today on top, then the next two days, always time-sorted.
     const todayStr=ymd(new Date());
-    const base=new Date(); base.setHours(12,0,0,0); // local noon → DST/timezone safe
     const byTime=(a,b)=>(a.time||'99').localeCompare(b.time||'99')||(a.created-b.created);
     const dated=act.filter(i=>i.date);
     const overdue=dated.filter(i=>i.date<todayStr).sort((a,b)=>a.date.localeCompare(b.date)||byTime(a,b));
@@ -559,14 +576,18 @@ function render(){
       h+=`<div class="qhead"><span style="color:var(--q1)">⚠️ Overdue</span><span class="qcount" style="background:var(--q1bg);color:var(--q1)">${overdue.length}</span></div>`;
       h+=`<div class="group">${overdue.map(t=>rowHTML(t)).join('')}</div>`;
     }
-    for(let d=0;d<3;d++){
-      const ds=ymd(new Date(base.getTime()+d*864e5));
-      const arr=dated.filter(i=>i.date===ds).sort(byTime);
-      if(d>0&&!arr.length)continue; // future days only appear once something's scheduled
-      const nice=new Date(ds+'T12:00').toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
-      const label=d===0?`📌 Today · ${nice}`:d===1?`Tomorrow · ${nice}`:nice;
-      h+=`<div class="qhead"><span>${label}</span>${d===0?`<span style="margin-left:8px;font-weight:500;text-transform:none;letter-spacing:0">${arr.length?'mentally prepare 💪':''}</span>`:''}<span class="qcount">${arr.length}</span></div>`;
-      h+=`<div class="up ${d===0?'today':''}">${arr.length?arr.map(t=>rowHTML(t)).join(''):'<div class="dayEmpty">Nothing scheduled — dump a thought with a date and it lands here.</div>'}</div>`;
+    // Today only — everything else lives in the Upcoming tab
+    const todayArr=dated.filter(i=>i.date===todayStr).sort(byTime);
+    const doneToday=items.filter(i=>i.done&&i.doneAt&&ymd(new Date(i.doneAt))===todayStr).length;
+    const nice=new Date().toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
+    h+=`<div class="qhead"><span>📌 Today · ${nice}</span>${doneToday?`<span class="doneChip" style="margin-left:8px">✓ ${doneToday} done</span>`:''}<span class="qcount">${todayArr.length}</span></div>`;
+    h+=`<div class="up today">${todayArr.length?slotGroup(todayArr):'<div class="dayEmpty">Nothing scheduled today — dump a thought with a time and it lands here.</div>'}</div>`;
+    // Peek at what's ahead
+    const upcoming=dated.filter(i=>i.date>todayStr);
+    if(upcoming.length){
+      const nextD=upcoming.map(i=>i.date).sort()[0];
+      const nextNice=new Date(nextD+'T12:00').toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
+      h+=`<div class="planLink" onclick="go('plan')"><span>📅 Upcoming</span><span class="plsub">${upcoming.length} scheduled · next ${nextNice}</span><span class="chev">›</span></div>`;
     }
     // Eisenhower matrix
     const cnt={};for(let q=1;q<=4;q++)cnt[q]=act.filter(i=>i.cat==='task'&&i.q===q).length;
@@ -585,6 +606,30 @@ function render(){
       if(g.length){h+=`<div class="qhead" id="q${q}"><span class="qdot" style="background:${QCOLOR[q]}"></span>${QNAME[q]} · ${g.length}</div>`+groupHTML(g);}
     }
     if(!act.some(i=>i.cat==='task'||i.cat==='inbox')&&!dated.length)h+='<div class="empty">Head is clear ✨<br>Dump a thought above — it files itself.</div>';
+  }
+  else if(tab==='plan'){
+    const todayStr=ymd(new Date());
+    const tmrwD=new Date(); tmrwD.setHours(12,0,0,0);
+    const tmrwStr=ymd(new Date(tmrwD.getTime()+864e5));
+    const fut=act.filter(i=>i.date&&i.date>todayStr)
+      .sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'99').localeCompare(b.time||'99')||(a.created-b.created));
+    if(!fut.length){
+      h='<div class="empty">Nothing scheduled ahead 🎉<br>Add a date to any thought (try "dentist tuesday 3pm") and it lands here, day by day.</div>';
+    }else{
+      h+=`<div class="qhead"><span>📅 What\u2019s ahead</span><span class="qcount">${fut.length}</span></div>`;
+      const groups=[], seen={};
+      fut.forEach(t=>{if(!seen[t.date]){seen[t.date]={date:t.date,arr:[]};groups.push(seen[t.date]);}seen[t.date].arr.push(t);});
+      groups.forEach(g=>{
+        const d=new Date(g.date+'T12:00');
+        const o={weekday:'short',day:'numeric',month:'short'};
+        if(d.getFullYear()!==new Date().getFullYear())o.year='numeric';
+        let lbl=d.toLocaleDateString(undefined,o);
+        if(g.date===tmrwStr)lbl='Tomorrow · '+lbl;
+        h+=`<div class="qhead"><span>${lbl}</span><span class="qcount">${g.arr.length}</span></div>`;
+        h+=`<div class="group">${slotGroup(g.arr)}</div>`;
+      });
+      h+='<div style="text-align:center;color:var(--muted);font-size:12px;margin-top:12px">Tap ✏️ on any item to move its date or time</div>';
+    }
   }
   else if(tab==='done'){
     const doneItems=items.filter(i=>i.done).sort((a,b)=>(b.doneAt||0)-(a.doneAt||0));
