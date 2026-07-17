@@ -100,6 +100,31 @@
   .statCard{flex:1;background:var(--card);border-radius:14px;box-shadow:var(--shadow);padding:12px;text-align:center}
   .statCard .n{font-size:24px;font-weight:800}
   .statCard .l{font-size:11.5px;color:var(--muted);font-weight:600}
+  /* day sections */
+  .dayEmpty{padding:13px 15px;color:var(--muted);font-size:13.5px}
+  .qcount{margin-left:auto;font-weight:600;text-transform:none;letter-spacing:0;font-size:12px;background:var(--q4bg);border-radius:999px;padding:1px 8px}
+  .up.today{background:linear-gradient(135deg,#EAF3FF,#F5F9FF)}
+  /* photo capture */
+  .snapbar{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:11px 12px;margin:4px 0 4px}
+  .snapbar input{width:100%;font:inherit;font-size:14.5px;padding:9px 12px;border:1.5px solid var(--line);border-radius:11px;outline:none;margin-bottom:8px;background:#fff}
+  .snapBtns{display:flex;gap:7px}
+  .snapBtns .btn{flex:1;padding:10px 0;font-size:14px}
+  .btn-soft{background:var(--slidebg);color:var(--slide)}
+  .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:4px}
+  .pcell{border-radius:12px;overflow:hidden;background:var(--card);box-shadow:var(--shadow);cursor:pointer}
+  .pcell img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+  .pcap{font-size:10.5px;padding:4px 7px 5px;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* photo viewer */
+  .viewer{position:fixed;inset:0;background:rgba(12,12,14,.97);z-index:80;display:none;flex-direction:column}
+  .viewer.show{display:flex}
+  .vtop{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;padding-top:calc(14px + env(safe-area-inset-top));color:#fff}
+  .vtop .when{font-size:13.5px;font-weight:600;opacity:.85}
+  .vtop button{border:none;background:rgba(255,255,255,.14);color:#fff;border-radius:999px;width:34px;height:34px;font-size:15px;cursor:pointer}
+  .viewer .vimg{flex:1;min-height:0;width:100%;object-fit:contain}
+  .vbot{padding:12px 16px;padding-bottom:calc(16px + env(safe-area-inset-bottom));display:flex;gap:8px}
+  .vbot input{flex:1;min-width:0;font:inherit;font-size:14.5px;padding:10px 13px;border:none;border-radius:12px;outline:none;background:rgba(255,255,255,.12);color:#fff}
+  .vbot input::placeholder{color:rgba(255,255,255,.5)}
+  .vbot .del{border:none;background:rgba(201,58,47,.9);color:#fff;border-radius:12px;padding:0 14px;font-size:15px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -158,6 +183,18 @@
       <button class="chip c3" onclick="fb.auth().signOut();closeMembers()" style="margin-left:8px">Sign out</button>
       <button class="chip c1" id="delListBtn" onclick="deleteList()" style="margin-left:8px">Delete list</button>
     </div>
+  </div>
+</div>
+
+<input type="file" id="camInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhoto(this)">
+<input type="file" id="libInput" accept="image/*" multiple style="display:none" onchange="handlePhoto(this)">
+
+<div class="viewer" id="photoViewer" onclick="if(event.target===this)closePhoto()">
+  <div class="vtop"><span class="when" id="vWhen"></span><button onclick="closePhoto()">✕</button></div>
+  <img class="vimg" id="vImg" alt="">
+  <div class="vbot">
+    <input id="vCap" placeholder="Add a caption…" onchange="saveViewerCap(this.value)">
+    <button class="del" onclick="deleteViewerPhoto()">🗑</button>
   </div>
 </div>
 
@@ -340,7 +377,7 @@ function watchItems(){
       if(!firstSnap && curList && !curList.personal){
         snap.docChanges().forEach(ch=>{
           const d=ch.doc.data();
-          if(ch.type==='added' && d.by && d.by!==meName) notifyMe('➕ '+d.by+' added:', d.text);
+          if(ch.type==='added' && d.by && d.by!==meName) notifyMe('➕ '+d.by+' added:', d.type==='photo'?('📷 a photo'+(d.text?' — '+d.text:'')):d.text);
           if(ch.type==='modified' && d.done && d.doneBy && d.doneBy!==meName) notifyMe('🎉 '+d.doneBy+' completed:', d.text);
         });
       }
@@ -360,15 +397,22 @@ function addItem(){
 }
 function upd(id,patch){db.collection('lists').doc(curList.id).collection('items').doc(id).update(patch);}
 function delItem(id){if(openId===id)openId=null;db.collection('lists').doc(curList.id).collection('items').doc(id).delete();}
-function setCat(id,cat){upd(id,{cat,q:0});}
-function setQ(id,q){upd(id,{cat:'task',q});}
+/* Auto-collapse: after any edit, the editor closes itself after a short pause.
+   Every new change (e.g. date, then time) restarts the pause, so multi-step edits
+   never collapse mid-way — and you never have to tap ✏️ again to close. */
+let collapseTimer=null;
+function armCollapse(id,ms){clearTimeout(collapseTimer);
+  collapseTimer=setTimeout(()=>{if(openId===id){openId=null;render();}},ms||1500);}
+function holdCollapse(){clearTimeout(collapseTimer);}
+function setCat(id,cat){upd(id,{cat,q:0});armCollapse(id,1100);}
+function setQ(id,q){upd(id,{cat:'task',q});armCollapse(id,1100);}
 function toggleDone(ev,id,cur){if(ev)ev.stopPropagation();
   upd(id,{done:!cur,doneAt:!cur?Date.now():null,doneBy:!cur?myEmail.split('@')[0]:null});
   if(!cur)toast('🏆 Nice! Moved to Done');}
-function setDate(id,v){upd(id,{date:v});}
-function setTime(id,v){upd(id,{time:v});}
-function setText(id,v){const t=v.trim();if(t)upd(id,{text:t});}
-function togglePencil(ev,id){if(ev)ev.stopPropagation();openId=(openId===id)?null:id;render();}
+function setDate(id,v){upd(id,{date:v});armCollapse(id,1800);}
+function setTime(id,v){upd(id,{time:v});armCollapse(id,1500);}
+function setText(id,v){const t=v.trim();if(t){upd(id,{text:t});armCollapse(id,1400);}}
+function togglePencil(ev,id){if(ev)ev.stopPropagation();holdCollapse();openId=(openId===id)?null:id;render();}
 
 /* ================= CALENDAR & MAPS ================= */
 function toGCal(id){const t=items.find(x=>x.id===id);if(!t.date){toast('Pick a date first');return;}
@@ -386,6 +430,74 @@ function toOutlook(id){const t=items.find(x=>x.id===id);if(!t.date){toast('Pick 
   window.open(u,'_blank');}
 function openMaps(id){const t=items.find(x=>x.id===id);
   window.open('https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(t.text.replace(/https?:\/\/[^\s]+/g,'').trim()||t.text),'_blank');}
+
+/* ================= PHOTOS (Read tab) ================= */
+function snapPhoto(cam){
+  if(!curList){toast('Pick a list first');return;}
+  const el=document.getElementById(cam?'camInput':'libInput'); el.value=''; el.click();
+}
+function shrink(file,maxDim,q){return new Promise((res,rej)=>{
+  const img=new Image();
+  img.onload=()=>{try{
+    const s=Math.min(1,maxDim/Math.max(img.width,img.height));
+    const w=Math.max(1,Math.round(img.width*s)), hgt=Math.max(1,Math.round(img.height*s));
+    const c=document.createElement('canvas'); c.width=w; c.height=hgt;
+    c.getContext('2d').drawImage(img,0,0,w,hgt);
+    URL.revokeObjectURL(img.src); res(c.toDataURL('image/jpeg',q));
+  }catch(e){rej(e);}};
+  img.onerror=()=>rej(new Error('Could not read image'));
+  img.src=URL.createObjectURL(file);
+});}
+async function handlePhoto(input){
+  const files=Array.from(input.files||[]); if(!files.length||!curList)return;
+  const capEl=document.getElementById('photoCaption');
+  const caption=capEl?capEl.value.trim():'';
+  toast(files.length>1?'Saving '+files.length+' photos…':'Saving photo…');
+  let ok=0;
+  for(const f of files){
+    try{
+      let max=1280,q=0.72,data=await shrink(f,max,q);
+      while(data.length>900000&&max>420){max=Math.round(max*0.72);q=Math.max(0.5,q-0.06);data=await shrink(f,max,q);}
+      if(data.length>950000)throw new Error('image too large');
+      const now=new Date();
+      await db.collection('lists').doc(curList.id).collection('items').add({
+        text:caption,cat:'slide',q:0,type:'photo',img:data,
+        date:ymd(now),time:pad(now.getHours())+':'+pad(now.getMinutes()),
+        done:false,calAdded:false,by:myEmail.split('@')[0],created:Date.now()});
+      ok++;
+    }catch(e){toast('One photo failed: '+e.message);}
+  }
+  if(capEl)capEl.value='';
+  if(ok)toast('📷 Saved to Read ('+ok+')');
+}
+let viewerId=null;
+function openPhoto(id){
+  const t=items.find(x=>x.id===id); if(!t)return;
+  viewerId=id;
+  document.getElementById('vImg').src=t.img;
+  document.getElementById('vCap').value=t.text||'';
+  const d=new Date(t.created);
+  document.getElementById('vWhen').textContent=d.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short',year:'numeric'})+' · '+d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})+(t.by?' · '+t.by:'');
+  document.getElementById('photoViewer').classList.add('show');
+}
+function closePhoto(){viewerId=null;document.getElementById('photoViewer').classList.remove('show');}
+function saveViewerCap(v){if(viewerId)upd(viewerId,{text:v.trim()});}
+function deleteViewerPhoto(){
+  if(!viewerId)return;
+  if(!confirm('Delete this photo?'))return;
+  delItem(viewerId); closePhoto(); toast('Photo deleted');
+}
+
+/* ================= LIVE DATE ROLLOVER ================= */
+/* When midnight passes (or the app is reopened on a new day),
+   Today/Tomorrow sections shift forward automatically. */
+let curDayStr=ymd(new Date());
+function checkDayRollover(){
+  const n=ymd(new Date());
+  if(n!==curDayStr){curDayStr=n;render();}
+}
+setInterval(checkDayRollover,60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDayRollover();});
 
 /* ================= RENDER ================= */
 function go(t){tab=t;openId=null;render();window.scrollTo({top:0});}
@@ -417,7 +529,7 @@ function editorHTML(t){
   <button class="chip cPlace ${t.cat==='place'?'sel':''}" onclick="event.stopPropagation();setCat('${t.id}','place')">Place</button>
   <button class="chip cGroc ${t.cat==='grocery'?'sel':''}" onclick="event.stopPropagation();setCat('${t.id}','grocery')">Grocery</button>
   <button class="chip cSlide ${t.cat==='slide'?'sel':''}" onclick="event.stopPropagation();setCat('${t.id}','slide')">Read</button>`;
-  return `<div class="editor" onclick="event.stopPropagation()">
+  return `<div class="editor" onclick="event.stopPropagation()" onfocusin="holdCollapse()" oninput="holdCollapse()">
     <input type="text" value="${escAttr(t.text)}" onchange="setText('${t.id}',this.value)" placeholder="Edit text…">
     <div class="chips">${cats}</div>
     <div class="datebar">
@@ -435,15 +547,26 @@ function groupHTML(arr){return arr.length?`<div class="group">${arr.map(t=>rowHT
 function render(){
   document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.t===tab));
   const w=document.getElementById('tabContent'); let h='';
-  const act=items.filter(i=>!i.done);
+  const act=items.filter(i=>!i.done&&i.type!=='photo');
   if(tab==='tasks'){
-    // Next 2 days
-    const today=new Date(ymd(new Date()));
-    const soon=act.filter(i=>i.date).map(i=>({...i,_d:Math.round((new Date(i.date)-today)/864e5)}))
-      .filter(i=>i._d>=0&&i._d<=2).sort((a,b)=>a.date.localeCompare(b.date)||(a.time||'99').localeCompare(b.time||'99'));
-    if(soon.length){
-      h+=`<div class="qhead"><span>⏰ Next 2 days</span><span style="margin-left:auto;font-weight:500;text-transform:none;letter-spacing:0">mentally prepare 💪</span></div>`;
-      h+=`<div class="up">${soon.map(t=>rowHTML(t)).join('')}</div>`;
+    // One section per date — Today on top, then the next two days, always time-sorted.
+    const todayStr=ymd(new Date());
+    const base=new Date(); base.setHours(12,0,0,0); // local noon → DST/timezone safe
+    const byTime=(a,b)=>(a.time||'99').localeCompare(b.time||'99')||(a.created-b.created);
+    const dated=act.filter(i=>i.date);
+    const overdue=dated.filter(i=>i.date<todayStr).sort((a,b)=>a.date.localeCompare(b.date)||byTime(a,b));
+    if(overdue.length){
+      h+=`<div class="qhead"><span style="color:var(--q1)">⚠️ Overdue</span><span class="qcount" style="background:var(--q1bg);color:var(--q1)">${overdue.length}</span></div>`;
+      h+=`<div class="group">${overdue.map(t=>rowHTML(t)).join('')}</div>`;
+    }
+    for(let d=0;d<3;d++){
+      const ds=ymd(new Date(base.getTime()+d*864e5));
+      const arr=dated.filter(i=>i.date===ds).sort(byTime);
+      if(d>0&&!arr.length)continue; // future days only appear once something's scheduled
+      const nice=new Date(ds+'T12:00').toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
+      const label=d===0?`📌 Today · ${nice}`:d===1?`Tomorrow · ${nice}`:nice;
+      h+=`<div class="qhead"><span>${label}</span>${d===0?`<span style="margin-left:8px;font-weight:500;text-transform:none;letter-spacing:0">${arr.length?'mentally prepare 💪':''}</span>`:''}<span class="qcount">${arr.length}</span></div>`;
+      h+=`<div class="up ${d===0?'today':''}">${arr.length?arr.map(t=>rowHTML(t)).join(''):'<div class="dayEmpty">Nothing scheduled — dump a thought with a date and it lands here.</div>'}</div>`;
     }
     // Eisenhower matrix
     const cnt={};for(let q=1;q<=4;q++)cnt[q]=act.filter(i=>i.cat==='task'&&i.q===q).length;
@@ -461,7 +584,7 @@ function render(){
       const g=act.filter(i=>i.cat==='task'&&i.q===q);
       if(g.length){h+=`<div class="qhead" id="q${q}"><span class="qdot" style="background:${QCOLOR[q]}"></span>${QNAME[q]} · ${g.length}</div>`+groupHTML(g);}
     }
-    if(!act.some(i=>i.cat==='task'||i.cat==='inbox')&&!soon.length)h+='<div class="empty">Head is clear ✨<br>Dump a thought above — it files itself.</div>';
+    if(!act.some(i=>i.cat==='task'||i.cat==='inbox')&&!dated.length)h+='<div class="empty">Head is clear ✨<br>Dump a thought above — it files itself.</div>';
   }
   else if(tab==='done'){
     const doneItems=items.filter(i=>i.done).sort((a,b)=>(b.doneAt||0)-(a.doneAt||0));
@@ -484,8 +607,44 @@ function render(){
       h+='</div><div style="text-align:center;color:var(--muted);font-size:12px;margin-top:10px">Tap ✓ to bring one back to active</div>';
     }
   }
+  else if(tab==='slides'){
+    h+=`<div class="snapbar">
+      <input id="photoCaption" placeholder="Type what this photo is (slide, receipt, poster…) — optional">
+      <div class="snapBtns">
+        <button class="btn btn-blue" onclick="snapPhoto(true)">📷 Camera</button>
+        <button class="btn btn-soft" onclick="snapPhoto(false)">🖼️ From library</button>
+      </div>
+    </div>`;
+    const photos=items.filter(i=>i.type==='photo').sort((a,b)=>b.created-a.created);
+    if(photos.length){
+      const now=new Date(), todayStr=ymd(now), ydayStr=ymd(new Date(now.getTime()-864e5));
+      const thisMonth=now.getFullYear()+'-'+pad(now.getMonth()+1);
+      const groups=[], seen={};
+      photos.forEach(p=>{
+        const d=new Date(p.created), pYmd=ymd(d);
+        let key,label;
+        if(pYmd===todayStr){key=pYmd;label='Today';}
+        else if(pYmd===ydayStr){key=pYmd;label='Yesterday';}
+        else if(pYmd.slice(0,7)===thisMonth){key=pYmd;label=d.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});}
+        else{key=pYmd.slice(0,7);label=d.toLocaleDateString(undefined,{month:'long',year:'numeric'});}
+        if(!seen[key]){seen[key]={label,arr:[]};groups.push(seen[key]);}
+        seen[key].arr.push(p);
+      });
+      groups.forEach(g=>{
+        h+=`<div class="qhead"><span>📷 ${g.label}</span><span class="qcount">${g.arr.length}</span></div><div class="pgrid">`;
+        h+=g.arr.map(p=>{
+          const tm=p.time||new Date(p.created).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+          return `<div class="pcell" onclick="openPhoto('${p.id}')"><img src="${p.img}" alt="" loading="lazy"><div class="pcap">${p.text?esc(p.text):tm}</div></div>`;
+        }).join('');
+        h+=`</div>`;
+      });
+    }
+    const reads=act.filter(i=>i.cat==='slide');
+    if(reads.length)h+=`<div class="qhead"><span>📚 Reading list</span><span class="qcount">${reads.length}</span></div>`+groupHTML(reads);
+    if(!photos.length&&!reads.length)h+='<div class="empty">Snap slides, posters, receipts — they file themselves by date so you never dig through Google Photos again. 📷</div>';
+  }
   else{
-    const map={jobs:'job',places:'place',grocery:'grocery',slides:'slide'};
+    const map={jobs:'job',places:'place',grocery:'grocery'};
     const g=act.filter(i=>i.cat===map[tab]);
     if(!g.length)h='<div class="empty">Nothing here yet.</div>';
     else h=groupHTML(g);
