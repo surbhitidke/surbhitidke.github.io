@@ -273,7 +273,7 @@ let fb=null, db=null, me=null, myEmail='';
 let lists=[], curList=null, items=[], tab='tasks', openId=null;
 let qFilter=null;
 /* ===== Compose bar: choose while typing; Auto chip shows live guess ===== */
-let composeCat=null, composeDate='', composeTime='', composeAlarm=false, composeRepeat='', composeCal='';
+let composeCat=null, composeDate='', composeTime='', composeAlarm=false, composeRepeat='', composeCal='', composePhone=false;
 const CATLBL={job:'Job 💼',place:'Place 📍',grocery:'Grocery 🛒',slide:'Read 📚',health:'Health 🩺'};
 function setComposeCat(k){composeCat=(composeCat===k)?null:k;renderCompose();
   const d=document.getElementById('dumpInput');if(d&&d.focus)d.focus();}
@@ -299,7 +299,8 @@ function renderCompose(){
         <option value="monthly" ${composeRepeat==='monthly'?'selected':''}>↻ Monthly</option>
       </select>`
     +`<button class="chip ${composeCal==='gcal'?'cGroc sel':'cGray'}" onclick="composeCal=(composeCal==='gcal')?'':'gcal';renderCompose()">＋ GCal</button>`
-    +`<button class="chip ${composeCal==='outlook'?'cJob sel':'cGray'}" onclick="composeCal=(composeCal==='outlook')?'':'outlook';renderCompose()">＋ Outlook</button>`;
+    +`<button class="chip ${composeCal==='outlook'?'cJob sel':'cGray'}" onclick="composeCal=(composeCal==='outlook')?'':'outlook';renderCompose()">＋ Outlook</button>`
+    +((isAndroid()||isIOS())?`<button class="chip ${composePhone?'c1 sel':'cGray'}" onclick="composePhone=!composePhone;renderCompose()">⏰${composePhone?' Phone alarm ✓':' Phone alarm'}</button>`:'');
 }
 let unsubLists=null, unsubItems=null, firstSnap=true;
 
@@ -520,8 +521,12 @@ function addItem(){
   if(composeCal&&c.date){
     window.open(composeCal==='gcal'?gcalUrl(t,c.date,c.time):outlookUrl(t,c.date,c.time),'_blank');
   } else if(composeCal){toast('Calendar needs a date — set one and use ✏️ later');}
+  if(composePhone){
+    if(c.time)nativeAlarm(c.time,t);
+    else toast('⏰ Phone alarm needs a time — add one like "3:45pm"');
+  }
   el.value=''; el.focus();
-  composeCat=null; composeDate=''; composeTime=''; composeAlarm=false; composeRepeat=''; composeCal=''; renderCompose();
+  composeCat=null; composeDate=''; composeTime=''; composeAlarm=false; composeRepeat=''; composeCal=''; composePhone=false; renderCompose();
   const label=c.cat==='task'?QNAME[c.q]:({job:'Jobs',place:'Places',grocery:'Grocery',slide:'Read'})[c.cat];
   toast('✨ Filed under '+label+(c.date?' · 📅 '+c.date:'')+(c.time?' '+c.time:'')+' — tap ✏️ to change');
 }
@@ -631,7 +636,9 @@ function fireAlarm(t,missedMs){
   document.getElementById('alarmSub').textContent=missed+(t.repeat?'Repeats '+t.repeat+' · stays in your list':'One-time reminder')+(curList&&!curList.personal?' · '+curList.name:'');
   document.getElementById('alarmDoneBtn').style.display=t.repeat?'none':'block';
   document.getElementById('alarmScr').classList.add('show');
-  chime(); clearInterval(ringTimer); ringTimer=setInterval(chime,3000);
+  grabWake();
+  chime(); clearInterval(ringTimer);
+  ringTimer=setInterval(()=>{document.getElementById('alarmScr').classList.add('show');chime();},2500);
   if('Notification' in window && Notification.permission==='granted'){
     try{new Notification('⏰ '+t.text,{body:'Open Clear Head to respond',requireInteraction:true,tag:'ch-alarm'});}catch(e){}
   }
@@ -672,13 +679,22 @@ setInterval(checkAlarms,5000);
 
 /* ================= NATIVE PHONE ALARM (Android) ================= */
 function isAndroid(){return /android/i.test(navigator.userAgent);}
+function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent);}
+function fmt12(t){let[h,m]=t.split(':').map(Number);const ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+pad(m)+' '+ap;}
+function nativeAlarm(time,text){
+  if(isAndroid()){
+    const[hh,mm]=time.split(':').map(Number);
+    location.href='intent:#Intent;action=android.intent.action.SET_ALARM;i.android.intent.extra.alarm.HOUR='+hh+';i.android.intent.extra.alarm.MINUTES='+mm+';S.android.intent.extra.alarm.MESSAGE='+encodeURIComponent(text.slice(0,60))+';end';
+    toast('⏰ Opening Clock — confirm the alarm there');
+  } else if(isIOS()){
+    location.href='shortcuts://run-shortcut?name=ClearHead%20Alarm&input=text&text='+encodeURIComponent(fmt12(time));
+    toast('⏰ Running your ClearHead Alarm shortcut…');
+  } else toast('Native alarms work on the phone version');
+}
 function phoneAlarm(id){
   const t=items.find(x=>x.id===id);
   if(!t||!t.time){toast('Set a time first');return;}
-  const[hh,mm]=t.time.split(':').map(Number);
-  const msg=encodeURIComponent(t.text.slice(0,60));
-  location.href='intent:#Intent;action=android.intent.action.SET_ALARM;i.android.intent.extra.alarm.HOUR='+hh+';i.android.intent.extra.alarm.MINUTES='+mm+';S.android.intent.extra.alarm.MESSAGE='+msg+';end';
-  toast('⏰ Opening your phone\'s Clock app — confirm the alarm there');
+  nativeAlarm(t.time,t.text);
 }
 
 /* ================= PLACE SEARCH (OpenStreetMap — free) ================= */
@@ -877,7 +893,7 @@ function editorHTML(t){
       <input type="date" value="${t.date||''}" onchange="setDate('${t.id}',this.value)">
       <input type="time" value="${t.time||''}" onchange="setTime('${t.id}',this.value)">
       <button class="chip ${t.alarmOn?'c2 sel':'cGray'}" onclick="toggleAlarm('${t.id}',${!!t.alarmOn})">🔔 ${t.alarmOn?'Alarm on':'Alarm'}</button>
-      ${isAndroid()?`<button class="chip c1" onclick="phoneAlarm('${t.id}')">⏰ Phone alarm</button>`:''}
+      ${(isAndroid()||isIOS())?`<button class="chip c1" onclick="phoneAlarm('${t.id}')">⏰ Phone alarm</button>`:''}
       <select onchange="setRepeat('${t.id}',this.value)" onclick="event.stopPropagation()" style="font:inherit;font-size:12.5px;border:1px solid var(--line);border-radius:9px;padding:5px 7px;background:#fff">
         <option value="" ${!t.repeat?'selected':''}>No repeat</option>
         <option value="hourly" ${t.repeat==='hourly'?'selected':''}>↻ Hourly</option>
