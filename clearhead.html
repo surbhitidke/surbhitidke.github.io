@@ -290,7 +290,8 @@ function renderCompose(){
     +chip('job','Job','cJob')+chip('place','Place','cPlace')+chip('grocery','Grocery','cGroc')+chip('slide','Read','cSlide')+chip('health','Health','cHlth')
     +`<input type="date" value="${composeDate}" onchange="composeDate=this.value">`
     +`<input type="time" value="${composeTime}" onchange="composeTime=this.value">`
-    +`<button class="chip ${composeAlarm||composeRepeat?'c2 sel':'cGray'}" onclick="composeAlarm=!composeAlarm;renderCompose()">🔔${composeAlarm||composeRepeat?' Alarm on':' Alarm'}</button>`
+    +((isAndroid()||isIOS())?`<button class="chip ${composePhone?'c1 sel':'cGray'}" onclick="composePhone=!composePhone;renderCompose()">⏰${composePhone?' Phone alarm ✓':' Phone alarm'}</button>`:'')
+    +`<button class="chip ${composeAlarm||composeRepeat?'c2 sel':'cGray'}" onclick="composeAlarm=!composeAlarm;renderCompose()">🔔${composeAlarm||composeRepeat?' In-app':' In-app'}</button>`
     +`<select onchange="composeRepeat=this.value;if(this.value)composeAlarm=true;renderCompose()" style="font:inherit;font-size:12.5px;border:1px solid var(--line);border-radius:9px;padding:5px 7px;background:#fff">
         <option value="" ${!composeRepeat?'selected':''}>No repeat</option>
         <option value="hourly" ${composeRepeat==='hourly'?'selected':''}>↻ Hourly</option>
@@ -299,8 +300,7 @@ function renderCompose(){
         <option value="monthly" ${composeRepeat==='monthly'?'selected':''}>↻ Monthly</option>
       </select>`
     +`<button class="chip ${composeCal==='gcal'?'cGroc sel':'cGray'}" onclick="composeCal=(composeCal==='gcal')?'':'gcal';renderCompose()">＋ GCal</button>`
-    +`<button class="chip ${composeCal==='outlook'?'cJob sel':'cGray'}" onclick="composeCal=(composeCal==='outlook')?'':'outlook';renderCompose()">＋ Outlook</button>`
-    +((isAndroid()||isIOS())?`<button class="chip ${composePhone?'c1 sel':'cGray'}" onclick="composePhone=!composePhone;renderCompose()">⏰${composePhone?' Phone alarm ✓':' Phone alarm'}</button>`:'');
+    +`<button class="chip ${composeCal==='outlook'?'cJob sel':'cGray'}" onclick="composeCal=(composeCal==='outlook')?'':'outlook';renderCompose()">＋ Outlook</button>`;
 }
 let unsubLists=null, unsubItems=null, firstSnap=true;
 
@@ -680,14 +680,14 @@ setInterval(checkAlarms,5000);
 /* ================= NATIVE PHONE ALARM (Android) ================= */
 function isAndroid(){return /android/i.test(navigator.userAgent);}
 function isIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent);}
-function fmt12(t){let[h,m]=t.split(':').map(Number);const ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+pad(m)+' '+ap;}
+function fmtAlarmTime(t){let[h,m]=t.split(':').map(Number);const ap=h>=12?'PM':'AM';h=h%12||12;return 'today at '+h+':'+pad(m)+' '+ap;}
 function nativeAlarm(time,text){
   if(isAndroid()){
     const[hh,mm]=time.split(':').map(Number);
     location.href='intent:#Intent;action=android.intent.action.SET_ALARM;i.android.intent.extra.alarm.HOUR='+hh+';i.android.intent.extra.alarm.MINUTES='+mm+';S.android.intent.extra.alarm.MESSAGE='+encodeURIComponent(text.slice(0,60))+';end';
     toast('⏰ Opening Clock — confirm the alarm there');
   } else if(isIOS()){
-    location.href='shortcuts://run-shortcut?name=ClearHead%20Alarm&input=text&text='+encodeURIComponent(fmt12(time));
+    location.href='shortcuts://run-shortcut?name=ClearHead%20Alarm&input=text&text='+encodeURIComponent(fmtAlarmTime(time));
     toast('⏰ Running your ClearHead Alarm shortcut…');
   } else toast('Native alarms work on the phone version');
 }
@@ -892,8 +892,8 @@ function editorHTML(t){
     <div class="datebar">
       <input type="date" value="${t.date||''}" onchange="setDate('${t.id}',this.value)">
       <input type="time" value="${t.time||''}" onchange="setTime('${t.id}',this.value)">
-      <button class="chip ${t.alarmOn?'c2 sel':'cGray'}" onclick="toggleAlarm('${t.id}',${!!t.alarmOn})">🔔 ${t.alarmOn?'Alarm on':'Alarm'}</button>
       ${(isAndroid()||isIOS())?`<button class="chip c1" onclick="phoneAlarm('${t.id}')">⏰ Phone alarm</button>`:''}
+      <button class="chip ${t.alarmOn?'c2 sel':'cGray'}" onclick="toggleAlarm('${t.id}',${!!t.alarmOn})">🔔 ${t.alarmOn?'In-app on':'In-app'}</button>
       <select onchange="setRepeat('${t.id}',this.value)" onclick="event.stopPropagation()" style="font:inherit;font-size:12.5px;border:1px solid var(--line);border-radius:9px;padding:5px 7px;background:#fff">
         <option value="" ${!t.repeat?'selected':''}>No repeat</option>
         <option value="hourly" ${t.repeat==='hourly'?'selected':''}>↻ Hourly</option>
