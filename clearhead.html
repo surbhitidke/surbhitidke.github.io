@@ -601,47 +601,85 @@ function nextDue(t,last){
     base.setDate(dom); while(base.getTime()<=(last||0)||base.getTime()<now-60000){base.setMonth(base.getMonth()+1);base.setDate(dom);}return base.getTime();}
   return null;
 }
-let ringing=null, audioCtx=null, ringTimer=null;
+let ringing=null, audioCtx=null, ringTimer=null, wakeLock=null;
+function unlockAudio(){
+  try{
+    audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended')audioCtx.resume();
+    const b=audioCtx.createBuffer(1,1,22050),src=audioCtx.createBufferSource();
+    src.buffer=b;src.connect(audioCtx.destination);src.start(0);
+  }catch(e){}
+}
+document.addEventListener('pointerdown',unlockAudio,{once:true});
 function chime(){
   try{
     audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
-    const beep=(delay,f)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    if(audioCtx.state==='suspended')audioCtx.resume();
+    const beep=(delay,f,dur)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();
       o.connect(g);g.connect(audioCtx.destination);o.frequency.value=f;o.type='sine';
       const t0=audioCtx.currentTime+delay;g.gain.setValueAtTime(0.0001,t0);
-      g.gain.exponentialRampToValueAtTime(0.5,t0+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t0+0.5);
-      o.start(t0);o.stop(t0+0.55);};
-    beep(0,880);beep(0.35,1108);beep(0.7,1318);
+      g.gain.exponentialRampToValueAtTime(0.6,t0+0.02);g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+      o.start(t0);o.stop(t0+dur+0.05);};
+    beep(0,880,0.45);beep(0.3,1108,0.45);beep(0.6,1318,0.6);beep(1.2,880,0.45);beep(1.5,1318,0.7);
   }catch(e){}
-  if(navigator.vibrate)navigator.vibrate([300,120,300]);
+  if(navigator.vibrate)navigator.vibrate([400,150,400,150,600]);
 }
-function fireAlarm(t){
+function fireAlarm(t,missedMs){
   ringing=t.id;
   document.getElementById('alarmText').textContent=t.text;
-  document.getElementById('alarmSub').textContent=(t.repeat?'Repeats '+t.repeat+' · stays in your list':'One-time reminder')+(curList&&!curList.personal?' · '+curList.name:'');
+  const missed=missedMs>120000?'⏰ Was due '+new Date(Date.now()-missedMs).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})+' — you were away. ':'';
+  document.getElementById('alarmSub').textContent=missed+(t.repeat?'Repeats '+t.repeat+' · stays in your list':'One-time reminder')+(curList&&!curList.personal?' · '+curList.name:'');
   document.getElementById('alarmDoneBtn').style.display=t.repeat?'none':'block';
   document.getElementById('alarmScr').classList.add('show');
-  chime(); clearInterval(ringTimer); ringTimer=setInterval(chime,4000);
-  notifyMe('⏰ Reminder:',t.text);
+  chime(); clearInterval(ringTimer); ringTimer=setInterval(chime,3000);
+  if('Notification' in window && Notification.permission==='granted'){
+    try{new Notification('⏰ '+t.text,{body:'Open Clear Head to respond',requireInteraction:true,tag:'ch-alarm'});}catch(e){}
+  }
 }
-function stopRing(){clearInterval(ringTimer);ringTimer=null;document.getElementById('alarmScr').classList.remove('show');}
+function stopRing(){clearInterval(ringTimer);ringTimer=null;document.getElementById('alarmScr').classList.remove('show');releaseWake();}
+async function grabWake(){try{if('wakeLock' in navigator && !wakeLock && document.visibilityState==='visible'){wakeLock=await navigator.wakeLock.request('screen');wakeLock.addEventListener('release',()=>{wakeLock=null;});}}catch(e){}}
+function releaseWake(){try{if(wakeLock){wakeLock.release();wakeLock=null;}}catch(e){}}
 function markFired(id){const st=aState();st[id]=Date.now();aSave(st);}
 function alarmAck(){if(ringing)markFired(ringing);stopRing();toast('🙏 Kept in your list');ringing=null;}
-function alarmSnooze(){if(ringing){const st=aState();st[ringing]=Date.now()-3600000+600000;/*re-eligible in 10min for one-time*/
-  st['snz-'+ringing]=Date.now()+600000;aSave(st);}stopRing();toast('😴 Snoozed 10 min');ringing=null;}
+function alarmSnooze(){if(ringing){const st=aState();
+  st['snz-'+ringing]=Date.now()+600000;st[ringing]=Date.now();aSave(st);}stopRing();toast('😴 Snoozed 10 min');ringing=null;}
 function alarmDone(){if(ringing){markFired(ringing);const id=ringing;
   upd(id,{done:true,doneAt:Date.now(),doneBy:myEmail.split('@')[0]});toast('🏆 Nice! Moved to Done');}
   stopRing();ringing=null;}
-setInterval(()=>{
+function checkAlarms(){
   if(ringing||!items.length)return;
   const st=aState(); const now=Date.now();
+  let soonest=null;
   for(const t of items){
     if(!t.alarmOn||t.done)continue;
-    const snz=st['snz-'+t.id]; if(snz&&now<snz)continue;
-    if(snz&&now>=snz){delete st['snz-'+t.id];aSave(st);fireAlarm(t);return;}
+    const snz=st['snz-'+t.id];
+    if(snz&&now>=snz){delete st['snz-'+t.id];aSave(st);fireAlarm(t,0);return;}
+    if(snz&&now<snz)continue;
     const due=nextDue(t,st[t.id]);
-    if(due && now>=due && now-due<90000){fireAlarm(t);if(t.repeat){st[t.id]=due;aSave(st);}return;}
+    if(!due)continue;
+    if(now>=due){
+      const late=now-due;
+      if(!t.repeat&&late>12*3600000){st[t.id]=now;aSave(st);continue;} /* stale one-time: skip silently */
+      st[t.id]=due;aSave(st);
+      fireAlarm(t,late);return;
+    }
+    if(soonest===null||due<soonest)soonest=due;
   }
-},15000);
+  if(soonest&&soonest-now<15*60000)grabWake(); else releaseWake();
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')setTimeout(checkAlarms,400);});
+setInterval(checkAlarms,5000);
+
+/* ================= NATIVE PHONE ALARM (Android) ================= */
+function isAndroid(){return /android/i.test(navigator.userAgent);}
+function phoneAlarm(id){
+  const t=items.find(x=>x.id===id);
+  if(!t||!t.time){toast('Set a time first');return;}
+  const[hh,mm]=t.time.split(':').map(Number);
+  const msg=encodeURIComponent(t.text.slice(0,60));
+  location.href='intent:#Intent;action=android.intent.action.SET_ALARM;i.android.intent.extra.alarm.HOUR='+hh+';i.android.intent.extra.alarm.MINUTES='+mm+';S.android.intent.extra.alarm.MESSAGE='+msg+';end';
+  toast('⏰ Opening your phone\'s Clock app — confirm the alarm there');
+}
 
 /* ================= PLACE SEARCH (OpenStreetMap — free) ================= */
 let psTimer=null;
@@ -839,6 +877,7 @@ function editorHTML(t){
       <input type="date" value="${t.date||''}" onchange="setDate('${t.id}',this.value)">
       <input type="time" value="${t.time||''}" onchange="setTime('${t.id}',this.value)">
       <button class="chip ${t.alarmOn?'c2 sel':'cGray'}" onclick="toggleAlarm('${t.id}',${!!t.alarmOn})">🔔 ${t.alarmOn?'Alarm on':'Alarm'}</button>
+      ${isAndroid()?`<button class="chip c1" onclick="phoneAlarm('${t.id}')">⏰ Phone alarm</button>`:''}
       <select onchange="setRepeat('${t.id}',this.value)" onclick="event.stopPropagation()" style="font:inherit;font-size:12.5px;border:1px solid var(--line);border-radius:9px;padding:5px 7px;background:#fff">
         <option value="" ${!t.repeat?'selected':''}>No repeat</option>
         <option value="hourly" ${t.repeat==='hourly'?'selected':''}>↻ Hourly</option>
