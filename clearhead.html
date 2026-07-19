@@ -535,7 +535,10 @@ function addItem(){
     alarmOn:wantAlarm&&(!!composeRepeat||(!!c.date&&!!c.time)),
     repeat:composeRepeat||'',
     by:myEmail.split('@')[0],created:Date.now()};
-  db.collection('lists').doc(curList.id).collection('items').add(doc);
+  db.collection('lists').doc(curList.id).collection('items').add(doc).then(ref=>{
+    const u=firstUrl(t);
+    if(doc.cat==='job'&&u)setTimeout(()=>fetchJobMeta(ref.id,u),600);
+  });
   if(composeCal&&c.date){
     window.open(composeCal==='gcal'?gcalUrl(t,c.date,c.time):outlookUrl(t,c.date,c.time),'_blank');
   } else if(composeCal){toast('Calendar needs a date — set one and use ✏️ later');}
@@ -710,12 +713,9 @@ function nativeAlarm(time,text){
       +'S.android.intent.extra.alarm.MESSAGE='+encodeURIComponent(text.slice(0,60))+';'
       +'S.browser_fallback_url='+fallback+';'
       +'end;';
-    try{
-      const ifr=document.createElement('iframe'); ifr.style.display='none'; ifr.src=uri;
-      document.body.appendChild(ifr); setTimeout(()=>ifr.remove(),1500);
-      location.href=uri;
-    }catch(e){ location.href=uri; }
-    toast('⏰ Opening Clock — confirm the alarm there. If nothing opens, tap ❓ Help → Android for the fix.');
+    try{ location.href=uri; }catch(e){}
+    setTimeout(()=>{ if(!document.hidden) toast('Nothing opened? Open this page inside the Chrome app itself (not the home-screen icon) and try again — some Android launchers block the Clock handoff from installed icons.'); },2500);
+    toast('⏰ Opening Clock — confirm the alarm there');
   } else if(isIOS()){
     location.href='shortcuts://run-shortcut?name=ClearHead%20Alarm&input=text&text='+encodeURIComponent(text.slice(0,80)+' '+fmtAlarmTime(time));
     toast('⏰ Running your ClearHead Alarm shortcut…');
@@ -726,6 +726,41 @@ function phoneAlarm(id){
   if(!t||!t.time){toast('Set a time first');return;}
   if(t.date&&t.date!==ymd(new Date()))toast('⏰ Phone alarms ring at the TIME (not a future date) — also tap ＋GCal for '+t.date);
   nativeAlarm(t.time,t.text);
+}
+
+/* ================= JOB POSTING INFO (JSON-LD JobPosting standard) ================= */
+async function fetchJobMeta(id,url){
+  try{
+    toast('🔎 Reading posting info…');
+    const r=await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(url));
+    const html=await r.text();
+    let posted='',deadline='';
+    const ld=[...html.matchAll(/<script[^>]*application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)];
+    for(const m of ld){
+      try{
+        const j=JSON.parse(m[1].trim());
+        const arr=Array.isArray(j)?j:[j];
+        for(const o of arr){
+          const g=o&&o['@graph']?o['@graph']:[o];
+          for(const x of g){
+            if(x&&(x['@type']==='JobPosting'||x.datePosted)){
+              posted=x.datePosted||posted; deadline=x.validThrough||deadline;
+            }
+          }
+        }
+      }catch(e){}
+    }
+    if(!posted){const m2=html.match(/"listedAt":(\d{10,13})/);
+      if(m2){const v=parseInt(m2[1]);posted=new Date(m2[1].length>10?v:v*1000).toISOString();}}
+    if(posted||deadline){
+      upd(id,{posted:(posted||'').slice(0,10),deadline:(deadline||'').slice(0,10)});
+      toast('📌 '+(posted?'Posted '+posted.slice(0,10):'')+(deadline?' · apply by '+deadline.slice(0,10):''));
+    } else toast("Couldn't find a posting date on that page");
+  }catch(e){toast("Couldn't read posting info — the site blocked automated reading");}
+}
+function jobAge(d){
+  if(!d)return null;
+  return Math.round((new Date(ymd(new Date()))-new Date(d))/864e5);
 }
 
 /* ================= PLACE SEARCH (OpenStreetMap — free) ================= */
@@ -934,6 +969,9 @@ function rowHTML(t,opts){
     <button class="ck ${t.done?'done':''}" onclick="toggleDone(event,'${t.id}',${!!t.done})">${t.done?'✓':''}</button>
     ${slot}
     <span class="rtext ${t.done?'done-txt':''}">${esc(t.text)}${shared&&t.by?`<span class="byTag">${esc(t.by)}</span>`:''}</span>
+    ${t.cat==='job'&&t.applied?'<span class="rbadge" style="background:var(--q2bg);color:var(--q2)">APPLIED ✓</span>':''}
+    ${t.cat==='job'&&t.posted?'<span class="rbadge '+(jobAge(t.posted)>21?'b-over':'b-date')+'">'+(jobAge(t.posted)===0?'posted today':jobAge(t.posted)+'d old')+'</span>':''}
+    ${t.cat==='job'&&t.deadline?'<span class="rbadge" style="background:var(--q3bg);color:var(--q3)">apply by '+t.deadline.slice(5).replace('-','/')+'</span>':''}
     ${t.repeat?'<span class="rbadge b-rep">↻ '+t.repeat+'</span>':''}
     ${t.alarmOn?'<span class="b-alarm">🔔</span>':''}
     ${t.calAdded&&t.date?'<span class="b-cal">🗓✓</span>':''}
@@ -976,6 +1014,8 @@ function editorHTML(t){
       <button class="chip cGray" onclick="toGCal('${t.id}')">＋ GCal</button>
       <button class="chip cGray" onclick="toOutlook('${t.id}')">＋ Outlook</button>
       ${t.cat==='place'?`<button class="chip cPlace" onclick="openMaps('${t.id}')">📍 Maps</button>`:''}
+      ${t.cat==='job'?`<button class="chip ${t.applied?'c2 sel':'cGray'}" onclick="event.stopPropagation();upd('${t.id}',{applied:${!t.applied}});toast('${t.applied?'Marked not applied':'✅ Marked applied — go you!'}')">✓ Applied</button>`:''}
+      ${t.cat==='job'&&firstUrl(t.text)?`<button class="chip cJob" onclick="event.stopPropagation();fetchJobMeta('${t.id}','${firstUrl(t.text)}')">🔎 Check dates</button>`:''}
       ${u?`<button class="chip cGray" onclick="window.open('${u}','_blank')">Open link ↗</button>`:''}
       <button class="chip c1" onclick="delItem('${t.id}')">Delete</button>
     </div>
@@ -1137,6 +1177,13 @@ function render(){
         h+=`<div class="qhead">🩺 ${d.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric',year:'numeric'})}</div>`+groupHTML(byD[L]);
       });
     }
+  }
+  else if(tab==='jobs'){
+    const all=act.filter(i=>i.cat==='job');
+    const open_=all.filter(i=>!i.applied), appl=all.filter(i=>i.applied);
+    if(!all.length)h='<div class="empty">No job leads yet.<br>Dump a LinkedIn or career-site link — I\'ll read the posting date automatically. Tap a job to open it; ✏️ to mark Applied.</div>';
+    if(open_.length)h+=`<div class="qhead">💼 To apply · ${open_.length}</div>`+groupHTML(open_);
+    if(appl.length)h+=`<div class="qhead">✅ Applied · ${appl.length}</div>`+groupHTML(appl);
   }
   else{
     const map={jobs:'job',places:'place',grocery:'grocery'};
